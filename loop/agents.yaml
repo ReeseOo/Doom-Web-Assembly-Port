@@ -1,0 +1,252 @@
+# Outcome: a DOOM port (supplied doomgeneric + assets/doom1.wad, Emscripten 4.0.18)
+# that runs in a browser and passes tests/accept/run.sh.
+# Run: docker agent run loop/agents.yaml --working-dir .
+# Student owns this file. Agents must not edit loop/.
+
+models:
+  coordinator:
+    provider: chatgpt
+    model: gpt-6.1-sol
+    thinking_budget: medium
+  coder:
+    provider: chatgpt
+    model: gpt-6.1-sol
+    thinking_budget: medium
+  reviewer:
+    provider: chatgpt
+    model: gpt-6.1-sol
+    thinking_budget: high
+
+agents:
+  root:
+    model: coordinator
+    description: Coordinate coders, run the acceptance gate, save state, commit verified milestones
+    max_iterations: 60
+    max_tool_result_tokens: 2500
+    max_old_tool_call_tokens: 10000
+    sub_agents:
+      - coder_build
+      - coder_video_input
+      - coder_runtime
+      - coder_audio
+      - reviewer_correctness
+      - reviewer_integration
+      - qa_browser
+    toolsets:
+      - type: filesystem
+        allow_list: ["."]
+      - type: shell
+    instruction: |
+      Read AGENTS.md, README.md, loop/README.md, artifacts/README.md and tests/accept/CRITERIA.md.
+
+      GOAL: a browser-playable DOOM port that passes `bash tests/accept/run.sh`.
+      Use only third_party/doomgeneric/ and assets/doom1.wad. No other engine or existing browser port.
+
+      RESUME: if artifacts/state.json exists, continue from it (run id, attempt, task, last
+      result, next action). Otherwise start a new run with a unique timestamp run id.
+      Save artifacts/state.json after every step. Keep every attempt's evidence, including failures.
+
+      WORK: break the goal into small milestones. For each, hand ONE coder a bounded task:
+      goal, files it owns, and the exact output path under artifacts/runs/<run-id>/handoffs/.
+      Ownership: coder_build = build.sh and web/. coder_video_input = platform/video_input.*.
+      coder_runtime = platform/doomgeneric_wasm.c and platform/runtime.*. coder_audio = platform/audio.*.
+
+      GATE: after coding, run `bash ./build.sh`. If it builds, run
+      `bash tests/accept/run.sh artifacts/runs/<run-id>/tests/<attempt>`. Only real exit codes
+      count; never accept an agent's claim of success. If it fails, send the findings to the
+      owning coder and repeat.
+      When it passes, run reviewer_correctness and reviewer_integration separately, then qa_browser.
+      Send a reviewer only its own task and the code/check evidence, never the other review.
+
+      COMMIT: make a local git commit for each milestone whose run.sh exit code is 0. Never push.
+
+      STOP: when run.sh gives PASS with "complete": true and both reviews and QA pass, or after
+      5 attempts on one milestone. Save the stopping reason and evidence paths in state.json.
+
+      Never edit loop/, assets/, third_party/ or tests/accept/. Do not write port code yourself.
+      Do not make or request regressions; those are injected by the student's teammate later.
+
+  coder_build:
+    model: coder
+    description: Emscripten build, entrypoint wiring, WAD packaging and browser page
+    max_iterations: 35
+    max_tool_result_tokens: 2500
+    toolsets:
+      - type: filesystem
+        allow_list: ["."]
+      - type: shell
+    instruction: |
+      Read AGENTS.md, README.md, loop/README.md, artifacts/README.md, platform/README.md
+      and any prior runs under artifacts/.
+      Own build.sh and web/. Build with Emscripten 4.0.18, package assets/doom1.wad into the
+      virtual filesystem, output dist/index.html plus the .js and .wasm files. build.sh must
+      fail on compiler or linker errors. The page must work when served from a subpath such as /doom/
+      (use relative asset paths).
+      Add your own tests only under tests/dev/. Never edit loop/, assets/, third_party/ or tests/accept/.
+      Write your report to the handoff path root gives you.
+
+  coder_video_input:
+    model: coder
+    description: Browser framebuffer display and DOOM keyboard events
+    max_iterations: 35
+    max_tool_result_tokens: 2500
+    toolsets:
+      - type: filesystem
+        allow_list: ["."]
+      - type: shell
+    instruction: |
+      Read AGENTS.md, README.md, loop/README.md, artifacts/README.md, platform/README.md
+      and any prior runs under artifacts/.
+      Own platform/video_input.* . Implement DG_Init, DG_DrawFrame, DG_GetKey and
+      DG_SetWindowTitle. The framebuffer is 640x400 uint32 with red at bit 16, green at bit 8,
+      blue at bit 0: convert correctly to an opaque browser image. Handle keydown AND keyup,
+      held keys, focus loss (release all keys), and stop arrow keys and Space from scrolling the page.
+      Add your own tests only under tests/dev/. Never edit loop/, assets/, third_party/ or tests/accept/.
+      Write your report to the handoff path root gives you.
+
+  coder_runtime:
+    model: coder
+    description: Main entrypoint, clock, sleep/yield and browser lifecycle
+    max_iterations: 40
+    max_tool_result_tokens: 2500
+    toolsets:
+      - type: filesystem
+        allow_list: ["."]
+      - type: shell
+    instruction: |
+      Read AGENTS.md, README.md, loop/README.md, artifacts/README.md, platform/README.md
+      and any prior runs under artifacts/.
+      Own platform/doomgeneric_wasm.c and platform/runtime.* . Wire doomgeneric_Create and
+      doomgeneric_Tick, implement DG_GetTicksMs and DG_SleepMs, and keep the browser responsive:
+      the engine waits inside tic sync and screen wipes, so yield to the browser (for example
+      with Emscripten's supported yielding) without patching third_party/. Keep 35 Hz simulation timing.
+      Remove duplicate video/input stubs once those implementations exist.
+      Add your own tests only under tests/dev/. Never edit loop/, assets/, third_party/ or tests/accept/.
+      Write your report to the handoff path root gives you.
+
+  coder_audio:
+    model: coder
+    description: Sound effects through WebAudio (music is a bonus)
+    max_iterations: 35
+    max_tool_result_tokens: 2500
+    toolsets:
+      - type: filesystem
+        allow_list: ["."]
+      - type: shell
+    instruction: |
+      Read AGENTS.md, README.md, loop/README.md, artifacts/README.md, platform/README.md
+      and any prior runs under artifacts/.
+      Own platform/audio.* . Audio is in scope: the acceptance check A1 requires sound effects
+      to be output in the browser (audio context running after the first key press, and output
+      that rises above a silent baseline when a sound triggers). Silent builds fail.
+      Music is a bonus. Browsers need a user gesture before audio starts, so resume the audio
+      context on the first key or click. Share function names and file paths with coder_build and
+      coder_runtime through the handoff files.
+      Add your own tests only under tests/dev/. Never edit loop/, assets/, third_party/ or tests/accept/.
+      Write your report to the handoff path root gives you.
+
+  reviewer_correctness:
+    model: reviewer
+    description: Independent C, framebuffer, input and timing correctness review
+    readonly: true
+    max_iterations: 25
+    max_tool_result_tokens: 2500
+    toolsets:
+      - type: filesystem
+        allow_list: ["."]
+    instruction: |
+      Read AGENTS.md, README.md, loop/README.md, artifacts/README.md and tests/accept/CRITERIA.md.
+      Inspect the code and evidence at the source snapshot root gives you. Examine C lifetimes and
+      signatures, pixel conversion, keydown/keyup, time units, simulation timing, nested blocking
+      waits, and that the supplied engine and WAD are unchanged. Do not read the other reviewer's
+      findings. Do not edit anything.
+      Return only JSON: status (pass/fail), source_snapshot, build_snapshot, summary, findings,
+      evidence paths. Each blocker names file/function, failure mechanism and the owning coder.
+
+  reviewer_integration:
+    description: Independent integration and test quality review
+    harness:
+      type: claude-code
+      model: sonnet
+      effort: medium
+    instruction: |
+      Read AGENTS.md, README.md, loop/README.md, artifacts/README.md, platform/README.md and
+      tests/accept/CRITERIA.md. Inspect the build commands, WAD runtime paths, browser startup,
+      test assertions and logs at the source snapshot root gives you. Look for false-positive
+      tests and missing behavior; a passing compile is not proof of gameplay.
+      Do not read the other reviewer's findings. Never modify source, tests, loop/, assets/,
+      third_party/ or build output. Save your report only at the reviews/ path root gives you.
+      Return status (pass/fail), source_snapshot, build_snapshot, summary, findings (each assigned
+      to a coder) and evidence paths.
+
+  qa_browser:
+    description: Playwright screenshot-based adaptive browser gameplay
+    harness:
+      type: claude-code
+      model: sonnet
+      effort: medium
+    instruction: |
+      Read AGENTS.md, README.md, artifacts/README.md, tests/accept/CRITERIA.md and the port's
+      documented controls. Use the Playwright MCP server in Claude Code. Open the URL root gives
+      you, look at actual screenshots of the canvas, choose a short keyboard action from what you
+      see, run it, and look at the result. Make 6-12 decisions over at least 60 seconds of live play:
+      menu, start a level, move, turn, fire, open a door, and adapt once to an obstacle or
+      unexpected state. Also try to kill an enemy and note whether music or sound is audible
+      (observations only, not pass/fail). Release held keys. Capture browser errors.
+      No cheats, injected movement, blind autoplay or fabricated evidence. Report fail or blocked
+      honestly if the game cannot be played or Playwright MCP is missing. Do not edit anything
+      except your evidence files at the tests/ paths root gives you.
+      Return JSON with status, source_snapshot, build_snapshot, summary, findings, evidence,
+      elapsed_seconds, steps (before/after paths, observation, action, result), adaptation,
+      console_errors, and checks for: menu, level_started, movement, turning, firing, door_opened, responsive.
+
+runtime:
+  safety: balanced
+
+permissions:
+  allow:
+    - "read_*"
+    - "edit_file:path=/Users/reeseoo/code/ucla/loop_engineering/fellowship-loop-capstone/*"
+    - "write_file:path=/Users/reeseoo/code/ucla/loop_engineering/fellowship-loop-capstone/*"
+    - "shell:cmd=git status"
+    - "shell:cmd=bash ./build.sh"
+    - "shell:cmd=bash tests/accept/run.sh*"
+  # UNVERIFIED SYNTAX: check Docker Agent's docs for deny rules. If `docker agent run` rejects this
+  # block, delete it and rely on the git diff check against the acceptance-v1 tag instead.
+  # After enabling it, test by asking a coder to create loop/test.txt. It should be refused.
+  deny:
+    - "edit_file:path=/Users/reeseoo/code/ucla/loop_engineering/fellowship-loop-capstone/loop/*"
+    - "write_file:path=/Users/reeseoo/code/ucla/loop_engineering/fellowship-loop-capstone/loop/*"
+    - "edit_file:path=/Users/reeseoo/code/ucla/loop_engineering/fellowship-loop-capstone/tests/accept/*"
+    - "write_file:path=/Users/reeseoo/code/ucla/loop_engineering/fellowship-loop-capstone/tests/accept/*"
+    - "edit_file:path=/Users/reeseoo/code/ucla/loop_engineering/fellowship-loop-capstone/assets/*"
+    - "write_file:path=/Users/reeseoo/code/ucla/loop_engineering/fellowship-loop-capstone/assets/*"
+    - "edit_file:path=/Users/reeseoo/code/ucla/loop_engineering/fellowship-loop-capstone/third_party/*"
+    - "write_file:path=/Users/reeseoo/code/ucla/loop_engineering/fellowship-loop-capstone/third_party/*"
+        # keep agents out of credentials and personal folders
+    - "read_file:path=/Users/reeseoo/.ssh/*"
+    - "read_file:path=/Users/reeseoo/.aws/*"
+    - "read_file:path=/Users/reeseoo/.gnupg/*"
+    - "read_file:path=/Users/reeseoo/.config/*"
+    - "read_file:path=/Users/reeseoo/.claude/*"
+    - "read_file:path=/Users/reeseoo/.codex/*"
+    - "read_file:path=/Users/reeseoo/Library/*"
+    - "read_file:path=/Users/reeseoo/Documents/*"
+    - "read_file:path=/Users/reeseoo/Desktop/*"
+    - "read_file:path=/Users/reeseoo/Downloads/*"
+    - "write_file:path=/Users/reeseoo/.*"
+    - "edit_file:path=/Users/reeseoo/.*"
+    - "write_file:path=/etc/*"
+    - "write_file:path=/usr/*"
+    - "write_file:path=/Library/*"
+    - "shell:cmd=*.ssh*"
+    - "shell:cmd=*.aws*"
+    - "shell:cmd=*.gnupg*"
+    - "shell:cmd=*.zshrc*"
+    - "shell:cmd=*.bash_profile*"
+    - "shell:cmd=*Keychains*"
+    - "shell:cmd=*/Users/reeseoo/Documents*"
+    - "shell:cmd=*/Users/reeseoo/Desktop*"
+    - "shell:cmd=*/Users/reeseoo/Downloads*"
+    - "shell:cmd=curl*|*"
+    - "shell:cmd=wget*|*"
