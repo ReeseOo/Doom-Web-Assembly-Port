@@ -35,3 +35,20 @@ Music needs sequencing and synthesis; the included `mus2mid.c` converts score
 data but does not generate audio. Reproducing OPL-style instruments is a
 larger task than playing sound effects. See the
 [Web Audio specification](https://www.w3.org/TR/webaudio-1.0/).
+
+## Building the browser deliverable
+
+Activate Emscripten **4.0.18**, then run `./build.sh` from the repository
+(or invoke it by absolute path). `EMCC` may name that compiler explicitly.
+No downloads or host libraries are needed. Successful output is
+`dist/index.html`, `dist/doom.js`, `dist/doom.wasm`, and `dist/doom.data`.
+Serve the complete `dist/` directory over HTTP; opening the HTML as a file
+is not supported. For local inspection, run a temporary static server and
+stop it after testing. The build intentionally fails until a platform
+`main` exists, and does not publish `index.html` on a failed compile/link.
+
+The supplied WAD is preloaded as **`/doom1.wad`** in MEMFS, available before
+startup. Saves and configuration in MEMFS are not persistent across reloads.
+Sound is intentionally not enabled. See the run-specific interface handoff
+in `artifacts/` for the exact division of C entrypoint and callback ownership;
+coordination decisions are recorded there, not in this general guide.
