@@ -55,12 +55,13 @@ fi
 # ---- Browser checks (B3 R1 R2 T1), run in the supplied container from a clean copy of the checks ----
 BROWSER_JSON="$OUT/browser_results.json"
 rm -f "$BROWSER_JSON"
+BROWSER_IDS="B3 R1 R2 T1 I1 I2 A1"
 if [ ! -f dist/index.html ]; then
-  record B3 fail "no dist/index.html"; record R1 fail "no build"; record R2 fail "no build"; record T1 fail "no build"
+  for id in $BROWSER_IDS; do record $id fail "no dist/index.html"; done
 elif ! command -v docker >/dev/null || ! docker image inspect "$IMAGE" >/dev/null 2>&1; then
-  for id in B3 R1 R2 T1; do record $id fail "docker image $IMAGE not available (docker build -t $IMAGE .)"; done
+  for id in $BROWSER_IDS; do record $id fail "docker image $IMAGE not available (docker build -t $IMAGE .)"; done
 elif ! git rev-parse -q --verify "refs/tags/$BASELINE" >/dev/null; then
-  for id in B3 R1 R2 T1; do record $id fail "baseline tag $BASELINE not found; cannot take a clean copy of the checks"; done
+  for id in $BROWSER_IDS; do record $id fail "baseline tag $BASELINE not found; cannot take a clean copy of the checks"; done
 else
   TMP=$(mktemp -d)
   git archive "$BASELINE" tests/accept | tar -x -C "$TMP"
@@ -72,7 +73,7 @@ else
     "$IMAGE" node /checks/browser.spec.js /site /evidence > "$OUT/browser_stdout.log" 2>&1
   rm -rf "$TMP"
   if [ ! -f "$BROWSER_JSON" ]; then
-    for id in B3 R1 R2 T1; do record $id fail "browser run produced no results (see browser_stdout.log)"; done
+    for id in $BROWSER_IDS; do record $id fail "browser run produced no results (see browser_stdout.log)"; done
   fi
 fi
 

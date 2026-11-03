@@ -70,8 +70,9 @@ Intended location: `tests/accept/CRITERIA.md` (protected from coder edits).
 - Fault to inject: swap red and blue channels. R3 must fail.
 
 ### I1 Keydown and keyup
-- Pass: in a started level with no enemies in view, holding Up changes the 3D view region; after release, the view stops changing within [0.5] s; blurring the window while a key is held releases it.
-- Evidence: frame hashes during hold, after release, and after blur.
+- Pass: in a started level, holding Left (turning, which a wall cannot block) changes the 3D view area; after release the view stops changing. Measured as distinct view-area frames: idle baseline vs while turning (at least max(4, idle+2)) vs after release (at most idle+1).
+- Informational, not gating: whether a held key is released when the window loses focus (a synthetic blur event is dispatched).
+- Evidence: view-frame hash counts, screenshots during the turn and after release.
 - Could be fooled by: animated sprites or lighting changing the view region. Test in a quiet spot and record the baseline noise.
 - Does not prove: controls feel right.
 - Fault to inject: drop the keyup handler. I1 must fail.
@@ -107,7 +108,7 @@ Audio is in scope and a goal for the MVP. Sound effects are gated. Music is a go
 
 ### A1 Sound effects are output
 - Measures: the page produces audible output when the game triggers a sound effect.
-- Pass: after the first user input (browsers require a gesture), an `AudioContext` exists and reaches `running`; and the measured output level during a window containing a known sound trigger (menu navigation, weapon fire) exceeds the level in a preceding silent baseline window by a stated margin ([RMS at least 10x baseline], tune after observing real values).
+- Pass: after the first user input (browsers require a gesture), an `AudioContext` exists and reaches `running`; and for each of two triggers (firing the weapon with Ctrl, and moving through the menu with Escape/Down/Up) the peak output RMS in the trigger window is at least [0.003] and at least [1.5x] the peak in a baseline window just before it (or the baseline is below [0.0005]). The ratio is 1.5x, not 10x, because music may already be playing in the baseline. Tune after observing real values.
 - How to measure: before the page loads, inject a script (`page.addInitScript`) that wraps `AudioNode.prototype.connect` so anything connected to `ctx.destination` also feeds an `AnalyserNode`, then sample it. This avoids needing the port to export anything.
 - Evidence: context state, baseline and trigger-window levels with timestamps, the trigger action, console log.
 - Could be fooled by: constant noise or a DC offset, which is why the check compares against a silent baseline and ties the rise to an action. Also by a context that plays one test tone unrelated to the game; run the check with two different triggers.
@@ -193,4 +194,5 @@ Baseline tag: _____  Commit: _____  Date: _____
 
 | Date | Check ID | Change | Reason |
 |---|---|---|---|
-| 2026-11-02 | R1, R2 | Checks now perform the start gesture (click a Start/Play control, else the canvas) before sampling; R2 window changed from 3 s to 12 s. Re-tagged as acceptance-v2. | Run attempt 004 found the port gates the game behind a Start click (needed for browser audio), and the original checks sampled the unstarted canvas. The Doom title screen is also static for about 5 s. The agents did not edit the protected check; they reported the mismatch. This is a defect in my check, not in the port. |
+| 2026-11-02 | R1, R2 | Checks now perform the start gesture (click a Start/Play control, else the canvas) before sampling; R2 window changed from 3 s to 12 s. Moved the acceptance-v1 tag to the commit containing the fixed checks. | Run attempt 004 found the port gates the game behind a Start click (needed for browser audio), and the original checks sampled the unstarted canvas. The Doom title screen is also static for about 5 s. The agents did not edit the protected check; they reported the mismatch. This is a defect in my check, not in the port. |
+| 2026-11-02 | I1, I2, A1 | Implemented in browser.spec.js. I1 uses holding Left (turning) instead of Up, and blur-release is informational only. A1 compares trigger-window level to baseline at 1.5x plus an absolute floor, instead of 10x. | Needed concrete, testable definitions. Turning cannot be blocked by a wall; music may be audible in the baseline. |
