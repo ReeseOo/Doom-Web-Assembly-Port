@@ -18,6 +18,30 @@ const rec = (id, pass, detail) => results.push({ id, status: pass ? 'pass' : 'fa
 const sha = (buf) => crypto.createHash('sha256').update(buf).digest('hex');
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
+// The port may gate the game behind a Start control (browsers also require a user gesture
+// before audio can play). Find a visible Start/Play control and click it; fall back to the canvas.
+async function startGame(page) {
+  const sel = 'button, [role=button], a, input[type=button], input[type=submit], [id*=start i], [class*=start i], [id*=play i], [class*=play i]';
+  const wanted = /start|play|begin|launch|click/i;
+  const deadline = Date.now() + 10000;
+  while (Date.now() < deadline) {
+    for (const el of await page.$$(sel)) {
+      if (!(await el.isVisible().catch(() => false))) continue;
+      const text = (await el.innerText().catch(() => '')) || '';
+      const value = (await el.getAttribute('value').catch(() => '')) || '';
+      const idc = ((await el.getAttribute('id').catch(() => '')) || '') + ' ' + ((await el.getAttribute('class').catch(() => '')) || '');
+      if (wanted.test(text) || wanted.test(value) || wanted.test(idc)) {
+        await el.click().catch(() => {});
+        return `clicked control "${(text || value || idc).trim().slice(0, 40)}"`;
+      }
+    }
+    await sleep(500);
+  }
+  const c = await page.$('canvas');
+  if (c && (await c.isVisible().catch(() => false))) { await c.click().catch(() => {}); return 'no start control found; clicked canvas'; }
+  return 'no start control or visible canvas found';
+}
+
 const server = http.createServer((req, res) => {
   const p = decodeURIComponent(new URL(req.url, 'http://x').pathname);
   if (!p.startsWith(PREFIX)) { res.writeHead(404); return res.end('not found'); }
@@ -54,7 +78,11 @@ const server = http.createServer((req, res) => {
     const wasmOk = wasm.some((w) => w.status === 200 && w.type === 'application/wasm');
     rec('B3', loaded && wasmOk, loaded ? (wasmOk ? 'loaded from /doom/ with application/wasm' : 'page loaded but no wasm 200 with application/wasm') : `page did not load: ${resp && resp.err}`);
 
-    // R1: canvas present and nonblank within 15 s, no console/page errors during boot
+    // Start gesture (see startGame above), then R1.
+    const startNote = await startGame(page);
+    fs.writeFileSync(path.join(evid, 'start_gesture.txt'), startNote + '\n');
+
+    // R1: canvas present and nonblank within 15 s of the start gesture, no console/page errors
     let canvas = null;
     try { canvas = await page.waitForSelector('canvas', { timeout: 15000 }); } catch (e) {}
     let nonblank = false, shot0 = null;
@@ -68,14 +96,14 @@ const server = http.createServer((req, res) => {
       if (shot0) fs.writeFileSync(path.join(evid, 'R1_canvas.png'), shot0);
     }
     rec('R1', !!canvas && nonblank && errors.length === 0,
-      !canvas ? 'no canvas within 15 s' : !nonblank ? 'canvas stayed blank' : errors.length ? `console/page errors: ${errors.slice(0, 3).join(' | ')}` : 'canvas drawn, no errors');
+      !canvas ? 'no canvas within 15 s' : !nonblank ? 'canvas stayed blank' : errors.length ? `console/page errors: ${errors.slice(0, 3).join(' | ')}` : `canvas drawn after start (${startNote}), no errors`);
 
-    // R2: canvas pixels change over ~3 s
+    // R2: canvas pixels change over ~12 s (the title screen is static for about 5 s before the demo starts)
     if (canvas) {
       const hashes = [];
-      for (let i = 0; i < 4; i++) { const s = await canvas.screenshot(); hashes.push(sha(s)); if (i === 3) fs.writeFileSync(path.join(evid, 'R2_canvas_last.png'), s); await sleep(1000); }
+      for (let i = 0; i < 12; i++) { const s = await canvas.screenshot(); hashes.push(sha(s)); if (i === 11) fs.writeFileSync(path.join(evid, 'R2_canvas_last.png'), s); await sleep(1000); }
       const distinct = new Set(hashes).size;
-      rec('R2', distinct > 1, `${distinct} distinct frames in 4 samples over ~3 s`);
+      rec('R2', distinct > 1, `${distinct} distinct frames in 12 samples over ~12 s`);
     } else {
       rec('R2', false, 'no canvas');
     }

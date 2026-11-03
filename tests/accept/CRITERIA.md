@@ -49,14 +49,14 @@ Intended location: `tests/accept/CRITERIA.md` (protected from coder edits).
 ## Gate checks: browser (Playwright)
 
 ### R1 Boots cleanly
-- Pass: zero console errors and zero page errors during boot; the canvas is present and nonblank within [N=15] seconds.
+- Pass: after the start gesture (the check clicks a visible Start/Play control if the page has one, else the canvas), the canvas is present and nonblank within [N=15] seconds, with zero console errors and zero page errors.
 - Evidence: console log, screenshot, timings.
 - Could be fooled by: a page that draws a static image and swallows errors.
 - Does not prove: the engine is running.
 - Fault to inject: stop packaging the WAD. R1 must fail.
 
 ### R2 Not frozen
-- Pass: canvas pixels differ between samples taken across a [3]-second window on the title or attract screen.
+- Pass: after the start gesture, canvas pixels differ between samples taken once per second across a [12]-second window. The Doom title screen is static for about 5 seconds before the demo begins, so a shorter window can false-fail.
 - Evidence: frame hashes with timestamps.
 - Could be fooled by: any animated element, such as a blinking cursor.
 - Does not prove: simulation correctness.
@@ -193,3 +193,4 @@ Baseline tag: _____  Commit: _____  Date: _____
 
 | Date | Check ID | Change | Reason |
 |---|---|---|---|
+| 2026-11-02 | R1, R2 | Checks now perform the start gesture (click a Start/Play control, else the canvas) before sampling; R2 window changed from 3 s to 12 s. Re-tagged as acceptance-v2. | Run attempt 004 found the port gates the game behind a Start click (needed for browser audio), and the original checks sampled the unstarted canvas. The Doom title screen is also static for about 5 s. The agents did not edit the protected check; they reported the mismatch. This is a defect in my check, not in the port. |
