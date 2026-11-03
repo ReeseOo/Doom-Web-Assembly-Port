@@ -131,14 +131,11 @@ const server = http.createServer((req, res) => {
       if (m.type() === 'error' && !String(m.location().url || '').includes('favicon')) errors.push(m.text());
     });
     page.on('pageerror', (e) => errors.push(String(e)));
-    page.on('response', (r) => { if (r.url().endsWith('.wasm')) wasm.push({ status: r.status(), type: r.headers()['content-type'] }); });
+    page.on('response', (r) => { if (r.url().split('?')[0].endsWith('.wasm')) wasm.push({ url: r.url().replace(/^.*\/doom\//, ''), status: r.status(), type: r.headers()['content-type'] }); });
 
     const resp = await page.goto(url, { waitUntil: 'load', timeout: 30000 }).catch((e) => ({ err: String(e) }));
 
-    // B3: page and wasm load under /doom/ with the right MIME type
-    const loaded = resp && !resp.err && resp.status() === 200;
-    const wasmOk = wasm.some((w) => w.status === 200 && w.type === 'application/wasm');
-    rec('B3', loaded && wasmOk, loaded ? (wasmOk ? 'loaded from /doom/ with application/wasm' : 'page loaded but no wasm 200 with application/wasm') : `page did not load: ${resp && resp.err}`);
+    const loaded = resp && !resp.err && resp.status() === 200; // B3 is recorded after the start gesture, below
 
     // Start gesture (see startGame above), then R1.
     const startNote = await startGame(page);
@@ -159,6 +156,13 @@ const server = http.createServer((req, res) => {
     }
     rec('R1', !!canvas && nonblank && errors.length === 0,
       !canvas ? 'no canvas within 15 s' : !nonblank ? 'canvas stayed blank' : errors.length ? `console/page errors: ${errors.slice(0, 3).join(' | ')}` : `canvas drawn after start (${startNote}), no errors`);
+
+    // B3: page loads under /doom/ and the wasm file is served as application/wasm.
+    // Checked after the start gesture, because the port may fetch the wasm only when Start is clicked.
+    const wasmOk = wasm.some((w) => w.status === 200 && w.type === 'application/wasm');
+    rec('B3', loaded && wasmOk, loaded
+      ? (wasmOk ? `loaded from /doom/ with application/wasm (${wasm.map((w) => w.url).join(', ')})` : `page loaded but no wasm 200 with application/wasm; wasm responses seen: ${JSON.stringify(wasm)}`)
+      : `page did not load: ${resp && resp.err}`);
 
     // R2: canvas pixels change over ~12 s (the title screen is static for about 5 s before the demo starts)
     if (canvas) {
@@ -213,9 +217,19 @@ const server = http.createServer((req, res) => {
       await page.evaluate(() => { document.documentElement.style.minHeight = '4000px'; document.body.style.minHeight = '4000px'; window.scrollTo(0, 0); });
       const scrollable = await page.evaluate(() => { window.scrollTo(0, 50); const y = window.scrollY; window.scrollTo(0, 0); return y > 0; });
       await canvas.click({ position: { x: 40, y: 40 } }).catch(() => {});
-      for (const k of ['ArrowDown', 'ArrowUp', 'Space', 'PageDown', 'ArrowRight', 'ArrowLeft']) { await page.keyboard.press(k); await sleep(120); }
-      const y = await page.evaluate(() => window.scrollY);
-      rec('I2', y === 0, scrollable ? `scrollY ${y} after arrows/Space/PageDown on a scrollable page` : `page not scrollable even programmatically, so nothing to prevent (scrollY ${y})`);
+      const scrolled = [];
+      for (const k of ['ArrowDown', 'ArrowUp', 'ArrowRight', 'ArrowLeft', 'Space']) {
+        await page.keyboard.press(k); await sleep(150);
+        const yk = await page.evaluate(() => window.scrollY);
+        if (yk !== 0) { scrolled.push(`${k}=>${yk}`); await page.evaluate(() => window.scrollTo(0, 0)); }
+      }
+      // Informational, not gating: PageDown is not a game control.
+      await page.keyboard.press('PageDown'); await sleep(150);
+      const yPg = await page.evaluate(() => window.scrollY);
+      await page.evaluate(() => window.scrollTo(0, 0));
+      rec('I2', scrolled.length === 0, scrollable
+        ? (scrolled.length ? `page scrolled on: ${scrolled.join(', ')}` : `no scroll on arrows/Space; PageDown (informational) scrollY ${yPg}`)
+        : 'page not scrollable even programmatically, so nothing to prevent');
 
       // A1: sound effects are output. Compare audio level in a trigger window to a baseline just before it.
       const sample = (ms) => page.evaluate(SAMPLER, ms);

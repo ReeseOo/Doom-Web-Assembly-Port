@@ -40,7 +40,7 @@ Intended location: `tests/accept/CRITERIA.md` (protected from coder edits).
 
 ### B3 Serving
 - Measures: the build deploys as static files.
-- Pass: `.wasm` is served as `application/wasm`; the game loads when served from a subpath such as `/doom/`.
+- Pass: `.wasm` is served as `application/wasm`; the game loads when served from a subpath such as `/doom/`. Evaluated after the start gesture, since the port may fetch the wasm only when Start is clicked.
 - Evidence: HTTP response headers, load result.
 - Could be fooled by: testing only at the site root, which hides absolute-path bugs.
 - Does not prove: gameplay.
@@ -78,7 +78,7 @@ Intended location: `tests/accept/CRITERIA.md` (protected from coder edits).
 - Fault to inject: drop the keyup handler. I1 must fail.
 
 ### I2 No page scroll
-- Pass: pressing arrows and Space for the duration of a run leaves `window.scrollY` unchanged.
+- Pass: pressing arrows and Space for the duration of a run leaves `window.scrollY` unchanged. The result names any key that scrolled the page. PageDown is recorded for information only (it is not a game control).
 - Evidence: scroll positions before and after.
 - Could be fooled by: a page too short to scroll. Make the test page scrollable.
 - Fault to inject: remove `preventDefault`. I2 must fail.
@@ -196,3 +196,4 @@ Baseline tag: _____  Commit: _____  Date: _____
 |---|---|---|---|
 | 2026-11-02 | R1, R2 | Checks now perform the start gesture (click a Start/Play control, else the canvas) before sampling; R2 window changed from 3 s to 12 s. Moved the acceptance-v1 tag to the commit containing the fixed checks. | Run attempt 004 found the port gates the game behind a Start click (needed for browser audio), and the original checks sampled the unstarted canvas. The Doom title screen is also static for about 5 s. The agents did not edit the protected check; they reported the mismatch. This is a defect in my check, not in the port. |
 | 2026-11-02 | I1, I2, A1 | Implemented in browser.spec.js. I1 uses holding Left (turning) instead of Up, and blur-release is informational only. A1 compares trigger-window level to baseline at 1.5x plus an absolute floor, instead of 10x. | Needed concrete, testable definitions. Turning cannot be blocked by a wall; music may be audible in the baseline. |
+| 2026-11-02 | B3, I2 | B3 is evaluated after the start gesture. I2 reports per key and gates only on arrows and Space; PageDown is informational. Moved the acceptance-v1 tag again. | First full manual run: the port loads its wasm after Start is clicked, so B3 looked too early. I2 included PageDown, which the criteria never required; per-key reporting keeps real arrow/Space scroll bugs visible. |
