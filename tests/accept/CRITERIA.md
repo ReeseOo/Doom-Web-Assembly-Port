@@ -1,0 +1,195 @@
+# Acceptance criteria: DOOM to WebAssembly port
+
+Status: DRAFT. Not frozen until committed and tagged by the student (see "Freeze procedure").
+Owner: student. Test code may be drafted with AI assistance but is reviewed by the student.
+Intended location: `tests/accept/CRITERIA.md` (protected from coder edits).
+
+## How to read this document
+
+- Every check has an ID. The same ID appears in `results.json` written by `tests/accept/run.sh`.
+- "Gate" checks decide pass/fail through scripts. They are deterministic (or flake-tolerant with a recorded retry count).
+- "Evidence-only" checks (agent-observed) support the write-up but never decide pass/fail.
+- Thresholds below are proposals. After the first real run, record the observed values and tune them, logging every change in the Change log with a reason.
+- Every result must record the git revision and a source digest, plus paths to saved evidence.
+- Each check lists a fault to inject. A check that has never been seen failing on a deliberately broken build is not trusted.
+
+## Environment
+
+- Browser: [CHOOSE ONE and pin version, e.g. Chromium via Playwright 1.56.1 from the supplied Dockerfile]
+- Toolchain: Emscripten 4.0.18 (supplied image)
+- Network during checks: none, except the loopback server serving `dist/`
+- Game data: supplied `assets/doom1.wad` only
+
+## Gate checks: build and integrity (script)
+
+### B1 Clean build
+- Measures: the port builds from a clean checkout.
+- Pass: `bash ./build.sh` exits 0, and `dist/` contains the HTML, JS, Wasm, and data files the build documents.
+- Evidence: command, cwd, start/end time, exit code, stdout/stderr, inventory of `dist/` with digests.
+- Could be fooled by: a `build.sh` that exits 0 without compiling (for example it copies stale files).
+- Does not prove: the game runs.
+- Fault to inject: introduce a C syntax error. B1 must fail.
+
+### B2 Protected inputs unchanged
+- Measures: agents did not alter what they must not alter.
+- Pass: SHA-256 of `assets/doom1.wad` and a tree hash of `third_party/doomgeneric/` match the baseline; `git diff <baseline-tag> -- loop assets third_party tests/accept` is empty.
+- Evidence: baseline tag, hashes, diff output (expected empty).
+- Could be fooled by: an agent editing the baseline tag itself. Mitigation: student verifies the tag outside the agent session.
+- Does not prove: anything about behavior.
+- Fault to inject: change one byte in a third_party file. B2 must fail.
+
+### B3 Serving
+- Measures: the build deploys as static files.
+- Pass: `.wasm` is served as `application/wasm`; the game loads when served from a subpath such as `/doom/`.
+- Evidence: HTTP response headers, load result.
+- Could be fooled by: testing only at the site root, which hides absolute-path bugs.
+- Does not prove: gameplay.
+- Fault to inject: hardcode an absolute asset path. The subpath load must fail.
+
+## Gate checks: browser (Playwright)
+
+### R1 Boots cleanly
+- Pass: zero console errors and zero page errors during boot; the canvas is present and nonblank within [N=15] seconds.
+- Evidence: console log, screenshot, timings.
+- Could be fooled by: a page that draws a static image and swallows errors.
+- Does not prove: the engine is running.
+- Fault to inject: stop packaging the WAD. R1 must fail.
+
+### R2 Not frozen
+- Pass: canvas pixels differ between samples taken across a [3]-second window on the title or attract screen.
+- Evidence: frame hashes with timestamps.
+- Could be fooled by: any animated element, such as a blinking cursor.
+- Does not prove: simulation correctness.
+- Fault to inject: draw the frame once and never again. R2 must fail.
+
+### R3 Colors correct
+- Pass: the title screen (TITLEPIC from the supplied WAD, decoded independently by the test) matches the canvas within a stated per-channel tolerance after scaling.
+- Evidence: reference image, canvas capture, difference metric.
+- Could be fooled by: capturing a moment when the attract mode is showing something else. The test must wait for or navigate to the title screen.
+- Does not prove: in-game rendering is correct.
+- Fault to inject: swap red and blue channels. R3 must fail.
+
+### I1 Keydown and keyup
+- Pass: in a started level with no enemies in view, holding Up changes the 3D view region; after release, the view stops changing within [0.5] s; blurring the window while a key is held releases it.
+- Evidence: frame hashes during hold, after release, and after blur.
+- Could be fooled by: animated sprites or lighting changing the view region. Test in a quiet spot and record the baseline noise.
+- Does not prove: controls feel right.
+- Fault to inject: drop the keyup handler. I1 must fail.
+
+### I2 No page scroll
+- Pass: pressing arrows and Space for the duration of a run leaves `window.scrollY` unchanged.
+- Evidence: scroll positions before and after.
+- Could be fooled by: a page too short to scroll. Make the test page scrollable.
+- Fault to inject: remove `preventDefault`. I2 must fail.
+
+### T1 Responsive
+- Pass: `requestAnimationFrame` averages at least [30] fps over [10] seconds with no single gap over [250] ms.
+- Evidence: frame timing series.
+- Could be fooled by: rAF running while the engine is stalled. Pair with R2 and I1.
+- Does not prove: smooth gameplay.
+- Fault to inject: make `DG_SleepMs` busy-wait. T1 must fail.
+
+### T2 Simulation rate (evidence-only, non-gating)
+- Observation: if a tick counter or demo duration is available, record the rate over [10] seconds against the 35 tics per second target. If none is available, the QA agent notes whether movement speed looks plausible.
+- Evidence: counter readings with timestamps, or the QA observation.
+- Does not prove: correct timing. This is not a gate (see scope decisions).
+
+### G1 Gameplay
+- Pass: start E1M1 from the menu; move, turn, fire (ammo count on the status bar decreases), open a door (view changes through the door position); run at least [60] seconds with no errors.
+- Evidence: frame captures before and after each action, ammo readings, console log.
+- Could be fooled by: scripted inputs that coincidentally change pixels. Each action needs a specific expected effect.
+- Does not prove: all of Episode 1 works.
+- Fault to inject: break fire handling. The ammo assertion must fail.
+
+## Gate check: audio (Playwright)
+
+Audio is in scope and a goal for the MVP. Sound effects are gated. Music is a goal but evidence-only (see scope decisions).
+
+### A1 Sound effects are output
+- Measures: the page produces audible output when the game triggers a sound effect.
+- Pass: after the first user input (browsers require a gesture), an `AudioContext` exists and reaches `running`; and the measured output level during a window containing a known sound trigger (menu navigation, weapon fire) exceeds the level in a preceding silent baseline window by a stated margin ([RMS at least 10x baseline], tune after observing real values).
+- How to measure: before the page loads, inject a script (`page.addInitScript`) that wraps `AudioNode.prototype.connect` so anything connected to `ctx.destination` also feeds an `AnalyserNode`, then sample it. This avoids needing the port to export anything.
+- Evidence: context state, baseline and trigger-window levels with timestamps, the trigger action, console log.
+- Could be fooled by: constant noise or a DC offset, which is why the check compares against a silent baseline and ties the rise to an action. Also by a context that plays one test tone unrelated to the game; run the check with two different triggers.
+- Does not prove: the correct sound plays, sounds are in sync with events, volume or mixing is right, or music works.
+- Fault to inject: disable sound output (or never resume the context). A1 must fail.
+
+## Scope decisions (resolved)
+
+- Audio (A1): in scope and a MVP goal. Sound effects are gated by A1. Music is evidence-only: the QA agent records whether music is audible, but it does not decide pass/fail.
+- Enemy death (G2): evidence-only. The QA agent attempts to kill an enemy and saves before/after screenshots and its action log. It does not gate the pass. Limit: enemy behavior, damage, and level progression are not gated.
+- Simulation rate (T2): evidence-only. It is not required to expose a tick counter. Limit: a wrong game speed is only caught if it also breaks T1, R2, I1, or G1.
+
+Any change to these decisions goes in the change log with a reason.
+
+## Regression demonstration (at least two, after initial success)
+
+Purpose: show the loop detects and repairs faults it was never told about, then verifies the fix.
+Precondition: a revision that passed every gate check, with its PASS evidence and a tag (for example `pass-v1`).
+
+### Protocol
+1. Injector: a teammate or instructor, not the student if at all possible. If you must do it yourself, say so in the write-up. The injector applies the changes to port code only (`platform/`, `web/`, `build.sh`), never to `loop/`, `assets/`, `third_party/`, or `tests/accept/`.
+2. Inject at least two regressions that affect different checks. Make at least one of them subtle enough that you are not sure the checks will catch it. A missed regression is valuable evidence and goes in the write-up.
+3. Disclosure: the repair agents get no description of what was changed. They see only the run state, failing check IDs, and saved evidence from the checks. Use a neutral commit message (for example "update"). Do not mention the injection in any file under `artifacts/` or in prompts.
+4. Sealed record: the injector writes what was changed, where, and which check should catch it into a note kept outside the repo and outside the agent's reach. Store its SHA-256 in the manifest before the run, and reveal the note only after the repair is accepted. This lets you prove the loop did not get hints.
+5. Start a new run ID from the injected revision. Do not hand-edit state to help it.
+6. Budget: [5] attempts per regression. Record tokens or cost where available, wall time, and any manual intervention.
+7. Acceptance of a repair: the full gate suite passes (not only the check that failed), on a new source digest that differs from the injected revision, with B2 still passing and each fix traceable from finding to repair task to verification.
+8. Record the stopping decision for each regression: repaired, budget exhausted, or blocked, with the reason.
+
+### Candidate regressions (pick at least two, keep the rest in reserve)
+
+| ID | Injected fault | Expected detector | Notes |
+|---|---|---|---|
+| X1 | Swap red and blue channels in the framebuffer conversion | R3 | Visible and deterministic. A good first one. |
+| X2 | Remove the keyup handler so keys stick | I1 | Needs the held-key and release assertions to be sharp. |
+| X3 | Make `DG_SleepMs` busy-wait, or block the browser loop | T1, possibly R2 | Tests whether the responsiveness check bites. |
+| X4 | Change the tick rate (for example halve it) | none expected (T2 is evidence-only) | Deliberate missed-fault test. Record whether anything catches it; likely only the QA agent's observation. |
+| X9 | Disable sound output or never resume the audio context | A1 | Tests the audio gate. |
+| X5 | Stop packaging the WAD, or break its virtual path | R1 | Fails at boot. Easy to detect. |
+| X6 | Remove `preventDefault` on arrow keys or Space | I2 | Easy to miss without a scrollable page. |
+| X7 | Break fire handling (fire key mapped to nothing) | G1 | Tests whether the gameplay check asserts specific effects. |
+| X8 | Subtle: wrong color only in one palette range, or a small input delay | none expected | Intentional stretch test. Record whether anything caught it. |
+
+### Results table (fill in as you go)
+
+| Regression | Source revision | Detected by (check IDs) | Attempts | Repair revision | Full suite passed | Manual interventions | Stopping decision |
+|---|---|---|---|---|---|---|---|
+| X? | | | | | | | |
+| X? | | | | | | | |
+
+### What to write up
+- For each regression: how long detection took, what the agents concluded, whether the finding matched the sealed note, and what the repair changed.
+- Any regression the checks missed, and why.
+- Any case where an agent "fixed" it by editing a check or the build script instead of the port. That counts as a failure of the loop even if the suite then passes, and B2 plus the clean-copy run should catch it.
+
+## Evidence-only (agent-observed, non-gating)
+- QA agent screenshots and action log for menu, level start, movement, turning, firing, and doors.
+- G2: the QA agent's enemy-kill attempt (before/after screenshots, action log).
+- T2: simulation rate observation, if available.
+- Music: whether it is audible during play.
+- Reviewer findings from correctness and integration reviews.
+- A visual "looks like original DOOM" impression. There is no numeric threshold for this, and R3 is the only scripted proxy.
+
+## What these checks cannot establish
+- That play feels right (latency, input feel, pacing).
+- That every level, enemy, and weapon behaves like the original.
+- Audio correctness: A1 shows sound effects are output, not that the right sounds play at the right times. Music is not gated.
+- Enemy behavior and level progression (G2 is evidence-only).
+- Correct game speed (T2 is evidence-only).
+- Behavior in other browsers or on other hardware.
+- That the checks catch faults nobody thought to inject.
+
+## Freeze procedure
+1. Read every check and run the suite against a deliberately broken build for each fault listed above.
+2. Commit this file and `tests/accept/` yourself.
+3. Tag the commit (`git tag acceptance-v1`) and record the tag and commit ID below.
+4. Run verification from a clean copy of the tagged checks, not from the working folder.
+5. Re-verify the tag yourself, outside any agent session, before accepting a PASS.
+
+Baseline tag: _____  Commit: _____  Date: _____
+
+## Change log (criteria changes only, with reason)
+
+| Date | Check ID | Change | Reason |
+|---|---|---|---|
