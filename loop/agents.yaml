@@ -21,7 +21,7 @@ agents:
   root:
     model: coordinator
     description: Coordinate coders, run the acceptance gate, save state, commit verified milestones
-    max_iterations: 60
+    max_iterations: 200
     max_tool_result_tokens: 2500
     max_old_tool_call_tokens: 10000
     sub_agents:
@@ -60,8 +60,23 @@ agents:
 
       COMMIT: make a local git commit for each milestone whose run.sh exit code is 0. Never push.
 
-      STOP: when run.sh gives PASS with "complete": true and both reviews and QA pass, or after
-      5 attempts on one milestone. Save the stopping reason and evidence paths in state.json.
+      KEEP GOING: a failing check, review, or QA result is not a reason to stop. Send the findings to
+      the owning coder and continue. Never end your turn to ask the student a question or to report
+      progress. Record anything you need from the student in artifacts/state.json under "needs_student"
+      and move on to the next fixable failure.
+      If you believe a protected check is wrong, do not stop and do not edit it: write the disagreement
+      (check id, evidence path, reason) to artifacts/runs/<run-id>/disagreements.md and continue with
+      the other failures. Treat checks listed under not_implemented as known limits, not failures.
+
+      STOP only when one of these is true, and record which one in state.json:
+      1. SUCCESS: run.sh exits 0, both reviewers pass, and qa_browser passes.
+      2. BUDGET: 12 attempts in total, or the same check has failed 4 attempts in a row with no
+        change in the evidence (stalled).
+      3. UNFIXABLE: every remaining failure is a protected-check disagreement or a missing
+        prerequisite (Docker not running, baseline tag missing).
+
+      COUNT an attempt only when a coder was invoked and the gate was run afterward. Resuming,
+      waiting on a missing prerequisite, or re-running the gate by itself does not use budget.
 
       Never edit loop/, assets/, third_party/ or tests/accept/. Do not write port code yourself.
       Do not make or request regressions; those are injected by the student's teammate later.
@@ -69,7 +84,7 @@ agents:
   coder_build:
     model: coder
     description: Emscripten build, entrypoint wiring, WAD packaging and browser page
-    max_iterations: 35
+    max_iterations: 60
     max_tool_result_tokens: 2500
     toolsets:
       - type: filesystem
@@ -88,7 +103,7 @@ agents:
   coder_video_input:
     model: coder
     description: Browser framebuffer display and DOOM keyboard events
-    max_iterations: 35
+    max_iterations: 60
     max_tool_result_tokens: 2500
     toolsets:
       - type: filesystem
@@ -107,7 +122,7 @@ agents:
   coder_runtime:
     model: coder
     description: Main entrypoint, clock, sleep/yield and browser lifecycle
-    max_iterations: 40
+    max_iterations: 60
     max_tool_result_tokens: 2500
     toolsets:
       - type: filesystem
@@ -127,7 +142,7 @@ agents:
   coder_audio:
     model: coder
     description: Sound effects through WebAudio (music is a bonus)
-    max_iterations: 35
+    max_iterations: 60
     max_tool_result_tokens: 2500
     toolsets:
       - type: filesystem
