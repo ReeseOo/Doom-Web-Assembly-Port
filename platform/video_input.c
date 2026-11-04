@@ -2,6 +2,7 @@
 #include <emscripten.h>
 #include "doomgeneric.h"
 #include "doomkeys.h"
+#include "m_controls.h"
 #include "video_input.h"
 
 #ifdef CMAP256
@@ -9,7 +10,7 @@
 #endif
 
 /* Keep browser state on Module, not in cached views of growable WASM memory. */
-EM_JS(void, video_init, (int width, int height, int fire_key, int use_key), {
+EM_JS(void, video_init, (int width, int height), {
     if (Module.doomVideoInput) return;
     const canvas = Module.canvas || document.getElementById('canvas');
     if (!canvas) throw new Error('Doom canvas missing');
@@ -26,15 +27,14 @@ EM_JS(void, video_init, (int width, int height, int fire_key, int use_key), {
     };
     Module.doomVideoInput = state;
 
-    // Action codes come from supplied doomkeys.h, not PC modifier/ASCII
-    // codes: m_controls.c binds fire/use to KEY_FIRE/KEY_USE.
-    // Letters are lowercase engine bindings.
+    // Emit physical key identities, not gameplay actions. The engine's own
+    // bindings below select actions; menus/save names still receive characters.
     const keys = {
         ArrowRight: 0xae, ArrowLeft: 0xac, ArrowUp: 0xad, ArrowDown: 0xaf,
         Escape: 27, Enter: 13, NumpadEnter: 13, Tab: 9, Backspace: 127,
-        ControlLeft: fire_key, ControlRight: fire_key,
+        ControlLeft: 0x9d, ControlRight: 0x9d,
         ShiftLeft: 0xb6, ShiftRight: 0xb6, AltLeft: 0xb8, AltRight: 0xb8,
-        Space: use_key, Minus: 45, Equal: 61, Comma: 44, Period: 46,
+        Space: 32, Minus: 45, Equal: 61, Comma: 44, Period: 46,
         Slash: 47, BracketLeft: 91, BracketRight: 93, Pause: 255,
         F1: 0xbb, F2: 0xbc, F3: 0xbd, F4: 0xbe, F5: 0xbf, F6: 0xc0,
         F7: 0xc1, F8: 0xc2, F9: 0xc3, F10: 0xc4, F11: 0xd7, F12: 0xd8
@@ -131,9 +131,23 @@ EM_JS(void, video_title, (const char *title), {
     if (title) document.title = UTF8ToString(title);
 });
 
+static void bind_controls(void)
+{
+    key_up = 'w';
+    key_down = 's';
+    key_strafeleft = 'a';
+    key_straferight = 'd';
+    key_fire = ' ';
+    key_use = 'e';
+    key_left = KEY_LEFTARROW;
+    key_right = KEY_RIGHTARROW;
+    key_speed = KEY_RSHIFT;
+}
+
 void DG_Init(void)
 {
-    video_init(DOOMGENERIC_RESX, DOOMGENERIC_RESY, KEY_FIRE, KEY_USE);
+    bind_controls();
+    video_init(DOOMGENERIC_RESX, DOOMGENERIC_RESY);
 }
 
 void DG_DrawFrame(void)
@@ -143,6 +157,9 @@ void DG_DrawFrame(void)
 
 int DG_GetKey(int *pressed, unsigned char *key)
 {
+    // D_DoomMain loads persisted config after DG_Init. Reassert the port's
+    // controls contract before input is consumed, including for older profiles.
+    bind_controls();
     if (!pressed || !key) return 0;
     return video_get_key(pressed, key);
 }

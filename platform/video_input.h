@@ -2,8 +2,9 @@
 #define PLATFORM_VIDEO_INPUT_H
 
 /* Canvas 2D and keyboard backend. Uses Module.canvas (#canvas fallback).
- * Controls: arrows move/turn, Ctrl fire, Space use, Shift run, Alt strafe;
- * Enter/Escape menus, Tab map, digits weapons, F1-F12 engine shortcuts.
+ * Controls: W/S forward/back, A/D strafe, Left/Right turn, Space fire,
+ * E use, Shift run; Up/Down/Enter/Escape menus, Tab map, digits weapons,
+ * F1-F12 engine shortcuts. Letters remain ordinary save-name characters.
  * Click canvas to focus; blur/hidden document releases all held keys.
  * Runtime owns main, DG_SleepMs and DG_GetTicksMs. No exported JS API needed.
  */
