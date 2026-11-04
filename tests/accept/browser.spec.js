@@ -355,7 +355,7 @@ const server = http.createServer((req, res) => {
       const scrollable = await page.evaluate(() => { window.scrollTo(0, 50); const y = window.scrollY; window.scrollTo(0, 0); return y > 0; });
       await canvas.click({ position: { x: 40, y: 40 } }).catch(() => {});
       const scrolled = [];
-      for (const k of ['ArrowDown', 'ArrowUp', 'ArrowRight', 'ArrowLeft', 'Space']) {
+      for (const k of ['ArrowDown', 'ArrowUp', 'ArrowRight', 'ArrowLeft', 'Space', 'w', 'a', 's', 'd', 'e']) {
         await page.keyboard.press(k); await sleep(150);
         const yk = await page.evaluate(() => window.scrollY);
         if (yk !== 0) { scrolled.push(`${k}=>${yk}`); await page.evaluate(() => window.scrollTo(0, 0)); }
@@ -374,7 +374,7 @@ const server = http.createServer((req, res) => {
       const baseFire = await sample(1500);
       const pf = sample(2500);
       await sleep(300);
-      for (let i = 0; i < 3; i++) { await page.keyboard.down('Control'); await sleep(120); await page.keyboard.up('Control'); await sleep(500); }
+      for (let i = 0; i < 3; i++) { await page.keyboard.down('Space'); await sleep(120); await page.keyboard.up('Space'); await sleep(500); }
       const fire = await pf;
       await sleep(1000);
       const baseMenu = await sample(1500);
@@ -403,27 +403,31 @@ const server = http.createServer((req, res) => {
         const ammoStable = ammoA === ammoB;
 
         const idleG = distinct(await viewHashes(page, canvas, 4, 150));
-        await page.keyboard.down('ArrowUp'); await sleep(300);
+        await page.keyboard.down('w'); await sleep(300);
         const mvFwd = distinct(await viewHashes(page, canvas, 6, 150));
-        await page.keyboard.up('ArrowUp'); await sleep(300);
-        await page.keyboard.down('ArrowDown'); await sleep(300);
+        await page.keyboard.up('w'); await sleep(300);
+        await page.keyboard.down('s'); await sleep(300);
         const mvBack = distinct(await viewHashes(page, canvas, 6, 150));
-        await page.keyboard.up('ArrowDown'); await sleep(500);
+        await page.keyboard.up('s'); await sleep(500);
+        await page.keyboard.down('d'); await sleep(300);
+        const mvStrafe = distinct(await viewHashes(page, canvas, 6, 150));
+        await page.keyboard.up('d'); await sleep(500);
         const moved = Math.max(mvFwd, mvBack) >= Math.max(3, idleG + 1);
+        const strafed = mvStrafe >= Math.max(3, idleG + 1);
 
         const ammoBeforeShot = await ammoShot(page, canvas);
         save('G1_ammo_before.png', ammoBeforeShot);
-        for (let i = 0; i < 3; i++) { await page.keyboard.down('Control'); await sleep(120); await page.keyboard.up('Control'); await sleep(500); }
+        for (let i = 0; i < 3; i++) { await page.keyboard.down('Space'); await sleep(120); await page.keyboard.up('Space'); await sleep(500); }
         await sleep(500);
         const ammoAfterShot = await ammoShot(page, canvas);
         save('G1_ammo_after.png', ammoAfterShot);
         const fired = sha(ammoBeforeShot) !== sha(ammoAfterShot);
 
-        // Door attempt: walk forward pressing Space. Evidence only.
+        // Door attempt: walk forward with W while pressing E (use). Evidence only.
         save('G1_door_before.png', await viewShot(page, canvas));
-        await page.keyboard.down('ArrowUp');
-        for (let i = 0; i < 8; i++) { await page.keyboard.press('Space'); await sleep(250); }
-        await page.keyboard.up('ArrowUp');
+        await page.keyboard.down('w');
+        for (let i = 0; i < 8; i++) { await page.keyboard.press('e'); await sleep(250); }
+        await page.keyboard.up('w');
         await sleep(500);
         save('G1_door_after.png', await viewShot(page, canvas));
 
@@ -431,8 +435,8 @@ const server = http.createServer((req, res) => {
         if (elapsed < 60) await sleep((60 - elapsed) * 1000 + 500);
         const newErrors = errors.slice(errStart);
         const total = (Date.now() - levelStart) / 1000;
-        rec('G1', ammoStable && moved && fired && newErrors.length === 0 && total >= 60,
-          `ammo region stable while idle: ${ammoStable}; view changed while moving: ${moved} (idle ${idleG}, forward ${mvFwd}, back ${mvBack}); ammo number changed after 3 shots: ${fired}; ${total.toFixed(0)} s of play, ${newErrors.length} new errors${newErrors.length ? ': ' + newErrors.slice(0, 2).join(' | ') : ''}; door attempt screenshots saved (informational)`);
+        rec('G1', ammoStable && moved && strafed && fired && newErrors.length === 0 && total >= 60,
+          `ammo region stable while idle: ${ammoStable}; view changed while moving with W/S: ${moved} (idle ${idleG}, forward ${mvFwd}, back ${mvBack}); while strafing with D: ${strafed} (${mvStrafe}); ammo number changed after 3 shots: ${fired}; ${total.toFixed(0)} s of play, ${newErrors.length} new errors${newErrors.length ? ': ' + newErrors.slice(0, 2).join(' | ') : ''}; door attempt screenshots saved (informational)`);
       });
 
       // M1: music. Idle in the level, audio should be continuously audible with no input.

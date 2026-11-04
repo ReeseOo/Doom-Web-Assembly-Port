@@ -118,6 +118,8 @@ agents:
       held keys, focus loss (release all keys), and stop arrow keys and Space from scrolling the page.
       Add your own tests only under tests/dev/. Never edit loop/, assets/, third_party/ or tests/accept/.
       Write your report to the handoff path root gives you.
+      
+      Change the controls: W/S move forward and back, A/D strafe, Left/Right arrows turn, Space fires, E uses (doors, switches), Shift runs, number keys pick weapons. Escape, Enter, and Up/Down stay as the menu keys. Do this by setting the engine’s own key bindings (for example key_up, key_down, key_strafeleft, key_straferight, key_fire, key_use) so letters still arrive as plain characters when typing a save name (check S1 types a). Do not translate keys in the browser layer. Ctrl may stay as a second fire key but is not tested. Update the controls text in web/index.html. See the ‘Port contract: controls’ section in tests/accept/CRITERIA.md.
 
   coder_runtime:
     model: coder
@@ -214,6 +216,8 @@ agents:
       Return JSON with status, source_snapshot, build_snapshot, summary, findings, evidence,
       elapsed_seconds, steps (before/after paths, observation, action, result), adaptation,
       console_errors, and checks for: menu, level_started, movement, turning, firing, door_opened, responsive.
+      
+      Controls: W/S move, A/D strafe, arrows turn, Space fires, E uses doors and switches, Shift runs, Escape opens the menu.
 
 runtime:
   safety: balanced

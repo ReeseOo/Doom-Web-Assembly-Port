@@ -20,6 +20,25 @@ Intended location: `tests/accept/CRITERIA.md` (protected from coder edits).
 - Network during checks: none, except the loopback server serving `dist/`
 - Game data: supplied `assets/doom1.wad` only
 
+## Port contract: controls
+
+The checks press exactly these keys, so the port must support them. Changing a binding means changing the checks first, with a change-log entry.
+
+| Action | Key |
+|---|---|
+| Move forward / back | W / S |
+| Strafe left / right | A / D |
+| Turn left / right | Left / Right arrows |
+| Fire | Space |
+| Use (open doors, switches) | E |
+| Run | Shift (held) |
+| Weapons | 1 to 7 |
+| Menu open, back | Escape |
+| Menu select, navigate | Enter, Up/Down arrows (unchanged Doom menu keys) |
+| Type a save name | letters arrive as ordinary characters (S1 types `a`) |
+
+Ctrl is no longer required as a fire key. The port may keep it, but no check tests it.
+
 ## Gate checks: build and integrity (script)
 
 ### B1 Clean build
@@ -78,7 +97,7 @@ Intended location: `tests/accept/CRITERIA.md` (protected from coder edits).
 - Fault to inject: drop the keyup handler. I1 must fail.
 
 ### I2 No page scroll
-- Pass: pressing arrows and Space for the duration of a run leaves `window.scrollY` unchanged. The result names any key that scrolled the page. PageDown is recorded for information only (it is not a game control).
+- Pass: pressing the arrows, Space, W, A, S, D, and E during a run leaves `window.scrollY` unchanged. The result names any key that scrolled the page. PageDown is recorded for information only (it is not a game control).
 - Evidence: scroll positions before and after.
 - Could be fooled by: a page too short to scroll. Make the test page scrollable.
 - Fault to inject: remove `preventDefault`. I2 must fail.
@@ -96,8 +115,8 @@ Intended location: `tests/accept/CRITERIA.md` (protected from coder edits).
 - Does not prove: correct timing. This is not a gate (see scope decisions).
 
 ### G1 Gameplay
-- Pass: start E1M1 from the menu; the status-bar ammo number is stable while idle; the view changes while moving forward or back; the ammo number region changes after 3 pistol shots; at least [60] seconds of play pass with no new console or page errors. Turning is covered by I1.
-- Not gating: opening a door. A route to a door cannot be verified without a real run, so the check walks forward pressing Space and saves before/after screenshots only.
+- Pass: start E1M1 from the menu; the status-bar ammo number is stable while idle; the view changes while moving with W or S and while strafing with D; the ammo number region changes after 3 pistol shots fired with Space; at least [60] seconds of play pass with no new console or page errors. Turning is covered by I1.
+- Not gating: opening a door. A route to a door cannot be verified without a real run, so the check walks forward with W while pressing E (use) and saves before/after screenshots only.
 - Evidence: view-frame counts, before/after images of the ammo region, door screenshots, console log.
 - Could be fooled by: scripted inputs that coincidentally change pixels. Each action needs a specific expected effect.
 - Does not prove: all of Episode 1 works.
@@ -109,7 +128,7 @@ Audio is in scope and a goal for the MVP. Sound effects are gated. Music is a go
 
 ### A1 Sound effects are output
 - Measures: the page produces audible output when the game triggers a sound effect.
-- Pass: after the first user input (browsers require a gesture), an `AudioContext` exists and reaches `running`; and for each of two triggers (firing the weapon with Ctrl, and moving through the menu with Escape/Down/Up) the peak output RMS in the trigger window is at least [0.003] and at least [1.5x] the peak in a baseline window just before it (or the baseline is below [0.0005], or the trigger peak exceeds the baseline peak by at least [0.01] absolute, which matters once music is playing). The ratio is 1.5x, not 10x, because music may already be playing in the baseline. Tune after observing real values.
+- Pass: after the first user input (browsers require a gesture), an `AudioContext` exists and reaches `running`; and for each of two triggers (firing the weapon with Space, and moving through the menu with Escape/Down/Up) the peak output RMS in the trigger window is at least [0.003] and at least [1.5x] the peak in a baseline window just before it (or the baseline is below [0.0005], or the trigger peak exceeds the baseline peak by at least [0.01] absolute, which matters once music is playing). The ratio is 1.5x, not 10x, because music may already be playing in the baseline. Tune after observing real values.
 - How to measure: before the page loads, inject a script (`page.addInitScript`) that wraps `AudioNode.prototype.connect` so anything connected to `ctx.destination` also feeds an `AnalyserNode`, then sample it. This avoids needing the port to export anything.
 - Evidence: context state, baseline and trigger-window levels with timestamps, the trigger action, console log.
 - Could be fooled by: constant noise or a DC offset, which is why the check compares against a silent baseline and ties the rise to an action. Also by a context that plays one test tone unrelated to the game; run the check with two different triggers.
@@ -224,4 +243,5 @@ Baseline tag: _____  Commit: _____  Date: _____
 | 2026-11-02 | R1, R2 | Checks now perform the start gesture (click a Start/Play control, else the canvas) before sampling; R2 window changed from 3 s to 12 s. Moved the acceptance-v1 tag to the commit containing the fixed checks. | Run attempt 004 found the port gates the game behind a Start click (needed for browser audio), and the original checks sampled the unstarted canvas. The Doom title screen is also static for about 5 s. The agents did not edit the protected check; they reported the mismatch. This is a defect in my check, not in the port. |
 | 2026-11-02 | I1, I2, A1 | Implemented in browser.spec.js. I1 uses holding Left (turning) instead of Up, and blur-release is informational only. A1 compares trigger-window level to baseline at 1.5x plus an absolute floor, instead of 10x. | Needed concrete, testable definitions. Turning cannot be blocked by a wall; music may be audible in the baseline. |
 | 2026-11-02 | R3, G1, M1, S1 | Implemented R3 and G1. Added M1 (music, gated) and S1 (saved games persist across reload, gated). G1 no longer gates door opening (screenshots only). A1 also passes if the trigger peak exceeds the baseline by 0.01 absolute. | The student asked for these to be in scope and tested. A door route cannot be verified without a real run. With music playing, the 1.5x ratio alone could false-fail A1. |
+| 2026-11-03 | I2, A1, G1 | Control scheme changed: W/S move, A/D strafe, Space fire, E use; arrows remain for turning and menus. G1 now also requires strafing to change the view; G1's door attempt uses E; A1 fires with Space; I2 also checks W, A, S, D, E for page scroll. Added the "Port contract: controls" section. | Student wants a more intuitive layout, and Ctrl plus arrow keys triggers macOS desktop-switching shortcuts. Space and E replace Ctrl and Space. Menu keys stay unchanged because Doom's menus need them. |
 | 2026-11-02 | B3, I2 | B3 is evaluated after the start gesture. I2 reports per key and gates only on arrows and Space; PageDown is informational. Moved the acceptance-v1 tag again. | First full manual run: the port loads its wasm after Start is clicked, so B3 looked too early. I2 included PageDown, which the criteria never required; per-key reporting keeps real arrow/Space scroll bugs visible. |
