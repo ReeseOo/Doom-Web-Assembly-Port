@@ -2,7 +2,9 @@
 #define PLATFORM_AUDIO_H
 
 /* Music is supplied through DG_music_module (MUS -> synthesized WebAudio
- * buffers). No additional runtime calls or build dependencies are required.
+ * buffers, synthesized off-thread in an embedded Blob Web Worker). No additional
+ * runtime calls or build dependencies are required. Browser CSP must permit
+ * worker-src blob:. Replacing/stopping a score cancels pending synthesis.
  * Effects and music share the gesture-unlocked AudioContext. */
 
 /* Idempotent: install browser gesture handlers. Also called by sound Init. */

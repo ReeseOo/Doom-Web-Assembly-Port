@@ -7,12 +7,24 @@
   <link rel="icon" href="data:,">
   <style>
     html, body { margin: 0; min-height: 100%; background: #101010; color: #eee; font-family: system-ui, sans-serif; }
-    main { max-width: 960px; margin: auto; padding: 1rem; text-align: center; }
-    canvas { display: block; margin: 1rem auto; width: 100%; max-width: 960px; height: auto; background: #000; image-rendering: pixelated; }
+    * { box-sizing: border-box; }
+    main { max-width: 992px; margin: auto; padding: 12px 16px; text-align: center; }
+    h1 { font-size: 1.5rem; line-height: 1.2; margin: 0 0 8px; }
+    p { font-size: .875rem; line-height: 1.4; margin: 8px 0; }
+    /* Budget for the heading, controls and help as well as the *whole* 8:5
+       framebuffer, including Doom's HUD. Width-only scaling hides the HUD on
+       ordinary laptop viewports. The minimum keeps short screens usable;
+       their help remains reachable by normal document scrolling. */
+    canvas { display: block; margin: 10px auto; width: min(100%, 960px, calc(max(160px, 100vh - 280px) * 1.6)); height: auto; aspect-ratio: 8 / 5; background: #000; image-rendering: pixelated; }
+    @supports (height: 100svh) {
+      canvas { width: min(100%, 960px, calc(max(160px, 100svh - 280px) * 1.6)); }
+    }
+    canvas:fullscreen { width: 100%; height: 100%; object-fit: contain; }
     canvas:focus { outline: 2px solid #e5b85c; }
     button { font: inherit; padding: .5rem 1rem; }
     #status { min-height: 1.5em; }
     #error { color: #ff9c9c; white-space: pre-wrap; }
+    #error:empty { display: none; }
   </style>
 </head>
 <body>
@@ -65,9 +77,12 @@
       // A disabled button also has a state guard for synthetic/repeated clicks.
       if (statusLine.dataset.state !== 'ready') return;
       startButton.disabled = true;
-      gameCanvas.focus();
       statusLine.dataset.state = 'running';
       statusLine.textContent = 'Running Doom. Title/demo is normal; press Escape for the menu, then choose New Game.';
+      // Finalize the status layout before focusing, so the browser reveals the
+      // complete game rather than scrolling to its old pre-start position.
+      gameCanvas.focus({ preventScroll: true });
+      gameCanvas.scrollIntoView({ block: 'nearest', inline: 'nearest' });
       // Do not await the lifetime of the engine's Asyncify continuation.
       // "running" means startup was requested, not proof of rendered gameplay.
       try { Module.callMain(Module.arguments.slice()); }

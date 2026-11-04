@@ -185,7 +185,7 @@ sound_module_t DG_sound_module = {
 };
 
 /* Decode the supplied MUS score, not a substitute tune. Render on demand at
- * 22050 Hz into a looping WebAudio buffer: playback then uses the audio clock,
+ * 22050 Hz in a cancellable worker into a looping WebAudio buffer. Playback uses the audio clock,
  * independently of engine tics, browser timer throttling and screen wipes.
  * This is a small GM-family synthesizer, not an OPL/GENMIDI emulator. */
 EM_JS(void, MusicInstall, (void), {
@@ -317,16 +317,73 @@ EM_JS(void, MusicInstall, (void), {
         for (var i = 0; i < frames; ++i) pcm[i] = pcm[i] / (1 + Math.abs(pcm[i]));
         return pcm;
     };
+    // Only the worker executes the sample loop. Its function has no closure
+    // dependencies: serializing it keeps the worker embedded in this owned TU.
+    // One active job, no queue: replacing/stopping/unregistering terminates it
+    // immediately, releasing its intermediate PCM and decoded event copy.
+    m.cancel = function() {
+        var job = m.job;
+        m.job = null;
+        if (job) { job.worker.terminate(); URL.revokeObjectURL(job.url); }
+    };
+    m.prepare = function(song) {
+        if (m.job || song.failed) return;
+        var url, worker;
+        try {
+            var code = 'var render = ' + m.render.toString() + ';' +
+                'onmessage = function(e) { try { var pcm = render(e.data);' +
+                'postMessage({pcm: pcm}, [pcm.buffer]);' +
+                '} catch(e) { postMessage({error: String(e)}); } };';
+            url = URL.createObjectURL(new Blob([code], {type: 'text/javascript'}));
+            worker = new Worker(url);
+            var job = m.job = {worker: worker, url: url, song: song};
+            function fail(error) {
+                if (m.job !== job) return;
+                song.failed = true;
+                m.cancel();
+                console.warn('Doom music worker failed:', error);
+            }
+            worker.onerror = function(e) { fail(e.message); };
+            worker.onmessage = function(e) {
+                if (m.job !== job) return;
+                m.cancel();
+                if (m.current !== song) return;
+                if (e.data.error) {
+                    song.failed = true;
+                    console.warn('Doom music render failed:', e.data.error);
+                    return;
+                }
+                try {
+                    // Transferred PCM is owned here, never a view of WASM/WAD
+                    // storage. AudioBuffer copies it; the temporary is then GC'd.
+                    var pcm = e.data.pcm;
+                    song.buffer = a.ctx.createBuffer(1, pcm.length, 22050);
+                    song.buffer.getChannelData(0).set(pcm);
+                    m.kick();
+                } catch (error) {
+                    song.failed = true;
+                    console.warn('Doom music buffer failed:', error);
+                }
+            };
+            worker.postMessage({events: song.events, duration: song.duration});
+        } catch (error) {
+            song.failed = true;
+            if (worker) worker.terminate();
+            if (url) URL.revokeObjectURL(url);
+            m.job = null;
+            console.warn('Doom music worker unavailable:', error);
+        }
+    };
     m.halt = function() {
+        m.cancel();
         if (m.source) { m.source.onended = null; m.source.stop(); m.source.disconnect(); m.source = null; }
     };
     m.kick = function() {
         if (!a.ctx || !m.current || m.paused || m.source) return;
         var song = m.current;
         if (!song.buffer) {
-            var pcm = m.render(song);
-            song.buffer = a.ctx.createBuffer(1, pcm.length, 22050);
-            song.buffer.getChannelData(0).set(pcm);
+            m.prepare(song);
+            return;
         }
         if (!m.gain) { m.gain = a.ctx.createGain(); m.gain.connect(a.master); }
         m.gain.gain.value = m.volume;

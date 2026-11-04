@@ -16,10 +16,27 @@ class Context {
   createGain() {return new Node();} createBufferSource() {return new Node();}
   createBuffer(c, n, r) {const pcm = new Float32Array(n); return {duration:n/r, getChannelData:() => pcm};}
 }
-const events = {}, sandbox = vm.createContext({console, Module: {}, window: {
+const urls = new Map(); let nextURL = 0;
+class Blob { constructor(parts) {this.code=parts.join('');} }
+const URL = {createObjectURL(blob) {const id=String(++nextURL);urls.set(id,blob.code);return id;}, revokeObjectURL(id) {urls.delete(id);}};
+class Worker {
+  constructor(url) {this.code=urls.get(url);}
+  terminate() {this.dead=true;}
+  postMessage(song) {
+    setImmediate(()=>{
+      if(this.dead)return;
+      const self=this;
+      const ctx=vm.createContext({console,postMessage(data){if(!self.dead)self.onmessage({data});}});
+      vm.runInContext(this.code,ctx);
+      ctx.onmessage({data:song});
+    });
+  }
+}
+const events = {}, sandbox = vm.createContext({console, Blob, URL, Worker, Module: {}, window: {
   AudioContext: Context, addEventListener(k, f) {events[k] = f;}
 }});
 function call(k, ...args) {const f = funcs[k]; return vm.runInContext(`(function(${f.args}) {${f.body}\n})`, sandbox)(...args);}
+(async()=>{
 call('AudioInstall'); call('MusicInstall'); const a = sandbox.Module.doomAudio, m = a.music;
 const wad = fs.readFileSync(path.join(root,'assets/doom1.wad'));
 let total = 0, first;
@@ -47,7 +64,8 @@ assert.equal(total,13);
 call('MusicCommand',5,first); call('MusicCommand',6,1);
 assert.equal(m.source,null); assert.ok(m.current); // queued before first gesture
 const start = performance.now(); events.keydown();
-assert.equal(a.ctx.state,'running'); assert.ok(m.source.loop);
+assert.equal(a.ctx.state,'running'); assert.ok(m.job); assert.equal(m.source,null);
+await new Promise(setImmediate); assert.ok(m.source.loop); assert.equal(urls.size,0);
 assert.equal(m.source.output,m.gain); assert.equal(m.gain.output,a.master);
 call('MusicCommand',1,63); assert.equal(m.gain.gain.value,63/127);
 a.ctx.currentTime=4; call('MusicCommand',2,0); assert.equal(m.offset,4); assert.equal(m.source,null);
@@ -59,3 +77,5 @@ call('MusicCommand',5,first); call('MusicCommand',6,1); call('MusicCommand',4,fi
 assert.equal(m.current,null); assert.equal(m.source,null); assert.equal(m.songs.has(first),false);
 assert.throws(()=>m.decode(Uint8Array.from([77,85,83,26])));
 console.log(`PASS: ${total} supplied MUS scores, graph, first-gesture queue, volume, pause/resume, replacement, end, unregister; first render ${(performance.now()-start).toFixed(0)}ms`);
+
+})().catch(e=>{console.error(e);process.exitCode=1;});
