@@ -55,7 +55,7 @@ fi
 # ---- Browser checks (B3 R1 R2 T1), run in the supplied container from a clean copy of the checks ----
 BROWSER_JSON="$OUT/browser_results.json"
 rm -f "$BROWSER_JSON"
-BROWSER_IDS="B3 R1 R2 T1 I1 I2 A1"
+BROWSER_IDS="B3 R1 R2 R3 T1 I1 I2 A1 G1 M1 S1"
 if [ ! -f dist/index.html ]; then
   for id in $BROWSER_IDS; do record $id fail "no dist/index.html"; done
 elif ! command -v docker >/dev/null || ! docker image inspect "$IMAGE" >/dev/null 2>&1; then
@@ -68,9 +68,10 @@ else
   ABS_OUT="$(cd "$OUT" && pwd)"
   docker run --rm --network none \
     -v "$PWD/dist":/site:ro \
+    -v "$PWD/assets":/assets:ro \
     -v "$TMP/tests/accept":/checks:ro \
     -v "$ABS_OUT":/evidence \
-    "$IMAGE" node /checks/browser.spec.js /site /evidence > "$OUT/browser_stdout.log" 2>&1
+    "$IMAGE" node /checks/browser.spec.js /site /evidence /assets/doom1.wad > "$OUT/browser_stdout.log" 2>&1
   rm -rf "$TMP"
   if [ ! -f "$BROWSER_JSON" ]; then
     for id in $BROWSER_IDS; do record $id fail "browser run produced no results (see browser_stdout.log)"; done
@@ -90,7 +91,7 @@ if os.path.exists(bjson):
     for c in json.load(open(bjson)):
         checks.append(c)
 implemented = {c["id"] for c in checks}
-planned = ["B1","B2","B3","R1","R2","R3","I1","I2","T1","G1","A1"]
+planned = ["B1","B2","B3","R1","R2","R3","I1","I2","T1","G1","A1","M1","S1"]
 not_impl = [i for i in planned if i not in implemented]
 ok = all(c["status"] == "pass" for c in checks)
 res = {
