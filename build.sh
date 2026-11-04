@@ -12,7 +12,7 @@ esac
 [[ -s assets/doom1.wad ]] || { echo 'error: assets/doom1.wad is missing' >&2; exit 1; }
 mkdir -p build dist
 # Remove stale deliverables before compiling; failed builds must not look usable.
-rm -f dist/index.html dist/doom.js dist/doom.wasm dist/doom.data
+rm -f dist/index.html dist/doom.js dist/doom.wasm dist/doom.data dist/persistence.js
 
 # The sound-enabled engine includes SDL_mixer.h but uses no SDL mixer API.
 # Keep this compatibility shim generated, without changing supplied sources.
@@ -45,10 +45,11 @@ sources+=(platform/*.c)
   -O2 -g2 -std=gnu11 -Werror=implicit-function-declaration \
   -sASSERTIONS=1 -sALLOW_MEMORY_GROWTH=1 -sSTACK_SIZE=1048576 \
   -sASYNCIFY=1 -sASYNCIFY_STACK_SIZE=131072 \
-  -sFORCE_FILESYSTEM=1 -sENVIRONMENT=web -sEXIT_RUNTIME=0 \
+  -sFORCE_FILESYSTEM=1 -sFS_DEBUG=1 -lidbfs.js -sENVIRONMENT=web -sEXIT_RUNTIME=0 \
   -sEXPORTED_FUNCTIONS='["_main"]' \
-  -sEXPORTED_RUNTIME_METHODS='["callMain","FS"]' \
+  -sEXPORTED_RUNTIME_METHODS='["callMain","FS","IDBFS"]' \
   --preload-file assets/doom1.wad@/doom1.wad \
   -lm -o dist/doom.js
+cp web/persistence.js dist/persistence.js
 cp web/index.html dist/index.html
 printf '%s\n' 'Built dist/index.html, dist/doom.js, dist/doom.wasm, dist/doom.data'

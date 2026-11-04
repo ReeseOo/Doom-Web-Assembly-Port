@@ -23,10 +23,12 @@
     <button id="fullscreen" type="button">Fullscreen</button>
     <canvas id="canvas" width="640" height="400" tabindex="0" aria-label="Doom game screen"></canvas>
     <p>Click the game to focus. Arrows: move/turn · Ctrl: fire · Space: use · Shift: run · Enter/Escape: menus.</p>
-    <p>Keyboard play. WAD sound effects are enabled and unlock after a keypress or click. Music and persistent saves are not implemented.</p>
+    <p>Keyboard play. WAD sound effects are enabled and unlock after a keypress or click. Use Doom’s Save Game / Load Game menus; saves persist in this browser on this site. Clearing site data removes them.</p>
+    <p id="save-status" role="status" aria-live="polite">Preparing browser save storage…</p>
     <p id="error" role="alert"></p>
     <noscript>JavaScript and WebAssembly are required to play.</noscript>
   </main>
+  <script src="persistence.js"></script>
   <script>
     'use strict';
     const gameCanvas = document.getElementById('canvas');
@@ -48,9 +50,15 @@
       onAbort: showFailure,
       onRuntimeInitialized: function () {
         if (statusLine.dataset.state === 'error') return;
-        statusLine.textContent = 'Ready. Press Start Doom, then use the keyboard.';
-        statusLine.dataset.state = 'ready';
-        startButton.disabled = false;
+        Module.persistence = DoomPersistence(Module, document.getElementById('save-status'));
+        Module.persistence.restore().then(function () {
+          if (statusLine.dataset.state === 'error') return;
+          statusLine.textContent = 'Ready. Press Start Doom, then use the keyboard.';
+          statusLine.dataset.state = 'ready';
+          startButton.disabled = false;
+        }).catch(function (error) {
+          showFailure('Could not restore browser saves: ' + error);
+        });
       }
     };
     startButton.addEventListener('click', function () {
