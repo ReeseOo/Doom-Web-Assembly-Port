@@ -1,0 +1,161 @@
+diff --git a/loop/agents.yaml b/loop/agents.yaml
+index 245344b..9baba97 100644
+--- a/loop/agents.yaml
++++ b/loop/agents.yaml
+@@ -118,6 +118,8 @@ agents:
+       held keys, focus loss (release all keys), and stop arrow keys and Space from scrolling the page.
+       Add your own tests only under tests/dev/. Never edit loop/, assets/, third_party/ or tests/accept/.
+       Write your report to the handoff path root gives you.
++      
++      Change the controls: W/S move forward and back, A/D strafe, Left/Right arrows turn, Space fires, E uses (doors, switches), Shift runs, number keys pick weapons. Escape, Enter, and Up/Down stay as the menu keys. Do this by setting the engine’s own key bindings (for example key_up, key_down, key_strafeleft, key_straferight, key_fire, key_use) so letters still arrive as plain characters when typing a save name (check S1 types a). Do not translate keys in the browser layer. Ctrl may stay as a second fire key but is not tested. Update the controls text in web/index.html. See the ‘Port contract: controls’ section in tests/accept/CRITERIA.md.
+ 
+   coder_runtime:
+     model: coder
+@@ -214,6 +216,8 @@ agents:
+       Return JSON with status, source_snapshot, build_snapshot, summary, findings, evidence,
+       elapsed_seconds, steps (before/after paths, observation, action, result), adaptation,
+       console_errors, and checks for: menu, level_started, movement, turning, firing, door_opened, responsive.
++      
++      Controls: W/S move, A/D strafe, arrows turn, Space fires, E uses doors and switches, Shift runs, Escape opens the menu.
+ 
+ runtime:
+   safety: balanced
+diff --git a/tests/accept/CRITERIA.md b/tests/accept/CRITERIA.md
+index 8e1ba6c..da0f7ef 100644
+--- a/tests/accept/CRITERIA.md
++++ b/tests/accept/CRITERIA.md
+@@ -20,6 +20,25 @@ Intended location: `tests/accept/CRITERIA.md` (protected from coder edits).
+ - Network during checks: none, except the loopback server serving `dist/`
+ - Game data: supplied `assets/doom1.wad` only
+ 
++## Port contract: controls
++
++The checks press exactly these keys, so the port must support them. Changing a binding means changing the checks first, with a change-log entry.
++
++| Action | Key |
++|---|---|
++| Move forward / back | W / S |
++| Strafe left / right | A / D |
++| Turn left / right | Left / Right arrows |
++| Fire | Space |
++| Use (open doors, switches) | E |
++| Run | Shift (held) |
++| Weapons | 1 to 7 |
++| Menu open, back | Escape |
++| Menu select, navigate | Enter, Up/Down arrows (unchanged Doom menu keys) |
++| Type a save name | letters arrive as ordinary characters (S1 types `a`) |
++
++Ctrl is no longer required as a fire key. The port may keep it, but no check tests it.
++
+ ## Gate checks: build and integrity (script)
+ 
+ ### B1 Clean build
+@@ -78,7 +97,7 @@ Intended location: `tests/accept/CRITERIA.md` (protected from coder edits).
+ - Fault to inject: drop the keyup handler. I1 must fail.
+ 
+ ### I2 No page scroll
+-- Pass: pressing arrows and Space for the duration of a run leaves `window.scrollY` unchanged. The result names any key that scrolled the page. PageDown is recorded for information only (it is not a game control).
++- Pass: pressing the arrows, Space, W, A, S, D, and E during a run leaves `window.scrollY` unchanged. The result names any key that scrolled the page. PageDown is recorded for information only (it is not a game control).
+ - Evidence: scroll positions before and after.
+ - Could be fooled by: a page too short to scroll. Make the test page scrollable.
+ - Fault to inject: remove `preventDefault`. I2 must fail.
+@@ -96,8 +115,8 @@ Intended location: `tests/accept/CRITERIA.md` (protected from coder edits).
+ - Does not prove: correct timing. This is not a gate (see scope decisions).
+ 
+ ### G1 Gameplay
+-- Pass: start E1M1 from the menu; the status-bar ammo number is stable while idle; the view changes while moving forward or back; the ammo number region changes after 3 pistol shots; at least [60] seconds of play pass with no new console or page errors. Turning is covered by I1.
+-- Not gating: opening a door. A route to a door cannot be verified without a real run, so the check walks forward pressing Space and saves before/after screenshots only.
++- Pass: start E1M1 from the menu; the status-bar ammo number is stable while idle; the view changes while moving with W or S and while strafing with D; the ammo number region changes after 3 pistol shots fired with Space; at least [60] seconds of play pass with no new console or page errors. Turning is covered by I1.
++- Not gating: opening a door. A route to a door cannot be verified without a real run, so the check walks forward with W while pressing E (use) and saves before/after screenshots only.
+ - Evidence: view-frame counts, before/after images of the ammo region, door screenshots, console log.
+ - Could be fooled by: scripted inputs that coincidentally change pixels. Each action needs a specific expected effect.
+ - Does not prove: all of Episode 1 works.
+@@ -109,7 +128,7 @@ Audio is in scope and a goal for the MVP. Sound effects are gated. Music is a go
+ 
+ ### A1 Sound effects are output
+ - Measures: the page produces audible output when the game triggers a sound effect.
+-- Pass: after the first user input (browsers require a gesture), an `AudioContext` exists and reaches `running`; and for each of two triggers (firing the weapon with Ctrl, and moving through the menu with Escape/Down/Up) the peak output RMS in the trigger window is at least [0.003] and at least [1.5x] the peak in a baseline window just before it (or the baseline is below [0.0005], or the trigger peak exceeds the baseline peak by at least [0.01] absolute, which matters once music is playing). The ratio is 1.5x, not 10x, because music may already be playing in the baseline. Tune after observing real values.
++- Pass: after the first user input (browsers require a gesture), an `AudioContext` exists and reaches `running`; and for each of two triggers (firing the weapon with Space, and moving through the menu with Escape/Down/Up) the peak output RMS in the trigger window is at least [0.003] and at least [1.5x] the peak in a baseline window just before it (or the baseline is below [0.0005], or the trigger peak exceeds the baseline peak by at least [0.01] absolute, which matters once music is playing). The ratio is 1.5x, not 10x, because music may already be playing in the baseline. Tune after observing real values.
+ - How to measure: before the page loads, inject a script (`page.addInitScript`) that wraps `AudioNode.prototype.connect` so anything connected to `ctx.destination` also feeds an `AnalyserNode`, then sample it. This avoids needing the port to export anything.
+ - Evidence: context state, baseline and trigger-window levels with timestamps, the trigger action, console log.
+ - Could be fooled by: constant noise or a DC offset, which is why the check compares against a silent baseline and ties the rise to an action. Also by a context that plays one test tone unrelated to the game; run the check with two different triggers.
+@@ -224,4 +243,5 @@ Baseline tag: _____  Commit: _____  Date: _____
+ | 2026-11-02 | R1, R2 | Checks now perform the start gesture (click a Start/Play control, else the canvas) before sampling; R2 window changed from 3 s to 12 s. Moved the acceptance-v1 tag to the commit containing the fixed checks. | Run attempt 004 found the port gates the game behind a Start click (needed for browser audio), and the original checks sampled the unstarted canvas. The Doom title screen is also static for about 5 s. The agents did not edit the protected check; they reported the mismatch. This is a defect in my check, not in the port. |
+ | 2026-11-02 | I1, I2, A1 | Implemented in browser.spec.js. I1 uses holding Left (turning) instead of Up, and blur-release is informational only. A1 compares trigger-window level to baseline at 1.5x plus an absolute floor, instead of 10x. | Needed concrete, testable definitions. Turning cannot be blocked by a wall; music may be audible in the baseline. |
+ | 2026-11-02 | R3, G1, M1, S1 | Implemented R3 and G1. Added M1 (music, gated) and S1 (saved games persist across reload, gated). G1 no longer gates door opening (screenshots only). A1 also passes if the trigger peak exceeds the baseline by 0.01 absolute. | The student asked for these to be in scope and tested. A door route cannot be verified without a real run. With music playing, the 1.5x ratio alone could false-fail A1. |
++| 2026-11-03 | I2, A1, G1 | Control scheme changed: W/S move, A/D strafe, Space fire, E use; arrows remain for turning and menus. G1 now also requires strafing to change the view; G1's door attempt uses E; A1 fires with Space; I2 also checks W, A, S, D, E for page scroll. Added the "Port contract: controls" section. | Student wants a more intuitive layout, and Ctrl plus arrow keys triggers macOS desktop-switching shortcuts. Space and E replace Ctrl and Space. Menu keys stay unchanged because Doom's menus need them. |
+ | 2026-11-02 | B3, I2 | B3 is evaluated after the start gesture. I2 reports per key and gates only on arrows and Space; PageDown is informational. Moved the acceptance-v1 tag again. | First full manual run: the port loads its wasm after Start is clicked, so B3 looked too early. I2 included PageDown, which the criteria never required; per-key reporting keeps real arrow/Space scroll bugs visible. |
+diff --git a/tests/accept/browser.spec.js b/tests/accept/browser.spec.js
+index ff1c6be..48719b9 100644
+--- a/tests/accept/browser.spec.js
++++ b/tests/accept/browser.spec.js
+@@ -355,7 +355,7 @@ const server = http.createServer((req, res) => {
+       const scrollable = await page.evaluate(() => { window.scrollTo(0, 50); const y = window.scrollY; window.scrollTo(0, 0); return y > 0; });
+       await canvas.click({ position: { x: 40, y: 40 } }).catch(() => {});
+       const scrolled = [];
+-      for (const k of ['ArrowDown', 'ArrowUp', 'ArrowRight', 'ArrowLeft', 'Space']) {
++      for (const k of ['ArrowDown', 'ArrowUp', 'ArrowRight', 'ArrowLeft', 'Space', 'w', 'a', 's', 'd', 'e']) {
+         await page.keyboard.press(k); await sleep(150);
+         const yk = await page.evaluate(() => window.scrollY);
+         if (yk !== 0) { scrolled.push(`${k}=>${yk}`); await page.evaluate(() => window.scrollTo(0, 0)); }
+@@ -374,7 +374,7 @@ const server = http.createServer((req, res) => {
+       const baseFire = await sample(1500);
+       const pf = sample(2500);
+       await sleep(300);
+-      for (let i = 0; i < 3; i++) { await page.keyboard.down('Control'); await sleep(120); await page.keyboard.up('Control'); await sleep(500); }
++      for (let i = 0; i < 3; i++) { await page.keyboard.down('Space'); await sleep(120); await page.keyboard.up('Space'); await sleep(500); }
+       const fire = await pf;
+       await sleep(1000);
+       const baseMenu = await sample(1500);
+@@ -403,27 +403,31 @@ const server = http.createServer((req, res) => {
+         const ammoStable = ammoA === ammoB;
+ 
+         const idleG = distinct(await viewHashes(page, canvas, 4, 150));
+-        await page.keyboard.down('ArrowUp'); await sleep(300);
++        await page.keyboard.down('w'); await sleep(300);
+         const mvFwd = distinct(await viewHashes(page, canvas, 6, 150));
+-        await page.keyboard.up('ArrowUp'); await sleep(300);
+-        await page.keyboard.down('ArrowDown'); await sleep(300);
++        await page.keyboard.up('w'); await sleep(300);
++        await page.keyboard.down('s'); await sleep(300);
+         const mvBack = distinct(await viewHashes(page, canvas, 6, 150));
+-        await page.keyboard.up('ArrowDown'); await sleep(500);
++        await page.keyboard.up('s'); await sleep(500);
++        await page.keyboard.down('d'); await sleep(300);
++        const mvStrafe = distinct(await viewHashes(page, canvas, 6, 150));
++        await page.keyboard.up('d'); await sleep(500);
+         const moved = Math.max(mvFwd, mvBack) >= Math.max(3, idleG + 1);
++        const strafed = mvStrafe >= Math.max(3, idleG + 1);
+ 
+         const ammoBeforeShot = await ammoShot(page, canvas);
+         save('G1_ammo_before.png', ammoBeforeShot);
+-        for (let i = 0; i < 3; i++) { await page.keyboard.down('Control'); await sleep(120); await page.keyboard.up('Control'); await sleep(500); }
++        for (let i = 0; i < 3; i++) { await page.keyboard.down('Space'); await sleep(120); await page.keyboard.up('Space'); await sleep(500); }
+         await sleep(500);
+         const ammoAfterShot = await ammoShot(page, canvas);
+         save('G1_ammo_after.png', ammoAfterShot);
+         const fired = sha(ammoBeforeShot) !== sha(ammoAfterShot);
+ 
+-        // Door attempt: walk forward pressing Space. Evidence only.
++        // Door attempt: walk forward with W while pressing E (use). Evidence only.
+         save('G1_door_before.png', await viewShot(page, canvas));
+-        await page.keyboard.down('ArrowUp');
+-        for (let i = 0; i < 8; i++) { await page.keyboard.press('Space'); await sleep(250); }
+-        await page.keyboard.up('ArrowUp');
++        await page.keyboard.down('w');
++        for (let i = 0; i < 8; i++) { await page.keyboard.press('e'); await sleep(250); }
++        await page.keyboard.up('w');
+         await sleep(500);
+         save('G1_door_after.png', await viewShot(page, canvas));
+ 
+@@ -431,8 +435,8 @@ const server = http.createServer((req, res) => {
+         if (elapsed < 60) await sleep((60 - elapsed) * 1000 + 500);
+         const newErrors = errors.slice(errStart);
+         const total = (Date.now() - levelStart) / 1000;
+-        rec('G1', ammoStable && moved && fired && newErrors.length === 0 && total >= 60,
+-          `ammo region stable while idle: ${ammoStable}; view changed while moving: ${moved} (idle ${idleG}, forward ${mvFwd}, back ${mvBack}); ammo number changed after 3 shots: ${fired}; ${total.toFixed(0)} s of play, ${newErrors.length} new errors${newErrors.length ? ': ' + newErrors.slice(0, 2).join(' | ') : ''}; door attempt screenshots saved (informational)`);
++        rec('G1', ammoStable && moved && strafed && fired && newErrors.length === 0 && total >= 60,
++          `ammo region stable while idle: ${ammoStable}; view changed while moving with W/S: ${moved} (idle ${idleG}, forward ${mvFwd}, back ${mvBack}); while strafing with D: ${strafed} (${mvStrafe}); ammo number changed after 3 shots: ${fired}; ${total.toFixed(0)} s of play, ${newErrors.length} new errors${newErrors.length ? ': ' + newErrors.slice(0, 2).join(' | ') : ''}; door attempt screenshots saved (informational)`);
+       });
+ 
+       // M1: music. Idle in the level, audio should be continuously audible with no input.

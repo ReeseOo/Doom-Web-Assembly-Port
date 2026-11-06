@@ -1,0 +1,11 @@
+PASS  B1  build.sh exit 0; dist/index.html and .wasm present
+PASS  B2  loop, assets, third_party, tests/accept match acceptance-v1
+PASS  R1  canvas drawn after start (clicked control "Start Doom"), no errors
+PASS  B3  loaded from /doom/ with application/wasm (doom.wasm)
+PASS  R2  8 distinct frames in 12 samples over ~12 s
+PASS  T1  avg 60.1 fps, max gap 17 ms
+PASS  I1  distinct view frames: idle 5, while turning 8, after release 1; blur-release (informational, not gating): ok
+PASS  I2  no scroll on arrows/Space; PageDown (informational) scrollY 612
+FAIL  A1  no AudioContext connected to a destination
+NOT IMPLEMENTED (not counted as passed): R3, G1
+VERDICT: FAIL | complete: False | rev 206d765f31 | digest 8248a368effd

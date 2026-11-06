@@ -1,0 +1,14 @@
+D_E1M1: 96.00s, 5825 events, peak 0.277, RMS 0.067, audible 100.0%, render 4981ms
+D_E1M2: 155.36s, 10846 events, peak 0.291, RMS 0.079, audible 99.4%, render 7059ms
+D_E1M3: 272.00s, 7506 events, peak 0.271, RMS 0.069, audible 100.0%, render 11787ms
+D_E1M4: 170.66s, 6269 events, peak 0.267, RMS 0.058, audible 95.2%, render 7324ms
+D_E1M5: 164.00s, 3269 events, peak 0.223, RMS 0.050, audible 100.0%, render 4858ms
+D_E1M6: 84.00s, 3331 events, peak 0.240, RMS 0.066, audible 100.0%, render 4505ms
+D_E1M7: 150.86s, 2834 events, peak 0.306, RMS 0.075, audible 99.9%, render 5405ms
+D_E1M8: 152.00s, 18112 events, peak 0.222, RMS 0.060, audible 98.1%, render 7264ms
+D_E1M9: 137.36s, 7765 events, peak 0.413, RMS 0.089, audible 100.0%, render 9723ms
+D_INTER: 201.36s, 9883 events, peak 0.327, RMS 0.075, audible 99.0%, render 10569ms
+D_INTRO: 6.86s, 497 events, peak 0.429, RMS 0.131, audible 100.0%, render 539ms
+D_VICTOR: 192.00s, 4531 events, peak 0.280, RMS 0.062, audible 100.0%, render 9148ms
+D_INTROA: 6.86s, 213 events, peak 0.320, RMS 0.103, audible 100.0%, render 384ms
+PASS: 13 supplied MUS scores, graph, first-gesture queue, volume, pause/resume, replacement, end, unregister; first render 5124ms

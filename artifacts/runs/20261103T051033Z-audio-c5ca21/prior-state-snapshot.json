@@ -1,0 +1,223 @@
+{
+  "run_id": "20261102T021951Z-port-b7e3a0",
+  "manifest_path": "artifacts/runs/20261102T021951Z-port-b7e3a0/manifest.json",
+  "attempt": "005",
+  "status": "stopped",
+  "current_task": "Attempt 005 independently evaluated; attempt budget exhausted",
+  "unresolved_findings": [
+    "A1: no AudioContext connected to a destination; real sound implementation needed.",
+    "R3 and G1 are unimplemented in protected acceptance suite."
+  ],
+  "evidence_paths": [
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/001/source-snapshot.json",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/logs/001/prerequisites.json",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/handoffs/001/coder_build-001-task.txt",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/001/checks.json",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/001/source-snapshot-final.json",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/001/build-snapshot.json",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/logs/003/resume-20261103/build.log",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/003-resume-20261103/results.json",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/003-resume-20261103/run.exit",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/logs/003/resume-20261103/docker-image.log",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/logs/003/resume-20261103T042901Z/preflight.log",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/logs/003/resume-20261103T042901Z/build.log",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/logs/003/resume-20261103T042901Z/build.exit",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/003-resume-20261103T042901Z/results.json",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/003-resume-20261103T042901Z/run.log",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/003-resume-20261103T042901Z/run.exit",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/handoffs/004/coder_build-task.txt",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/004-orchestrator/build.log",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/004-orchestrator/build.exit",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/004-orchestrator/results.json",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/004-orchestrator/run.log",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/004-orchestrator/run.exit",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/handoffs/004/coder_build-report.md",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/handoffs/005/coder_build-task.txt",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/handoffs/005/coder_build-report.md",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/005-orchestrator/build.log",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/005-orchestrator/build.exit",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/005-orchestrator/run.log",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/005-orchestrator/run.exit",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/005-orchestrator/results.json",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/005-orchestrator/browser_results.json",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/005-orchestrator/source-status.txt",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/005-orchestrator/source-revision.txt"
+  ],
+  "next_action": "Student must authorize a new bounded audio milestone (platform/audio.*) and supply protected R3/G1 checks before complete acceptance is possible.",
+  "stopping_reason": "Five attempts exhausted for current milestone. Independent build exit 0, run.sh exit 1: A1 fails because no AudioContext connects to destination. B1/B2/B3/R1/R2/T1/I1/I2 pass. Protected R3/G1 remain unimplemented, so complete=true is impossible with current suite. No passing milestone commit, reviews, or QA performed.",
+  "resource_usage": {
+    "shell_calls": 3,
+    "delegations_attempted": 1,
+    "tokens": "unavailable",
+    "cost": "unavailable",
+    "implementation_attempts_used": 5,
+    "shell_calls_this_resume": 3,
+    "delegations_attempted_this_resume": 5,
+    "delegations_completed_this_resume": 4
+  },
+  "manual_interventions": [
+    "User requested resume after installing SDK; SDK environment explicitly sourced for compiler commands. Prior run was preflight-only with no implementation budget.",
+    "User requested resume; Claude Code 2.1.316 now resolves on inherited PATH.",
+    "User requested resume; existing attempt 003 implementation retained, protected paths not modified.",
+    "User requested resume; rechecking existing attempt 003 without modifying protected checks.",
+    "User requested resume; proceeding with remaining attempt 005 using current protected checks."
+  ],
+  "source_snapshot": {
+    "revision": "5160d882c333dda42f96d55060290a268ef5df9a",
+    "source_digest": "269c8a25bfc36e06a6b1f49ff293d70dd177d1464a77a9d562e2e2f61c9eacb8",
+    "uncommitted_files": 10
+  },
+  "build_snapshot": {
+    "inventory": [
+      {
+        "path": "dist/doom.data",
+        "sha256": "1d7d43be501e67d927e415e0b8f3e29c3bf33075e859721816f652a526cac771",
+        "bytes": 4196020
+      },
+      {
+        "path": "dist/doom.js",
+        "sha256": "7f45689bd6197a864fac457f1beec9fa8cf78a823441b1b5ab418d41d99d74c9",
+        "bytes": 167450
+      },
+      {
+        "path": "dist/doom.wasm",
+        "sha256": "df5d984bf95b68b04c7e713be72a7d604142135f3bd24c696232eb9a6056a8b9",
+        "bytes": 574759
+      },
+      {
+        "path": "dist/index.html",
+        "sha256": "018e676bc714034151daa919beb6b930b0858e1730a4816c5ed85bb712def387",
+        "bytes": 3994
+      }
+    ],
+    "sha256": "4a2fc94bf91f61f4f587f815e157b3d06521634c28b53c77ead01fe7b69d7a52"
+  },
+  "resume_evidence_dir": "artifacts/runs/20261102T021951Z-port-b7e3a0/logs/003/resume-20261103T042901Z",
+  "last_result": {
+    "time_utc": "2026-11-03T05:01:45.906469Z",
+    "source_revision": "5160d882c333dda42f96d55060290a268ef5df9a",
+    "uncommitted_files": 10,
+    "source_digest": "269c8a25bfc36e06a6b1f49ff293d70dd177d1464a77a9d562e2e2f61c9eacb8",
+    "baseline_tag": "acceptance-v1",
+    "verdict": "FAIL",
+    "complete": false,
+    "not_implemented": [
+      "R3",
+      "G1"
+    ],
+    "checks": [
+      {
+        "id": "B1",
+        "status": "pass",
+        "detail": "build.sh exit 0; dist/index.html and .wasm present"
+      },
+      {
+        "id": "B2",
+        "status": "pass",
+        "detail": "loop, assets, third_party, tests/accept match acceptance-v1"
+      },
+      {
+        "id": "R1",
+        "status": "pass",
+        "detail": "canvas drawn after start (clicked control \"Start Doom\"), no errors"
+      },
+      {
+        "id": "B3",
+        "status": "pass",
+        "detail": "loaded from /doom/ with application/wasm (doom.wasm)"
+      },
+      {
+        "id": "R2",
+        "status": "pass",
+        "detail": "8 distinct frames in 12 samples over ~12 s"
+      },
+      {
+        "id": "T1",
+        "status": "pass",
+        "detail": "avg 60.1 fps, max gap 17 ms"
+      },
+      {
+        "id": "I1",
+        "status": "pass",
+        "detail": "distinct view frames: idle 5, while turning 8, after release 2; blur-release (informational, not gating): ok"
+      },
+      {
+        "id": "I2",
+        "status": "pass",
+        "detail": "no scroll on arrows/Space; PageDown (informational) scrollY 612"
+      },
+      {
+        "id": "A1",
+        "status": "fail",
+        "detail": "no AudioContext connected to a destination"
+      }
+    ]
+  },
+  "updated_at": "2026-11-03T05:02:00.322755+00:00",
+  "last_user_command_run": {
+    "time_utc": "2026-11-03T05:08:55.286203+00:00",
+    "git_command_chain_exit": 0,
+    "acceptance_exit": 1,
+    "evidence": "artifacts/manual-check/results.json",
+    "result": {
+      "time_utc": "2026-11-03T05:08:55.257945Z",
+      "source_revision": "206d765f31fa3ce673a35ea3726379267ae821ad",
+      "uncommitted_files": 10,
+      "source_digest": "7783d078e8d34e8384869014aee583adc0bd002214c0ae237408614c14370251",
+      "baseline_tag": "acceptance-v1",
+      "verdict": "FAIL",
+      "complete": false,
+      "not_implemented": [
+        "R3",
+        "G1"
+      ],
+      "checks": [
+        {
+          "id": "B1",
+          "status": "pass",
+          "detail": "build.sh exit 0; dist/index.html and .wasm present"
+        },
+        {
+          "id": "B2",
+          "status": "pass",
+          "detail": "loop, assets, third_party, tests/accept match acceptance-v1"
+        },
+        {
+          "id": "R1",
+          "status": "pass",
+          "detail": "canvas drawn after start (clicked control \"Start Doom\"), no errors"
+        },
+        {
+          "id": "B3",
+          "status": "pass",
+          "detail": "loaded from /doom/ with application/wasm (doom.wasm)"
+        },
+        {
+          "id": "R2",
+          "status": "pass",
+          "detail": "8 distinct frames in 12 samples over ~12 s"
+        },
+        {
+          "id": "T1",
+          "status": "pass",
+          "detail": "avg 60.1 fps, max gap 17 ms"
+        },
+        {
+          "id": "I1",
+          "status": "pass",
+          "detail": "distinct view frames: idle 4, while turning 8, after release 1; blur-release (informational, not gating): ok"
+        },
+        {
+          "id": "I2",
+          "status": "pass",
+          "detail": "no scroll on arrows/Space; PageDown (informational) scrollY 604"
+        },
+        {
+          "id": "A1",
+          "status": "fail",
+          "detail": "no AudioContext connected to a destination"
+        }
+      ]
+    }
+  }
+}

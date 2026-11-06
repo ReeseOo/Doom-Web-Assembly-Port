@@ -1,0 +1,1 @@
+Repair updated controls contract in platform/video_input.* only. Gate evidence: ../resumes/20261104T065026Z/tests/results.json. Space fire fails A1 and G1; E must use. Preserve menu and save-name typing. Output 010-video-input-result.md.

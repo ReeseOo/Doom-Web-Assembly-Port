@@ -1,0 +1,13 @@
+Video/input component verification (not full game build)
+e500c440656622db5ab3f8fb7df73d8b5998eeb3
+PASS: RGB/opaque alpha, memory growth, down/up, repeats, modifier aliases, blur/visibility, focus/defaults, overflow recovery, title, idempotence
+node_exit=0
+emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 4.0.18 (fae107463db4d20a276a27ede393048deaeebf76)
+compile_exit=0
+01e9f1e096b67cc51390090b59778982cbf0ab3f3f282f572365fabc2f231b15  platform/video_input.c
+5ccb06d59526f366de99a50e9db5ca6bdcd9baf8769e7153eb8cd845525add50  platform/video_input.h
+8fc7c8709b38ba2e6d65fd6079c72875d4a5b89067bead93ddb5c269790a2251  tests/dev/video_input_test.cjs
+ loop/agents.yaml   | 346 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ platform/README.md |  17 +++
+ web/index.html     |  66 +++++++++-
+ 3 files changed, 424 insertions(+), 5 deletions(-)

@@ -1,0 +1,45 @@
+{
+  "run_id": "20261102T021327Z-preflight-a8c354",
+  "scope": "User-authorized preflight only; no implementation",
+  "start_time": "2026-11-02T02:13:27.116477+00:00",
+  "source_snapshot": {
+    "revision": "e500c440656622db5ab3f8fb7df73d8b5998eeb3",
+    "inputs_sha256": "a6068874db66d76041ae23e6cf5e6b9afa15895841025ca7f380dabf4df1ea83",
+    "procedure": "git ls-files cached and untracked nonignored; exclude artifacts/, build/, dist/, .git/; sorted unique file paths with SHA256; SHA256 of JSON sorted keys inventory"
+  },
+  "build_snapshot": "unavailable: preflight only",
+  "dirty_changes": " M loop/agents.yaml\n?? artifacts/runs/\n?? artifacts/state.json\n?? evals/\n",
+  "environment_evidence": "artifacts/runs/20261102T021327Z-preflight-a8c354/logs/001/preflight-commands.json",
+  "budgets": {
+    "attempts": 1,
+    "implementation_attempts": 0
+  },
+  "usage": {
+    "shell_calls_this_invocation": 4,
+    "delegations_attempted": 2,
+    "delegations_returned_successfully": 0,
+    "implementation_attempts_used": 0,
+    "tokens": "unavailable",
+    "cost": "unavailable"
+  },
+  "manual_interventions": [
+    "User explicitly requested new preflight only; prior blocked implementation run preserved."
+  ],
+  "verification_commands": [
+    "command -v emcc && emcc --version",
+    "command -v node; command -v npm; command -v make; command -v git; command -v python3; test -d third_party/doomgeneric && test -s assets/doom1.wad",
+    "git rev-parse HEAD",
+    "git status --short"
+  ],
+  "end_time": "2026-11-02T02:14:41.822713+00:00",
+  "status": "blocked",
+  "stopping_reason": "Preflight complete with blockers: required Emscripten unavailable; both requested agent invocations failed at claude-code harness startup.",
+  "evidence_paths": [
+    "artifacts/runs/20261102T021327Z-preflight-a8c354/logs/001/preflight-commands.json",
+    "artifacts/runs/20261102T021327Z-preflight-a8c354/handoffs/001/reviewer_integration-001-response.json",
+    "artifacts/runs/20261102T021327Z-preflight-a8c354/handoffs/001/qa_browser-001-response.json",
+    "artifacts/runs/20261102T021327Z-preflight-a8c354/tests/001/source-snapshot.json",
+    "artifacts/runs/20261102T021327Z-preflight-a8c354/tests/001/preflight.json",
+    "artifacts/runs/20261102T021327Z-preflight-a8c354/summary.md"
+  ]
+}

@@ -1,0 +1,28 @@
+Installing dependencies...
+Err:1 http://ports.ubuntu.com/ubuntu-ports resolute InRelease
+  403  Forbidden [IP: fdd7:1418:f9ea:: 3128]
+Err:2 http://ports.ubuntu.com/ubuntu-ports resolute-updates InRelease
+  403  Forbidden [IP: fdd7:1418:f9ea:: 3128]
+Err:3 http://ports.ubuntu.com/ubuntu-ports resolute-backports InRelease
+  403  Forbidden [IP: fdd7:1418:f9ea:: 3128]
+Err:4 http://ports.ubuntu.com/ubuntu-ports resolute-security InRelease
+  403  Forbidden [IP: fdd7:1418:f9ea:: 3128]
+Err:5 https://cli.github.com/packages stable InRelease
+  403  Forbidden [IP: fdd7:1418:f9ea:: 3128]
+Err:6 https://download.docker.com/linux/ubuntu resolute InRelease
+  403  Forbidden [IP: fdd7:1418:f9ea:: 3128]
+Reading package lists...
+E: The repository 'http://ports.ubuntu.com/ubuntu-ports resolute InRelease' is not signed.
+E: Failed to fetch http://ports.ubuntu.com/ubuntu-ports/dists/resolute/InRelease  403  Forbidden [IP: fdd7:1418:f9ea:: 3128]
+E: The repository 'http://ports.ubuntu.com/ubuntu-ports resolute-updates InRelease' is not signed.
+E: Failed to fetch http://ports.ubuntu.com/ubuntu-ports/dists/resolute-updates/InRelease  403  Forbidden [IP: fdd7:1418:f9ea:: 3128]
+E: The repository 'http://ports.ubuntu.com/ubuntu-ports resolute-backports InRelease' is not signed.
+E: Failed to fetch http://ports.ubuntu.com/ubuntu-ports/dists/resolute-backports/InRelease  403  Forbidden [IP: fdd7:1418:f9ea:: 3128]
+E: The repository 'http://ports.ubuntu.com/ubuntu-ports resolute-security InRelease' is not signed.
+E: Failed to fetch http://ports.ubuntu.com/ubuntu-ports/dists/resolute-security/InRelease  403  Forbidden [IP: fdd7:1418:f9ea:: 3128]
+E: Failed to fetch https://cli.github.com/packages/dists/stable/InRelease  403  Forbidden [IP: fdd7:1418:f9ea:: 3128]
+E: The repository 'https://cli.github.com/packages stable InRelease' is not signed.
+E: Failed to fetch https://download.docker.com/linux/ubuntu/dists/resolute/InRelease  403  Forbidden [IP: fdd7:1418:f9ea:: 3128]
+E: The repository 'https://download.docker.com/linux/ubuntu resolute InRelease' is not signed.
+Failed to install browser dependencies
+Error: Installation process exited with code: 100

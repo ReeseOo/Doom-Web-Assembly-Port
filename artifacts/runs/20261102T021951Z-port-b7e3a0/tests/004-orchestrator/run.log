@@ -1,0 +1,8 @@
+PASS  B1  build.sh exit 0; dist/index.html and .wasm present
+PASS  B2  loop, assets, third_party, tests/accept match acceptance-v1
+PASS  B3  loaded from /doom/ with application/wasm
+FAIL  R1  canvas stayed blank
+FAIL  R2  1 distinct frames in 4 samples over ~3 s
+PASS  T1  avg 60.1 fps, max gap 17 ms
+NOT IMPLEMENTED (not counted as passed): R3, I1, I2, G1, A1
+VERDICT: FAIL | complete: False | rev 9339d0c857 | digest 118d844a54de

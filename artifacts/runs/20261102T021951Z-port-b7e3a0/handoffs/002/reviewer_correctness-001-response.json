@@ -1,0 +1,71 @@
+{
+  "status": "pass",
+  "source_snapshot": {
+    "revision": "e500c440656622db5ab3f8fb7df73d8b5998eeb3",
+    "inputs_sha256": "636601a2b9bf66d3cb930c7c7c068b76eca0873803408b1820ea5276b8102730",
+    "procedure": "git ls-files cached and untracked nonignored; exclude artifacts/, build/, dist/, .git/; sorted unique file paths with SHA256; SHA256 of JSON sorted keys inventory"
+  },
+  "build_snapshot": {
+    "inventory": [
+      {
+        "path": "dist/doom.data",
+        "sha256": "1d7d43be501e67d927e415e0b8f3e29c3bf33075e859721816f652a526cac771",
+        "bytes": 4196020
+      },
+      {
+        "path": "dist/doom.js",
+        "sha256": "ab0e6692f23f850c6ec3c393574f51c6a44657f01ddc5e3b6438f8f2777cf86b",
+        "bytes": 167450
+      },
+      {
+        "path": "dist/doom.wasm",
+        "sha256": "df5d984bf95b68b04c7e713be72a7d604142135f3bd24c696232eb9a6056a8b9",
+        "bytes": 574759
+      },
+      {
+        "path": "dist/index.html",
+        "sha256": "4e832d1fd66e664e95839e293265be507e70ca1580cdc375775c6fa7b9325b34",
+        "bytes": 3381
+      }
+    ],
+    "sha256": "b782ccccb0adec8e91776fde261cbed3e13b5912e35de925688fd1a488633d65"
+  },
+  "summary": "Independent read-only correctness review completed with no blocking defects identified. Inspected actual build, platform, browser and development-test code against the supplied engine. Callback signatures match; retained startup arguments have module lifetime; framebuffer conversion correctly produces opaque RGBA from 0x00RRGGBB and reacquires growable-memory views. Keydown/up handling covers repeats, modifier aliases and focus-loss releases. Ctrl and Space emit the supplied engine's KEY_FIRE (0xa3) and KEY_USE (0xa2), matching m_controls.c and the G_BuildTiccmd action path. The monotonic clock returns milliseconds, the engine controls 35 Hz simulation timing, and Asyncify-backed sleep covers nested tic synchronization and screen-wipe waits without overlapping tick callbacks. Supplied evidence records a successful build and development tests; both negative controls fail at the intended engine action assertions. The source diff contains no engine or asset changes, and packaged doom.data matches the recorded supplied WAD SHA256. This is a static correctness pass, not browser gameplay acceptance: no commands or browser tests were executed by this read-only reviewer, and snapshot hashes were taken from the assigned evidence rather than independently recomputed. No other reviewer or coder conclusions were consulted. Review is complete; no further activity is scheduled by this reviewer.",
+  "findings": [],
+  "evidence_paths": [
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/handoffs/002/reviewer_correctness-001-task.txt",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/002/source-snapshot.json",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/002/source-inventory.json",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/002/source.diff",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/002/build-snapshot.json",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/002/checks.json",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/logs/002/prerequisites.json",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/logs/002/root-build.json",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/logs/002/root-runtime.json",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/logs/002/root-video-input.json",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/logs/002/root-engine-input.json",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/logs/002/root-negative-fire.json",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/logs/002/root-negative-use.json",
+    "build.sh",
+    "platform/doomgeneric_runtime.c",
+    "platform/doomgeneric_wasm.c",
+    "platform/video_input.c",
+    "platform/video_input.h",
+    "web/index.html",
+    "tests/dev/runtime_test.py",
+    "tests/dev/video_input_test.cjs",
+    "tests/dev/input_engine_test.c",
+    "tests/dev/input_engine_test.py",
+    "third_party/doomgeneric/doomgeneric.h",
+    "third_party/doomgeneric/doomgeneric.c",
+    "third_party/doomgeneric/doomkeys.h",
+    "third_party/doomgeneric/i_video.c",
+    "third_party/doomgeneric/i_input.c",
+    "third_party/doomgeneric/i_timer.c",
+    "third_party/doomgeneric/d_event.c",
+    "third_party/doomgeneric/d_loop.c",
+    "third_party/doomgeneric/d_main.c",
+    "third_party/doomgeneric/m_controls.c",
+    "third_party/doomgeneric/g_game.c"
+  ]
+}

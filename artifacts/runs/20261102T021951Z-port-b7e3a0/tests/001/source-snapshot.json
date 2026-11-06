@@ -1,0 +1,5 @@
+{
+  "revision": "e500c440656622db5ab3f8fb7df73d8b5998eeb3",
+  "inputs_sha256": "a6068874db66d76041ae23e6cf5e6b9afa15895841025ca7f380dabf4df1ea83",
+  "procedure": "git ls-files cached and untracked nonignored; exclude artifacts/, build/, dist/, .git/; sorted unique file paths with SHA256; SHA256 of JSON sorted keys inventory"
+}

@@ -1,0 +1,57 @@
+{
+  "status": "pass",
+  "scope": "Coder development checks only; independent browser acceptance pending",
+  "source_snapshot": {
+    "revision": "e500c440656622db5ab3f8fb7df73d8b5998eeb3",
+    "input_snapshot_before_runtime": "ef4b74a8e1e683ed474cc6d08e1825bdad77695c95a704f15165f999a377e07e",
+    "file_sha256": {
+      "platform/doomgeneric_runtime.c": "d99a9226f4ae16a058ef4dcbe233f8a18a1c62fe68b61d160b75e6d7e5422192",
+      "platform/doomgeneric_wasm.c": "b6df097089340346b0c6dac0ae2de2d7f270db81f2b70ef4f8a6a1b1ceac1faa",
+      "platform/video_input.c": "01e9f1e096b67cc51390090b59778982cbf0ab3f3f282f572365fabc2f231b15",
+      "platform/video_input.h": "5ccb06d59526f366de99a50e9db5ca6bdcd9baf8769e7153eb8cd845525add50",
+      "tests/dev/runtime_test.py": "01c4789318656451d3fb4955c924e92e0ae71da1369d1a0b4adc38fec2a9f072",
+      "build.sh": "9f8c492c348e7e5465508f811c98eced08a9acfb8db92c3881a0177d99a6f54c",
+      "web/index.html": "4e832d1fd66e664e95839e293265be507e70ca1580cdc375775c6fa7b9325b34"
+    }
+  },
+  "build_snapshot": {
+    "compiler": "Emscripten 4.0.18",
+    "artifact_sha256": {
+      "dist/index.html": "4e832d1fd66e664e95839e293265be507e70ca1580cdc375775c6fa7b9325b34",
+      "dist/doom.js": "a88d725698c51c093f00dfed637d7ff5da9ff135d9b5dbd6156e0a7bc0af8364",
+      "dist/doom.wasm": "b1e361544189a4a57dbcec56d8c8cc2cea652650ef3f69231cb9fb5a325b79cf",
+      "dist/doom.data": "1d7d43be501e67d927e415e0b8f3e29c3bf33075e859721816f652a526cac771"
+    }
+  },
+  "checks": [
+    {
+      "command": "source /Users/reeseoo/emsdk/emsdk_env.sh && ./build.sh",
+      "status": "pass",
+      "note": "Two successful builds preserved in log; final build has only supplied-engine r_segs.c warning."
+    },
+    {
+      "command": "python3 tests/dev/runtime_test.py",
+      "status": "pass",
+      "note": "clang -Wall -Wextra -Werror with ASan/UBSan, mocked Emscripten/engine; checks ms truncation/wrap, sleep forwarding including zero, retained argv, duplicate startup guard, nested wait/outer-yield ordering."
+    },
+    {
+      "command": "grep -nE '^(void|uint32_t|int) (DG_|main)' platform/*.c",
+      "status": "pass",
+      "note": "Exactly one owner each main and six DG callbacks; integrated link confirms no duplicates."
+    },
+    {
+      "command": "git diff --check",
+      "status": "fail_unrelated_preexisting",
+      "note": "loop/agents.yaml line 56 trailing whitespace; protected preexisting file not modified."
+    }
+  ],
+  "limitations": [
+    "Native test does not execute real Asyncify or browser event processing.",
+    "Browser startup, actual 35 Hz simulation, long waits/wipes, input responsiveness and WAD access require independent verification.",
+    "Sound intentionally disabled; MEMFS saves/config are nonpersistent."
+  ],
+  "evidence_paths": [
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/logs/001/coder_runtime-001.log"
+  ],
+  "reproduction": "Run the listed commands from the repository root. Build outputs remain under dist/, not copied to artifacts due to size; hashes identify them. No WAD contents archived."
+}

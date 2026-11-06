@@ -1,0 +1,29 @@
+{
+  "run_id": "20261102T013114Z-preflight-239f0d",
+  "start_time": "2026-11-02T01:31:14.559954+00:00",
+  "source_revision": "e500c440656622db5ab3f8fb7df73d8b5998eeb3",
+  "dirty_working_tree": " M loop/agents.yaml\n?? evals/\n",
+  "scope": "preflight only",
+  "acceptance_criteria_path": "loop/acceptance.md",
+  "budgets": {
+    "implementation_attempts": 0
+  },
+  "usage": {
+    "shell_calls": 3,
+    "tokens": "unavailable",
+    "cost": "unavailable"
+  },
+  "manual_interventions": [],
+  "environment": {
+    "emcc --version": "unavailable: emcc not on PATH; required 4.0.18 not verified",
+    "claude --version": "unavailable: claude not on PATH",
+    "claude authentication": "not verifiable: Claude CLI unavailable; no credentials inspected",
+    "Playwright MCP": "unavailable in current exposed tool set; Claude MCP configuration not verifiable because CLI missing",
+    "loop/acceptance.md": "missing",
+    "tests/acceptance/run.sh": "missing",
+    "third_party/doomgeneric/": "present",
+    "assets/doom1.wad": "present",
+    "build.sh": "missing; implementation not started",
+    "build prerequisites": "node, npm, make, git, python3 on PATH"
+  }
+}

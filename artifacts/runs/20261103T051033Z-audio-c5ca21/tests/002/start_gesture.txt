@@ -1,0 +1,1 @@
+clicked control "Start Doom"

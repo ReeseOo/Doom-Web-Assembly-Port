@@ -1,0 +1,60 @@
+{
+  "time_utc": "2026-11-03T05:17:18.461524Z",
+  "source_revision": "206d765f31fa3ce673a35ea3726379267ae821ad",
+  "uncommitted_files": 12,
+  "source_digest": "d36c9b5a39e2886051de6528e7fbcd7d1a72f248f006be92613c163108d1cc1d",
+  "baseline_tag": "acceptance-v1",
+  "verdict": "PASS",
+  "complete": false,
+  "not_implemented": [
+    "R3",
+    "G1"
+  ],
+  "checks": [
+    {
+      "id": "B1",
+      "status": "pass",
+      "detail": "build.sh exit 0; dist/index.html and .wasm present"
+    },
+    {
+      "id": "B2",
+      "status": "pass",
+      "detail": "loop, assets, third_party, tests/accept match acceptance-v1"
+    },
+    {
+      "id": "R1",
+      "status": "pass",
+      "detail": "canvas drawn after start (clicked control \"Start Doom\"), no errors"
+    },
+    {
+      "id": "B3",
+      "status": "pass",
+      "detail": "loaded from /doom/ with application/wasm (doom.wasm)"
+    },
+    {
+      "id": "R2",
+      "status": "pass",
+      "detail": "8 distinct frames in 12 samples over ~12 s"
+    },
+    {
+      "id": "T1",
+      "status": "pass",
+      "detail": "avg 60.1 fps, max gap 17 ms"
+    },
+    {
+      "id": "I1",
+      "status": "pass",
+      "detail": "distinct view frames: idle 4, while turning 8, after release 1; blur-release (informational, not gating): ok"
+    },
+    {
+      "id": "I2",
+      "status": "pass",
+      "detail": "no scroll on arrows/Space; PageDown (informational) scrollY 605"
+    },
+    {
+      "id": "A1",
+      "status": "pass",
+      "detail": "contexts 1, running true; fire: base 0.0000 -> 0.0849 (rise); menu: base 0.0000 -> 0.0747 (rise)"
+    }
+  ]
+}

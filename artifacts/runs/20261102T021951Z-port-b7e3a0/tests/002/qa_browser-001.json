@@ -1,0 +1,54 @@
+{
+ "status": "fail",
+ "role": "qa_browser",
+ "task": "qa_browser-001",
+ "url": "http://127.0.0.1:51345/",
+ "source_snapshot": "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/002/source-snapshot.json",
+ "build_snapshot": "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/002/build-snapshot.json",
+ "source_revision": "e500c440656622db5ab3f8fb7df73d8b5998eeb3 (+uncommitted, inputs_sha256 636601a2...8102730)",
+ "summary": "Engine boots in a real browser and plays: WAD loads (doom1.wad, DOOM Shareware banner), menu and New Game flow reach E1M1 with correct HUD and rendering, arrows turn/move, Ctrl fire decrements ammo 50->49, play stays responsive after a simulated blur. Pacing about 35 distinct frames/s. Status is fail because of the finding(s) below and unverified items; no Asyncify abort or JS exception was observed.",
+ "verified": [
+  "WAD boot and engine init log",
+  "menu/New Game/episode/skill to E1M1 with correct visuals",
+  "turn left/right, forward movement",
+  "Ctrl fire: ammo 50->49",
+  "responsive input after synthetic blur",
+  "approx 35 fps frame-change rate while turning",
+  "console: only favicon.ico 404, no Asyncify/abort errors"
+ ],
+ "not_verified": [
+  "Space use on a door/switch (not exercised in the real level)",
+  "muzzle flash frame captured explicitly",
+  "real focus-loss blur recovery / stuck-key release (only synthetic window blur event; idle-frame comparison inconclusive)",
+  "key release behavior beyond visual observation",
+  "Start Doom button click: my click hit a disabled button and timed out; game then appeared running"
+ ],
+ "findings": [
+  {
+   "id": "F1",
+   "severity": "medium",
+   "owning_coder": "coder",
+   "summary": "Page boots straight into the attract-mode demo loop rather than a clear menu/new-game state, and the Start button was disabled on first load yet the game began running without a successful Start click; the Start gating/boot flow is unclear. Reproduce: load URL, observe button disabled then game running ~3s later.",
+   "evidence": [
+    "tests/002/qa_browser-001-01-load.png",
+    "tests/002/qa_browser-001-02-started.png"
+   ]
+  },
+  {
+   "id": "F2",
+   "severity": "low",
+   "owning_coder": "coder",
+   "summary": "favicon.ico returns 404 (console error).",
+   "evidence": [
+    "logs/002/qa_browser-001-console.log"
+   ]
+  }
+ ],
+ "evidence": {
+  "screenshots": "tests/002/qa_browser-001-*.png (valid gameplay evidence: 26-35; 01-25 are boot/attract/menu and a discarded invalid first pass)",
+  "actions": "tests/002/qa_browser-001-actions.json",
+  "console": "logs/002/qa_browser-001-console.log",
+  "tool_log": "logs/002/qa_browser-001.log"
+ },
+ "limitations": "Playwright-driven Chromium; synthetic key events; pacing measured by canvas JPEG change sampling (approximate). Server served dist; I did not re-hash served files against the build snapshot. First scripted pass was run against the attract demo and is discarded as proof. Reviewer static passes are not gameplay proof and were not relied on."
+}

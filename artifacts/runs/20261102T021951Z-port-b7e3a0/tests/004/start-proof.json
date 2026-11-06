@@ -1,0 +1,40 @@
+{
+  "browser": "141.0.7390.37",
+  "atLoad": [
+    {
+      "url": "http://127.0.0.1:45923/doom/index.html",
+      "status": 200,
+      "type": "text/html"
+    },
+    {
+      "url": "http://127.0.0.1:45923/doom/doom.js",
+      "status": 200,
+      "type": "text/javascript"
+    }
+  ],
+  "ready": [
+    {
+      "url": "http://127.0.0.1:45923/doom/index.html",
+      "status": 200,
+      "type": "text/html"
+    },
+    {
+      "url": "http://127.0.0.1:45923/doom/doom.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "http://127.0.0.1:45923/doom/doom.wasm",
+      "status": 200,
+      "type": "application/wasm"
+    },
+    {
+      "url": "http://127.0.0.1:45923/doom/doom.data",
+      "status": 200,
+      "type": "text/html"
+    }
+  ],
+  "afterStart": "Running Doom. Title/demo is normal; press Escape for the menu, then choose New Game.",
+  "nonblackPixels": 256000,
+  "errors": []
+}

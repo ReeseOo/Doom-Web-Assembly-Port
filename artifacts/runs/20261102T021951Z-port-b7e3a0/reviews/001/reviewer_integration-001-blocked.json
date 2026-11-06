@@ -1,0 +1,44 @@
+{
+  "status": "blocked",
+  "source_snapshot": {
+    "revision": "e500c440656622db5ab3f8fb7df73d8b5998eeb3",
+    "inputs_sha256": "eae7ca6c1ecc61903f7a784aa3ea613de4af71ecf0b2fe16cac768f1ea8b9baa",
+    "procedure": "git ls-files cached and untracked nonignored; exclude artifacts/, build/, dist/, .git/; sorted unique file paths with SHA256; SHA256 of JSON sorted keys inventory"
+  },
+  "build_snapshot": {
+    "inventory": [
+      {
+        "path": "dist/doom.data",
+        "sha256": "1d7d43be501e67d927e415e0b8f3e29c3bf33075e859721816f652a526cac771",
+        "bytes": 4196020
+      },
+      {
+        "path": "dist/doom.js",
+        "sha256": "dbefb63903eba922830f27c240fc745efe69be1d70e436268c14b7e80fb28610",
+        "bytes": 167416
+      },
+      {
+        "path": "dist/doom.wasm",
+        "sha256": "b1e361544189a4a57dbcec56d8c8cc2cea652650ef3f69231cb9fb5a325b79cf",
+        "bytes": 574753
+      },
+      {
+        "path": "dist/index.html",
+        "sha256": "4e832d1fd66e664e95839e293265be507e70ca1580cdc375775c6fa7b9325b34",
+        "bytes": 3381
+      }
+    ],
+    "sha256": "b919b958c50edabba96985025f8c1ba15db1e951516ab1ce40e2466264556898"
+  },
+  "summary": "Independent integration reviewer failed to start.",
+  "findings": [
+    {
+      "id": "integration-harness-001",
+      "owner": "environment",
+      "summary": "harness claude-code failed: start: exec: \"claude\": executable file not found in $PATH"
+    }
+  ],
+  "evidence_paths": [
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/handoffs/001/reviewer_integration-001-response.json"
+  ]
+}

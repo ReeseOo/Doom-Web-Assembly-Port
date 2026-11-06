@@ -1,0 +1,9 @@
+ M loop/agents.yaml
+ M tests/accept/CRITERIA.md
+ M tests/accept/browser.spec.js
+?? .playwright-mcp/
+?? artifacts/manual-check/
+?? artifacts/runs/
+?? artifacts/state.json
+?? evals/
+?? tests/dev/audio_keyboard_test.cjs

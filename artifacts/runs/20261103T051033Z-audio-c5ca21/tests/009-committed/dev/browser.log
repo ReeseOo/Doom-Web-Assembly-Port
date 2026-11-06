@@ -1,0 +1,20 @@
+== music_worker_browser
+      "inputsSent": 53
+    }
+  ],
+  "lifecycle": [
+    "replace cancels job; stale completion ignored; pause cancels; resume restarts; stop releases worker"
+  ],
+  "pass": true
+}
+rc=0
+== viewport_test
+      "scrollY": 0,
+      "pageHeight": 700,
+      "focused": "canvas"
+    },
+    "PageDown outside game scrolls a short page normally"
+  ],
+  "status": "pass"
+}
+rc=0

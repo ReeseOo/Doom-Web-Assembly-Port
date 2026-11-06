@@ -1,0 +1,9 @@
+{
+  "command": "node tests/dev/video_input_test.cjs",
+  "cwd": "/Users/reeseoo/code/ucla/loop_engineering/fellowship-loop-capstone",
+  "start_time": "2026-11-02T02:48:40.015741+00:00",
+  "end_time": "2026-11-02T02:48:40.128357+00:00",
+  "exit_code": 0,
+  "stdout": "PASS: RGB/opaque alpha, memory growth, down/up, repeats, modifier aliases, blur/visibility, focus/defaults, overflow recovery, title, idempotence\n",
+  "stderr": ""
+}

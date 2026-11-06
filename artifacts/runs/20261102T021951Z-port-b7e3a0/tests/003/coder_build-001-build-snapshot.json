@@ -1,0 +1,30 @@
+{
+  "inventory": [
+    {
+      "path": "dist/doom.data",
+      "sha256": "1d7d43be501e67d927e415e0b8f3e29c3bf33075e859721816f652a526cac771",
+      "bytes": 4196020
+    },
+    {
+      "path": "dist/doom.js",
+      "sha256": "9e7dc93f2756728eab2e9c20e1df200ab9e34a1937a439d8c7a39c3e3763d94a",
+      "bytes": 167450
+    },
+    {
+      "path": "dist/doom.wasm",
+      "sha256": "df5d984bf95b68b04c7e713be72a7d604142135f3bd24c696232eb9a6056a8b9",
+      "bytes": 574759
+    },
+    {
+      "path": "dist/index.html",
+      "sha256": "018e676bc714034151daa919beb6b930b0858e1730a4816c5ed85bb712def387",
+      "bytes": 3994
+    }
+  ],
+  "comparison_to_002": {
+    "dist/doom.data": true,
+    "dist/doom.js": false,
+    "dist/doom.wasm": true,
+    "dist/index.html": false
+  }
+}

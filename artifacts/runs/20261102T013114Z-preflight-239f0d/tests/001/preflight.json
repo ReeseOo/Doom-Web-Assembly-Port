@@ -1,0 +1,20 @@
+{
+  "status": "blocked",
+  "scope": "preflight only",
+  "time": "2026-11-02T01:31:14.559954+00:00",
+  "checks": {
+    "emcc --version": "unavailable: emcc not on PATH; required 4.0.18 not verified",
+    "claude --version": "unavailable: claude not on PATH",
+    "claude authentication": "not verifiable: Claude CLI unavailable; no credentials inspected",
+    "Playwright MCP": "unavailable in current exposed tool set; Claude MCP configuration not verifiable because CLI missing",
+    "loop/acceptance.md": "missing",
+    "tests/acceptance/run.sh": "missing",
+    "third_party/doomgeneric/": "present",
+    "assets/doom1.wad": "present",
+    "build.sh": "missing; implementation not started",
+    "build prerequisites": "node, npm, make, git, python3 on PATH"
+  },
+  "next_action": "User must supply missing prerequisites and acceptance files before requesting another preflight or run.",
+  "implementation_started": false,
+  "build_or_acceptance_executed": false
+}

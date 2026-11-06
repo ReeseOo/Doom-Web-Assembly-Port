@@ -1,0 +1,6 @@
+{
+  "tool": "transfer_task",
+  "agent": "reviewer_integration",
+  "error": "harness claude-code failed: start: exec: \"claude\": executable file not found in $PATH",
+  "time": "2026-11-02T02:52:43.458258+00:00"
+}

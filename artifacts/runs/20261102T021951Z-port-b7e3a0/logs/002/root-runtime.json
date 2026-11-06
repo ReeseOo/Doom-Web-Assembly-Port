@@ -1,0 +1,12 @@
+{
+  "name": "runtime",
+  "command": "python3 tests/dev/runtime_test.py",
+  "cwd": "/Users/reeseoo/code/ucla/loop_engineering/fellowship-loop-capstone",
+  "start_time": "2026-11-02T03:01:19.015806+00:00",
+  "end_time": "2026-11-02T03:01:19.198656+00:00",
+  "exit_code": 0,
+  "expected": 0,
+  "passed": true,
+  "stdout": "PASS: monotonic ms, zero/nonzero sleep forwarding, persistent argv, single startup, sequential nested waits and outer yields\n",
+  "stderr": ""
+}

@@ -1,0 +1,29 @@
+[
+  {
+    "command": "claude --version",
+    "cwd": "/Users/reeseoo/code/ucla/loop_engineering/fellowship-loop-capstone",
+    "start_time": "2026-11-02T02:56:26.285219+00:00",
+    "end_time": "2026-11-02T02:56:26.298058+00:00",
+    "exit_code": 0,
+    "stdout": "2.1.316 (Claude Code)\n",
+    "stderr": ""
+  },
+  {
+    "command": "source \"$HOME/emsdk/emsdk_env.sh\" >/dev/null 2>&1; emcc --version",
+    "cwd": "/Users/reeseoo/code/ucla/loop_engineering/fellowship-loop-capstone",
+    "start_time": "2026-11-02T02:56:26.298074+00:00",
+    "end_time": "2026-11-02T02:56:26.435954+00:00",
+    "exit_code": 0,
+    "stdout": "emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 4.0.18 (fae107463db4d20a276a27ede393048deaeebf76)\nCopyright (C) 2025 the Emscripten authors (see AUTHORS.txt)\nThis is free and open source software under the MIT license.\nThere is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+    "stderr": ""
+  },
+  {
+    "command": "node --version; npm --version; make --version; git --version; python3 --version; test -d third_party/doomgeneric && test -s assets/doom1.wad",
+    "cwd": "/Users/reeseoo/code/ucla/loop_engineering/fellowship-loop-capstone",
+    "start_time": "2026-11-02T02:56:26.435977+00:00",
+    "end_time": "2026-11-02T02:56:26.624613+00:00",
+    "exit_code": 0,
+    "stdout": "v24.21.0\n12.2.0\nGNU Make 3.81\nCopyright (C) 2006  Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.\nThere is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A\nPARTICULAR PURPOSE.\n\nThis program built for i386-apple-darwin11.3.0\ngit version 2.56.0\nPython 3.11.2\n",
+    "stderr": ""
+  }
+]

@@ -1,0 +1,33 @@
+{
+  "role": "coder_video_input",
+  "status": "component_checks_passed",
+  "source_snapshot": {
+    "revision": "e500c440656622db5ab3f8fb7df73d8b5998eeb3",
+    "assigned_inputs_sha256": "d441282c199afd0f60c66e9df7bdc2e2337fe1bd2a4a87d2dd7df988b5f3f672",
+    "changed_file_sha256": {
+      "platform/video_input.c": "01e9f1e096b67cc51390090b59778982cbf0ab3f3f282f572365fabc2f231b15",
+      "platform/video_input.h": "5ccb06d59526f366de99a50e9db5ca6bdcd9baf8769e7153eb8cd845525add50",
+      "tests/dev/video_input_test.cjs": "8fc7c8709b38ba2e6d65fd6079c72875d4a5b89067bead93ddb5c269790a2251"
+    }
+  },
+  "build_snapshot": null,
+  "checks": [
+    {
+      "command": "node tests/dev/video_input_test.cjs",
+      "exit_code": 0,
+      "result": "Pass: actual EM_JS bodies executed in mocked DOM: primary RGB and alpha, replacement memory view, key press/release, repeat suppression, modifier alias reference counts, focus/default prevention, canvas/window blur, visibility release, menu/letter/weapon translations, bounded overflow reconciliation, safe title, initialization idempotence."
+    },
+    {
+      "command": "source /Users/reeseoo/Developer/emsdk/emsdk_env.sh; emcc -Wall -Wextra -Werror -Ithird_party/doomgeneric -c platform/video_input.c -o build/video_input.o",
+      "compiler": "Emscripten 4.0.18",
+      "exit_code": 0,
+      "result": "Component compilation passed without warnings."
+    }
+  ],
+  "limitations": [
+    "Mocked DOM is not an actual browser and does not establish engine gameplay or browser event delivery.",
+    "No full build attempted: duplicate callbacks remain in runtime-owned platform/doomgeneric_wasm.c and main is runtime coder responsibility.",
+    "Generated component object omitted; reproduce with command above."
+  ],
+  "log": "artifacts/runs/20261102T021951Z-port-b7e3a0/logs/001/coder_video_input-001.log"
+}

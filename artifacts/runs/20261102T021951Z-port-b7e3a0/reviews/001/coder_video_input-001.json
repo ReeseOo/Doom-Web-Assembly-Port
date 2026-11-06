@@ -1,0 +1,42 @@
+{
+  "role": "coder_video_input",
+  "status": "blocked_on_runtime_integration",
+  "current_task": "Implement bounded video/input callbacks and hand off runtime dependencies.",
+  "source_snapshot": {
+    "revision": "e500c440656622db5ab3f8fb7df73d8b5998eeb3",
+    "assigned_inputs_sha256": "d441282c199afd0f60c66e9df7bdc2e2337fe1bd2a4a87d2dd7df988b5f3f672",
+    "changed_file_hashes": "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/001/coder_video_input-001.json"
+  },
+  "build_snapshot": null,
+  "build_snapshot_reason": "Component compiled successfully; no integrated build until runtime owner removes duplicate stubs and adds runtime entrypoint/timing.",
+  "summary": "Implemented DG_Init, DG_DrawFrame, DG_GetKey and DG_SetWindowTitle in platform/video_input.c and documented interface/controls in platform/video_input.h. Converts 0x00RRGGBB into opaque canvas RGBA, reacquires heap view for memory growth, translates down/up, reference-counts shared modifiers, suppresses repeat, bounds queue with state reconciliation, releases keys on canvas/window blur or hidden document. Existing web controls match implementation; no web edit necessary.",
+  "changed_files": ["platform/video_input.c", "platform/video_input.h", "tests/dev/video_input_test.cjs"],
+  "findings": [
+    {
+      "severity": "blocking",
+      "owner": "runtime coder",
+      "description": "Current ownership instructions explicitly prohibit editing platform/doomgeneric_wasm.c, superseding the saved task's requested location and stub removal. Thus that file remains untouched with six stubs. Remove its duplicate DG_Init/DG_DrawFrame/DG_GetKey/DG_SetWindowTitle definitions and implement/move DG_SleepMs and DG_GetTicksMs plus main. Build glob already includes platform/video_input.c. Do not copy its callbacks into another translation unit."
+    },
+    {
+      "severity": "verification_pending",
+      "owner": "root/tester",
+      "description": "Real browser/gameplay verification pending. Mock-DOM tests and standalone compilation do not establish real focus behavior, timing, WAD access or gameplay."
+    }
+  ],
+  "interface_dependencies": {
+    "implementation": "platform/video_input.c",
+    "header": "platform/video_input.h",
+    "browser": "Uses existing global Module.canvas with #canvas fallback; owns Canvas 2D. No extra exports or web API required. Page Start calls main and focuses canvas, pointerdown refocuses. Existing page documents arrow move/turn, Ctrl fire, Space use, Shift run, Enter/Escape menus; header also documents Alt strafe, Tab map and digits weapons.",
+    "runtime": "Runtime owns main, clock, sleep and removal of original stubs. Asyncify/event yielding required to deliver input; no timing callbacks here.",
+    "queue": "At most 1024 pending events; overflow resynchronizes engine-delivered keys to physical holds, preserving releases rather than silently dropping them. Extremely excessive input may lose transient taps but cannot leave a permanently held key."
+  },
+  "evidence_paths": [
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/logs/001/coder_video_input-001.log",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/001/coder_video_input-001.json"
+  ],
+  "next_action": "Runtime coder removes original callback stubs, supplies main and cooperative timing, then root builds with Emscripten 4.0.18 and tester verifies actual browser rendering, menu transitions, movement/fire/use, and focus-loss release.",
+  "stopping_reason": "Permitted component implementation and checks complete; integration requires runtime-owned edits.",
+  "usage": "Unavailable: API token/cost accounting not exposed.",
+  "omitted_large_evidence": "No screenshot or integrated browser artifact produced. Generated build/video_input.o is not archived; reproduce component compile and node checks using commands in test evidence. Full command log retained.",
+  "permissions": "Did not modify platform/doomgeneric_wasm.c, build.sh, web/, protected checks, loop/, assets/, third_party/ or shared state/manifest/summary. Preexisting changes left untouched."
+}

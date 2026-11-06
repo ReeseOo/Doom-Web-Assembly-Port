@@ -1,0 +1,7 @@
+{
+  "revision": "e500c440656622db5ab3f8fb7df73d8b5998eeb3",
+  "inputs_sha256": "0e0d83c1360d2f0c37c4ce1303d1257de058a71a861b380b5810a9fac8e04735",
+  "inventory": "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/003/coder_build-001-source-inventory.json",
+  "procedure": "git ls-files cached and untracked nonignored; exclude artifacts/, build/, dist/, .git/; sorted unique file paths with SHA256 and bytes; SHA256 of JSON sorted keys inventory",
+  "note": "Inventory includes pre-existing edits outside ownership. No changes made to those files."
+}

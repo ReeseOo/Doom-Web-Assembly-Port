@@ -1,0 +1,2 @@
+B1	pass	build.sh exit 0; dist/index.html and .wasm present
+B2	pass	loop, assets, third_party, tests/accept match acceptance-v1

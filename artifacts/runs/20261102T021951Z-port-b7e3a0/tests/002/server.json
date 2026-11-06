@@ -1,0 +1,8 @@
+{
+  "pid": 21019,
+  "url": "http://127.0.0.1:51345/",
+  "command": "python3 -m http.server 51345 --bind 127.0.0.1 --directory dist",
+  "start_time": "2026-11-02T03:06:08.252191+00:00",
+  "status": "closed",
+  "end_time": "2026-11-02T03:08:46.730687+00:00"
+}

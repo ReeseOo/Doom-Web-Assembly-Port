@@ -1,0 +1,39 @@
+{
+  "status": "blocked",
+  "source_snapshot": {
+    "revision": "e500c440656622db5ab3f8fb7df73d8b5998eeb3",
+    "inputs_sha256": "a6068874db66d76041ae23e6cf5e6b9afa15895841025ca7f380dabf4df1ea83",
+    "procedure": "git ls-files cached and untracked nonignored; exclude artifacts/, build/, dist/, .git/; sorted unique file paths with SHA256; SHA256 of JSON sorted keys inventory"
+  },
+  "build_snapshot": "unavailable: no build requested",
+  "summary": "Preflight complete with blockers: required Emscripten unavailable; both requested agent invocations failed at claude-code harness startup.",
+  "findings": [
+    {
+      "id": "emcc-unavailable",
+      "owner": "environment",
+      "summary": "emcc not on PATH or checked common locations; Emscripten 4.0.18 not verified"
+    },
+    {
+      "id": "claude-harness-failed",
+      "owner": "environment",
+      "summary": "reviewer_integration invocation failed: harness claude-code failed: wait: exit status 1; authentication not verified"
+    },
+    {
+      "id": "browser-harness-failed",
+      "owner": "environment",
+      "summary": "qa_browser invocation failed: harness claude-code failed: wait: exit status 1; Playwright MCP navigation/screenshot inspection not performed"
+    }
+  ],
+  "next_action": "Stop as requested. Restore Emscripten 4.0.18 availability and repair claude-code harness/authentication, then explicitly request another preflight.",
+  "manual_interventions": [
+    "User explicitly requested new preflight only; prior blocked implementation run preserved."
+  ],
+  "usage_notes": {
+    "shell_calls_this_invocation": 4,
+    "delegations_attempted": 2,
+    "delegations_returned_successfully": 0,
+    "implementation_attempts_used": 0,
+    "tokens": "unavailable",
+    "cost": "unavailable"
+  }
+}

@@ -1,0 +1,6 @@
+?? .playwright-mcp/
+?? artifacts/manual-check/
+?? artifacts/runs/
+?? artifacts/state.json
+?? evals/
+?? tests/dev/audio_keyboard_test.cjs

@@ -1,0 +1,61 @@
+{
+  "run_id": "20261102T021951Z-port-b7e3a0",
+  "start_time": "2026-11-02T02:19:51.350127+00:00",
+  "source_snapshot": {
+    "revision": "e500c440656622db5ab3f8fb7df73d8b5998eeb3",
+    "inputs_sha256": "eae7ca6c1ecc61903f7a784aa3ea613de4af71ecf0b2fe16cac768f1ea8b9baa",
+    "procedure": "git ls-files cached and untracked nonignored; exclude artifacts/, build/, dist/, .git/; sorted unique file paths with SHA256; SHA256 of JSON sorted keys inventory"
+  },
+  "dirty_working_tree": " M loop/agents.yaml\n?? artifacts/runs/\n?? artifacts/state.json\n?? evals/\n",
+  "environment_evidence": "artifacts/runs/20261102T021951Z-port-b7e3a0/logs/001/prerequisites.json",
+  "budgets": {
+    "maximum_attempts": 5
+  },
+  "usage": {
+    "shell_calls": 3,
+    "delegations_attempted": 1,
+    "tokens": "unavailable",
+    "cost": "unavailable",
+    "implementation_attempts_used": 2,
+    "shell_calls_this_resume": 3,
+    "delegations_attempted_this_resume": 5,
+    "delegations_completed_this_resume": 4
+  },
+  "manual_interventions": [
+    "User requested resume after installing SDK; SDK environment explicitly sourced for compiler commands. Prior run was preflight-only with no implementation budget.",
+    "User requested resume; Claude Code 2.1.316 now resolves on inherited PATH."
+  ],
+  "verification_commands": [
+    "source \"$HOME/emsdk/emsdk_env.sh\"; bash ./build.sh",
+    "Documented applicable tests",
+    "Independent reviews",
+    "Live browser QA"
+  ],
+  "status": "in_progress",
+  "build_snapshot": {
+    "inventory": [
+      {
+        "path": "dist/doom.data",
+        "sha256": "1d7d43be501e67d927e415e0b8f3e29c3bf33075e859721816f652a526cac771",
+        "bytes": 4196020
+      },
+      {
+        "path": "dist/doom.js",
+        "sha256": "dbefb63903eba922830f27c240fc745efe69be1d70e436268c14b7e80fb28610",
+        "bytes": 167416
+      },
+      {
+        "path": "dist/doom.wasm",
+        "sha256": "b1e361544189a4a57dbcec56d8c8cc2cea652650ef3f69231cb9fb5a325b79cf",
+        "bytes": 574753
+      },
+      {
+        "path": "dist/index.html",
+        "sha256": "4e832d1fd66e664e95839e293265be507e70ca1580cdc375775c6fa7b9325b34",
+        "bytes": 3381
+      }
+    ],
+    "sha256": "b919b958c50edabba96985025f8c1ba15db1e951516ab1ce40e2466264556898"
+  },
+  "stopping_reason": "harness claude-code failed: start: exec: \"claude\": executable file not found in $PATH"
+}

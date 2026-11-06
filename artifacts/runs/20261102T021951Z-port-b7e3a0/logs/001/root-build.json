@@ -1,0 +1,9 @@
+{
+  "command": "source \"$HOME/emsdk/emsdk_env.sh\" >/dev/null 2>&1; bash ./build.sh",
+  "cwd": "/Users/reeseoo/code/ucla/loop_engineering/fellowship-loop-capstone",
+  "start_time": "2026-11-02T02:48:35.973165+00:00",
+  "end_time": "2026-11-02T02:48:40.015435+00:00",
+  "exit_code": 0,
+  "stdout": "Built dist/index.html, dist/doom.js, dist/doom.wasm, dist/doom.data\n",
+  "stderr": "third_party/doomgeneric/r_segs.c:399:19: warning: taking the absolute value of unsigned type 'angle_t' (aka 'unsigned int') has no effect [-Wabsolute-value]\n  399 |     offsetangle = abs(rw_normalangle-rw_angle1);\n      |                   ^\nthird_party/doomgeneric/r_segs.c:399:19: note: remove the call to 'abs' since unsigned values cannot be negative\n  399 |     offsetangle = abs(rw_normalangle-rw_angle1);\n      |                   ^~~\n1 warning generated.\n"
+}

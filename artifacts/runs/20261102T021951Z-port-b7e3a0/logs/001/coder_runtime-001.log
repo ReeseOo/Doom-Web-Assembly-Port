@@ -1,0 +1,45 @@
+Runtime build validation
+e500c440656622db5ab3f8fb7df73d8b5998eeb3
+emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 4.0.18 (fae107463db4d20a276a27ede393048deaeebf76)
+Copyright (C) 2025 the Emscripten authors (see AUTHORS.txt)
+This is free and open source software under the MIT license.
+There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+third_party/doomgeneric/r_segs.c:399:19: warning: taking the absolute value of unsigned type 'angle_t' (aka 'unsigned int') has no effect [-Wabsolute-value]
+  399 |     offsetangle = abs(rw_normalangle-rw_angle1);
+      |                   ^
+third_party/doomgeneric/r_segs.c:399:19: note: remove the call to 'abs' since unsigned values cannot be negative
+  399 |     offsetangle = abs(rw_normalangle-rw_angle1);
+      |                   ^~~
+1 warning generated.
+platform/doomgeneric_wasm.c:4:36: warning: '/*' within block comment [-Wcomment]
+    4 |  * when the build includes platform/*.c.
+      |                                    ^
+1 warning generated.
+Built dist/index.html, dist/doom.js, dist/doom.wasm, dist/doom.data
+
+Development runtime test (native mocked Emscripten, ASan/UBSan)
+PASS: monotonic ms, zero/nonzero sleep forwarding, persistent argv, single startup, sequential nested waits and outer yields
+
+Rebuild after comment warning cleanup
+third_party/doomgeneric/r_segs.c:399:19: warning: taking the absolute value of unsigned type 'angle_t' (aka 'unsigned int') has no effect [-Wabsolute-value]
+  399 |     offsetangle = abs(rw_normalangle-rw_angle1);
+      |                   ^
+third_party/doomgeneric/r_segs.c:399:19: note: remove the call to 'abs' since unsigned values cannot be negative
+  399 |     offsetangle = abs(rw_normalangle-rw_angle1);
+      |                   ^~~
+1 warning generated.
+Built dist/index.html, dist/doom.js, dist/doom.wasm, dist/doom.data
+
+Callback owners
+platform/doomgeneric_runtime.c:19:uint32_t DG_GetTicksMs(void)
+platform/doomgeneric_runtime.c:33:void DG_SleepMs(uint32_t ms)
+platform/doomgeneric_runtime.c:42:int main(int argc, char **argv)
+platform/video_input.c:131:void DG_Init(void)
+platform/video_input.c:136:void DG_DrawFrame(void)
+platform/video_input.c:141:int DG_GetKey(int *pressed, unsigned char *key)
+platform/video_input.c:147:void DG_SetWindowTitle(const char *title)
+
+Source diff check
+loop/agents.yaml:56: trailing whitespace.
++      Do not implement port code yourself. 

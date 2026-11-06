@@ -1,0 +1,86 @@
+{
+  "run_id": "20261103T051033Z-audio-c5ca21",
+  "attempt": 9,
+  "task": "Resume gate complete; blocked on protected baseline alignment",
+  "last_result": {
+    "build_exit": 0,
+    "evidence": "artifacts/runs/20261103T051033Z-audio-c5ca21/resumes/20261104T064207Z/build.log",
+    "gate_exit": 1,
+    "gate_evidence": "artifacts/runs/20261103T051033Z-audio-c5ca21/resumes/20261104T064207Z/tests/results.json",
+    "verdict": "FAIL",
+    "complete": false,
+    "implemented_checks_passed": 12,
+    "source_revision": "f0937a2c16f589adc9948e6c5888c5aee85b0c83",
+    "source_digest": "48e7bc3a01d34f831232b8de3111540e0f191f74a03d183c048ab10dfe0abdc0"
+  },
+  "next_action": "After student aligns the intended protected acceptance baseline, rerun build and gate; then obtain independent reviews and browser QA if gate passes.",
+  "status": "unfixable",
+  "needs_student": [
+    {
+      "check_id": "B2",
+      "action": "Review and freeze intended student-owned protected changes against acceptance-v1; agents will not edit or revert these paths or move the tag.",
+      "evidence": "artifacts/runs/20261103T051033Z-audio-c5ca21/resumes/20261104T064207Z/tests/B2_protected.diff"
+    }
+  ],
+  "manifest": "artifacts/runs/20261103T051033Z-audio-c5ca21/manifest.json",
+  "milestone_commit": {
+    "exit": 0,
+    "revision": "1734e8057d05ceb522021c1d49db3af99f923414"
+  },
+  "reviews": {
+    "correctness": {
+      "status": "pass",
+      "report": "artifacts/runs/20261103T051033Z-audio-c5ca21/reviews/009-correctness.md"
+    },
+    "integration": {
+      "status": "pass",
+      "report": "artifacts/runs/20261103T051033Z-audio-c5ca21/reviews/009-integration.md"
+    }
+  },
+  "qa": {
+    "status": "pass",
+    "report": "artifacts/runs/20261103T051033Z-audio-c5ca21/qa/009/report.md",
+    "followup_report": "artifacts/runs/20261103T051033Z-audio-c5ca21/qa/009-followup/report.md",
+    "door_opened": true,
+    "enemy_combat_attempted": true,
+    "enemy_kill": "not confirmed (observational)",
+    "console_errors": 0,
+    "save_reload": "pass",
+    "audio": "WebAudio verified; headless audibility not claimed"
+  },
+  "milestone_003_commit": "b75fd6d8578ad3c9a5a9765d088057464f4acd90",
+  "resource_usage": {
+    "counted_attempts": 3,
+    "max_attempts": 12,
+    "gate_only_reruns": 3,
+    "integration_harness_failures": 5,
+    "qa_harness_failures": 4
+  },
+  "unresolved_findings": [
+    {
+      "check_id": "B2",
+      "classification": "missing aligned protected baseline",
+      "evidence": "artifacts/runs/20261103T051033Z-audio-c5ca21/resumes/20261104T064207Z/tests/results.json"
+    }
+  ],
+  "known_limits": [],
+  "resume_evidence": "artifacts/runs/20261103T051033Z-audio-c5ca21/resumes/20261104T064207Z",
+  "stop_reason": "UNFIXABLE",
+  "stopping_condition": "Every remaining failure is the protected-baseline prerequisite B2; no authorized port change can resolve it.",
+  "gameplay_investigation": {
+    "report": "artifacts/runs/20261103T051033Z-audio-c5ca21/qa/user-gameplay-investigation/report.md",
+    "result": "Door opened with Space when facing within use range; two zombiemen visible; attacks reduced health 100 to 79; firing reduced ammo. No defect reproduced.",
+    "limits": [
+      "No enemy kill confirmed",
+      "Instant taps inconclusive",
+      "Navigation-only map reveal and noclip toggled off before moving"
+    ]
+  },
+  "attempts_used": 9,
+  "commit": "f0937a2c16f589adc9948e6c5888c5aee85b0c83",
+  "completed_at": "2026-11-04T06:44:54.848860+00:00",
+  "milestone_commits": [
+    "29abdf01c4df9e66673eb234f979797a46a60f2b",
+    "f0937a2c16f589adc9948e6c5888c5aee85b0c83"
+  ]
+}

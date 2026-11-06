@@ -1,0 +1,4 @@
+platform/audio.c:177:47: error: incompatible function pointer types initializing 'boolean (*)(int)' (aka 'unsigned int (*)(int)') with an expression of type 'int (int)' [-Wincompatible-function-pointer-types]
+  177 |     UpdateSoundParams, StartSound, StopSound, SoundIsPlaying, NULL
+      |                                               ^~~~~~~~~~~~~~
+1 error generated.

@@ -1,0 +1,20 @@
+ M platform/README.md
+ M platform/doomgeneric_wasm.c
+ M web/index.html
+?? .playwright-mcp/
+?? artifacts/manual-check/
+?? artifacts/runs/
+?? artifacts/state.json
+?? build.sh
+?? evals/
+?? platform/doomgeneric_runtime.c
+?? platform/video_input.c
+?? platform/video_input.h
+?? tests/dev/
+9339d0c857eb227fcbf1d6db61bacb12b9ac4b00
+acceptance-v1
+/Users/reeseoo/emsdk/upstream/emscripten/emcc
+/usr/local/bin/docker
+[]
+Error response from daemon: No such image: doom-wasm-toolchain:latest
+/Users/reeseoo/emsdk

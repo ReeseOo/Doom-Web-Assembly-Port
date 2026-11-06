@@ -1,0 +1,2 @@
+b62d60778a48d95ec5a77fe109e69b5b254b6e9b
+Add R3, G1, M1, S1 checks and new coder scope

@@ -1,0 +1,50 @@
+{
+  "role": "coder_build",
+  "status": "blocked",
+  "current_task": "Bounded build/WAD/browser page implementation; ready for sequential C integration.",
+  "source_snapshot": {
+    "revision": "e500c440656622db5ab3f8fb7df73d8b5998eeb3",
+    "inputs_sha256": "a6068874db66d76041ae23e6cf5e6b9afa15895841025ca7f380dabf4df1ea83",
+    "changed_file_sha256": {
+      "build.sh": "9f8c492c348e7e5465508f811c98eced08a9acfb8db92c3881a0177d99a6f54c",
+      "web/index.html": "4e832d1fd66e664e95839e293265be507e70ca1580cdc375775c6fa7b9325b34",
+      "platform/README.md": "d82a5e44f133df0d7b9a7da5e7e80350b6be59854e43895b5812087fc4f816ce"
+    }
+  },
+  "build_snapshot": null,
+  "build_snapshot_reason": "No successful build with required main; initial probe produced discarded-engine output and is not a valid deliverable.",
+  "summary": "Added pinned reproducible Emscripten build with strict entrypoint export, supplied WAD preload at /doom1.wad, responsive focusable browser canvas, explicit Start button, status/errors and fullscreen. Does not claim final acceptance.",
+  "changed_files": [
+    "build.sh",
+    "web/index.html",
+    "platform/README.md"
+  ],
+  "findings": [
+    {
+      "severity": "blocking",
+      "owner": "runtime coder",
+      "description": "Implement main in platform/doomgeneric_runtime.c and real cooperative timing; final build fails on undefined _main as intended."
+    },
+    {
+      "severity": "blocking",
+      "owner": "video/input coder",
+      "description": "Implement framebuffer conversion and input callbacks in platform/doomgeneric_wasm.c; all callbacks still stubs."
+    },
+    {
+      "severity": "warning",
+      "owner": "root/reviewer",
+      "description": "Read-only supplied r_segs.c:399 warns abs(unsigned) has no effect. Not altered."
+    }
+  ],
+  "interface_handoff": "artifacts/runs/20261102T021951Z-port-b7e3a0/handoffs/001/coder_build-001-interface.json",
+  "evidence_paths": [
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/logs/001/coder_build-001.log",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/001/coder_build-001.json",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/handoffs/001/coder_build-001-interface.json"
+  ],
+  "next_action": "Give interface handoff to video/input and runtime coders, then source emsdk_env.sh, run ./build.sh and independently verify browser C WAD access, frame output, timing, input and gameplay.",
+  "stopping_reason": "Completed permitted implementation; platform C integration explicitly assigned to following coders.",
+  "usage": "Unavailable (API token/cost accounting not exposed).",
+  "omitted_large_evidence": "Generated partial dist and build products are not archived; no runnable artifact claimed. Reproduce from repository with Emscripten 4.0.18 and ./build.sh (currently expected to fail for missing main). Full command log retained; no server started.",
+  "permissions": "Did not modify loop/, assets/, third_party/, protected tests, platform C, or shared state/manifest/summary. Pre-existing loop/agents.yaml changes and untracked evals/artifacts left untouched."
+}

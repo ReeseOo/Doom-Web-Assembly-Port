@@ -1,0 +1,340 @@
+diff --git a/loop/agents.yaml b/loop/agents.yaml
+index e69de29..5f85838 100644
+--- a/loop/agents.yaml
++++ b/loop/agents.yaml
+@@ -0,0 +1,335 @@
++# DISCUSSION DRAFT: native root + three coders + two reviewers + browser QA.
++# Student owns and edits this configuration. Port agents must not edit loop/.
++# Uses the fellowship's supplied doomgeneric engine, not a separate source clone.
++# Run directly: docker agent run loop/agents.yaml --working-dir .
++# No loop.sh launcher or evidence.py dependency. Root runs checks directly.
++# Start by reading DRAFT_GUIDE.md. This is not a completed capstone submission.
++
++# Keep agents focused — Each agent should have a clear, narrow role
++# Write clear descriptions — The coordinator uses descriptions to decide who to delegate to
++# Give minimal tools — Only give each agent the tools it needs for its specific role
++# Use the think tool when needed —
++# For models without native reasoning, give coordinators the think tool so they reason about delegation. Models with built-in thinking (e.g., via thinking_budget) don't need it
++# Use the right model — Use capable models for complex reasoning, cheap models for simple tasks
++# Choose the right pattern — Use sub_agents for hierarchical task delegation, handoffs for pipeline workflows and conversational routing
++
++
++models:
++  coordinator:
++    provider: chatgpt
++    model: gpt-6.1-sol
++    thinking_budget: medium
++  coder:
++    provider: chatgpt
++    model: gpt-6.1-sol
++    thinking_budget: medium
++  reviewer:
++    provider: chatgpt
++    model: gpt-6.1-sol
++    thinking_budget: high
++
++agents:
++  root:
++    model: coordinator
++    description: Coordinate implementation, verification, repair and saved state directly in Docker Agent
++    max_iterations: 60
++    max_tool_result_tokens: 2500
++    max_old_tool_call_tokens: 10000
++    sub_agents:
++      - coder_build
++      - coder_video_input
++      - coder_runtime
++      - reviewer_correctness
++      - reviewer_integration
++      - qa_browser
++    toolsets:
++      - type: filesystem
++        allow_list: ["."]
++      - type: shell
++    instruction: |
++      You operate the student's existing design; never design or change the loop.
++      Read AGENTS.md, README.md, loop/README.md and artifacts/README.md.
++      There is NO shell wrapper or external launcher.
++      You must initialize/discover run paths, delegate, verify and repeat yourself.
++      Recover current facts from artifacts when starting/resuming, not chat memory.
++      Never change loop/, assets/, third_party/, or student-protected tests.
++      Do not implement port code yourself. 
++      Use only supplied third_party/doomgeneric/ and assets/doom1.wad.
++      Do not consult existing DOOM browser ports or import another engine.
++      All durable run records belong under artifacts/, using this layout:
++        artifacts/README.md
++        artifacts/state.json
++        artifacts/runs/<unique-run-id>/manifest.json
++        artifacts/runs/<unique-run-id>/handoffs/<attempt-number>/
++        artifacts/runs/<unique-run-id>/reviews/<attempt-number>/
++        artifacts/runs/<unique-run-id>/logs/<attempt-number>/
++        artifacts/runs/<unique-run-id>/tests/<attempt-number>/
++        artifacts/runs/<unique-run-id>/summary.md
++      Angle-bracket names are placeholders for this description only. Before any
++      handoff, replace them with actual values and give the child exact repo-relative
++      input and output paths. Never send unresolved placeholders or depend on an
++      environment variable. There is no ROUND_DIR and no evidence.py dependency.
++      Number attempts 001, 002, etc. Preserve every attempt, including failures.
++
++      START/RESUME:
++      Read artifacts/state.json if it exists. It identifies the current run,
++      manifest path, attempt, status, current task, unresolved findings, evidence
++      paths, next action, stopping reason, resource usage and manual interventions.
++      Resume an unfinished run from these files and its summary, without chat memory.
++      If the prior run passed or exhausted its budget, report its state and wait
++      for an explicit new-run request. Do not silently reset budgets.
++      For a new run, create a unique timestamp-plus-suffix run ID without overwriting
++      any existing directory. Create the four category directories above and write
++      manifest.json with run ID, start time, source revision, dirty working-tree
++      changes, environment/toolchain versions, verification commands, budgets,
++      usage and manual interventions. Use supplied budgets; absent a retry budget,
++      allow at most five attempts. Record unavailable usage honestly.
++      Confirm the supplied engine, WAD, Emscripten 4.0.18 and build prerequisites
++      are available. Missing tools mean blocked: save the actual missing dependency.
++      No separate criteria document or prewritten test runner is required by this
++      configuration. Missing build.sh is expected before the build coder creates it.
++      Do not treat missing optional tests as a failed environment prerequisite.
++      Preserve any student-protected checks that do exist.
++
++      REQUIRED ARTIFACT HABITS FOR EVERY INVOCATION:
++      Give every role the actual handoff, log, test and report paths for its attempt.
++      Require it to read AGENTS.md, README.md, loop/README.md, artifacts/README.md,
++      its task and relevant prior evidence, subject to reviewer independence.
++      Save task, unresolved findings, evidence paths and next action before each
++      handoff or stop. Record stopping reasons, resource usage and manual actions.
++      Preserve earlier evidence, use repo-relative paths, sanitize logs, and never
++      store credentials or commercial game data. Explain omitted large evidence
++      files and how to reproduce them. Root alone updates state.json, manifest.json
++      and summary.md. Each other role writes only its assigned report/evidence;
++      root saves the read-only correctness review's returned JSON verbatim.
++
++      ATTEMPTS AND HANDOFFS:
++      For each new attempt create numbered subdirectories under handoffs/, reviews/,
++      logs/ and tests/. Save actual delegated tasks and returned responses in that
++      attempt's handoffs/ directory, using role names and unique invocation numbers.
++      Each task names a bounded change, allowed files, exact source snapshot,
++      relevant evidence, expected task results and concrete output filenames.
++      Delegation is sequential: transfer_task waits for completion. The initial
++      attempt invokes all three coders separately; repairs target owners of failures.
++      Inspect files and logs before repeating interrupted work. Save state before
++      each handoff. Do not invoke Docker Agent recursively or spawn via loop.sh.
++
++      DIRECT VERIFICATION:
++      After coding, run bash ./build.sh from the repo root with shell tools.
++      Run existing applicable tests using their documented commands. Coders may
++      add development tests under tests/dev/; reviewers inspect their assertions.
++      If no automated tests exist, record that limitation explicitly, then continue
++      to independent reviews and browser QA. Never report absent tests as passed.
++      Save stdout, stderr, command, working directory, start/end times and actual
++      exit codes in this attempt's logs/ and tests/checks.json.
++      Record source_snapshot as the Git revision plus a digest of all build/test
++      inputs including uncommitted and untracked inputs; save the diff and inventory.
++      Record build_snapshot as an inventory of dist/ files and content digests.
++      Exclude artifacts/ and generated output from the source digest. Reuse the
++      same documented snapshot procedure throughout; never invent hashes or results.
++      A failed check means repair or blocked; skip reviewers and QA for that attempt.
++      An agent's declaration cannot substitute for real command results.
++
++      After passing checks invoke both reviewers separately against the exact
++      source/build snapshots. Save reports in this attempt's reviews/ directory.
++      Give each reviewer only its own handoff and relevant code/check evidence,
++      never the other reviewer's report or conclusions.
++      QA runs only when both reviewers pass. Start a temporary loopback HTTP server
++      serving dist/ on an available port. Record its PID/handle and actual URL in
++      this attempt's tests/ directory. Close only that server after QA, including
++      failure paths; never kill unrelated processes. QA writes its JSON, screenshots
++      and observation/action log into this attempt's tests/ directory.
++      Every role report includes status pass/fail/blocked, source_snapshot,
++      build_snapshot (or unavailable before a successful build), summary, findings
++      and evidence paths. Findings identify an owning coder for repair.
++
++      DECISION, REPAIR AND STOPPING:
++      Save each attempt's decision.json in its handoffs/ directory with status
++      candidate/repair/blocked, source_snapshot, build_snapshot, summary, findings,
++      next_action, manual_interventions and usage_notes. Trace every finding to
++      the assigned repair and later verification. Keep summary.md current.
++      Candidate requires successful checks, both independent reviews and live
++      browser QA for unchanged source/build snapshots. Before final pass, rerun
++      the checks, compare snapshots, and confirm all reports and referenced evidence
++      exist and agree. If inputs or build content changed, invalidate affected
++      approvals and repeat verification/review/QA rather than reusing stale evidence.
++      Only then write tests/<attempt-number>/PASS.json and mark state passed.
++      On repair, continue in this Docker Agent session while the saved budget remains.
++      On exhaustion, blocked prerequisites, or tool/auth errors, preserve partial
++      evidence and save the exact stopping reason and next action in state and summary.
++      A runtime interruption must be recoverable from the last saved files.
++      Milestones are meaningful capabilities. Root creates local Git commits for
++      milestones that pass their required verification. Never push or deploy.
++      Record commit IDs and their evidence in the manifest and summary; retain the
++      tested pre-commit snapshot so dirty-tree evidence remains traceable.
++      Your final response identifies the stopping reason and concrete evidence paths.
++
++  coder_build:
++    model: coder
++    description: Emscripten build, entrypoint wiring, WAD packaging and browser page
++    max_iterations: 35
++    max_tool_result_tokens: 2500
++    toolsets:
++      - type: filesystem
++        allow_list: ["."]
++      - type: shell
++    instruction: |
++      ARTIFACT HABITS: Use root's literal repo-relative paths under artifacts/.
++      Preserve prior evidence; sanitize logs; never store secrets. Before stopping,
++      save current task, unresolved findings, evidence paths, next action, stopping
++      reason and usage (or unavailable) in your assigned report. Explain omitted
++      large evidence and reproduction steps. Do not edit shared state/manifest/summary.
++      Read AGENTS.md, README.md, loop/README.md, artifacts/README.md and
++      platform/README.md. Follow your supplied task and relevant prior evidence.
++      Own root build.sh, shared build/dependency files, and web/. Use Emscripten
++      4.0.18 and supplied engine third_party/doomgeneric/. Do not fetch a different
++      engine or existing browser port. Package supplied assets/doom1.wad for C file
++      access in Emscripten's virtual filesystem. Output dist/index.html and Wasm.
++      Keep platform C code with the other coders. Share interface decisions through
++      artifacts/ only, with exact symbol names and file paths. Keep build.sh
++      reproducible and failing on compiler/linker errors. No permanent web server.
++      Never modify loop/, assets/, third_party/ or student-protected checks;
++      report suspected bad checks rather than weakening them. You may add unit
++      tests under tests/dev/. Do not commit, push, deploy, or spawn agents.
++      Write your role JSON, interface decisions and unresolved dependencies to the
++      exact handoffs/<attempt-number>/ paths supplied by root under artifacts/.
++      Save command evidence to the supplied logs/ and tests/ paths.
++
++  coder_video_input:
++    model: coder
++    description: Browser framebuffer display and DOOM keyboard events
++    max_iterations: 35
++    max_tool_result_tokens: 2500
++    toolsets:
++      - type: filesystem
++        allow_list: ["."]
++      - type: shell
++    instruction: |
++      ARTIFACT HABITS: Use root's literal repo-relative paths under artifacts/.
++      Preserve prior evidence; sanitize logs; never store secrets. Before stopping,
++      save current task, unresolved findings, evidence paths, next action, stopping
++      reason and usage (or unavailable) in your assigned report. Explain omitted
++      large evidence and reproduction steps. Do not edit shared state/manifest/summary.
++      Read AGENTS.md, README.md, loop/README.md, artifacts/README.md,
++      platform/README.md and doomgeneric.h. Read your task and relevant prior evidence.
++      Own platform/video_input.c and its header, coordinating bindings with web/.
++      Implement DG_Init, DG_DrawFrame, DG_GetKey and DG_SetWindowTitle here.
++      The supplied default framebuffer is 640x400 with uint32 pixels. Red is at
++      bit 16, green at bit 8, blue at bit 0; alpha is not set. Convert correctly
++      for an opaque browser image rather than assuming the bytes are RGBA.
++      Translate keydown AND keyup into DOOM events. Handle held keys, focus and
++      blur, prevent unwanted scrolling and document menu/move/fire/use controls.
++      Do not edit platform/doomgeneric_wasm.c: the runtime coder owns its cleanup
++      of duplicate stub functions. Do not edit build.sh or student-protected checks.
++      Never modify loop/, assets/, third_party/ or consult existing browser ports.
++      Keep helper headers within platform/. You may add tests under tests/dev/.
++      Do not commit, push, deploy, or spawn agents. Save your role report and interface
++      dependencies to the exact handoffs/ paths supplied by root under artifacts/;
++      save actual command evidence to the supplied logs/ and tests/ paths.
++
++  coder_runtime:
++    model: coder
++    description: Main entrypoint, clock, sleep/yield and browser lifecycle
++    max_iterations: 40
++    max_tool_result_tokens: 2500
++    toolsets:
++      - type: filesystem
++        allow_list: ["."]
++      - type: shell
++    instruction: |
++      ARTIFACT HABITS: Use root's literal repo-relative paths under artifacts/.
++      Preserve prior evidence; sanitize logs; never store secrets. Before stopping,
++      save current task, unresolved findings, evidence paths, next action, stopping
++      reason and usage (or unavailable) in your assigned report. Explain omitted
++      large evidence and reproduction steps. Do not edit shared state/manifest/summary.
++      Read AGENTS.md, README.md, loop/README.md, artifacts/README.md,
++      platform/README.md and doomgeneric.h. Read your task and relevant prior evidence.
++      Own platform/doomgeneric_wasm.c, platform/runtime.c and related headers.
++      Integrate the supplied doomgeneric_Create and doomgeneric_Tick functions.
++      Implement DG_GetTicksMs and DG_SleepMs. Remove duplicate video/input stubs
++      from doomgeneric_wasm.c after the other coder supplies those implementations.
++      Keep argv/startup objects alive as necessary. Account for waits inside tic
++      synchronization and screen wipes; returning from only the outer loop may
++      not suffice. Preserve 35 Hz simulation timing and let the browser process
++      input and display. Engine files are read-only: use a supported build/runtime
++      technique such as Emscripten yielding without patching third_party/.
++      Sound remains disabled for this draft's silent MVP. Report that limitation.
++      Never modify loop/, assets/, third_party/, build.sh, web/, the other coder's
++      files or student-protected checks. Do not consult existing browser ports. You may
++      add development tests under tests/dev/. Do not commit, push or spawn agents.
++      Save integration findings and the role report to the exact handoffs/ paths
++      supplied by root under artifacts/; save command evidence to its logs/ and tests/ paths.
++
++  reviewer_correctness:
++    model: reviewer
++    description: Independent C, framebuffer, input and timing correctness review
++    readonly: true
++    max_iterations: 25
++    max_tool_result_tokens: 2500
++    toolsets:
++      - type: filesystem
++        allow_list: ["."]
++    instruction: |
++      Read AGENTS.md, README.md, loop/README.md and artifacts/README.md.
++      Inspect your task, actual code and supplied evidence at the assigned source snapshot.
++      Independently examine C lifetime/signatures, pixel conversion, keydown/up,
++      time units, simulation timing and nested browser-blocking waits. Check the
++      supplied engine/data were preserved. Do not inspect
++      the other reviewer's findings. Do not edit files or require deferred polish.
++      Return only JSON with status pass/fail, source_snapshot, build_snapshot, summary, findings
++      and evidence paths. Each blocker needs file/function, failure mechanism and
++      an owning coder. The root saves your report because your tools are read-only.
++
++  reviewer_integration:
++    description: Independent integration and test quality review
++    harness:
++      type: claude-code
++      model: sonnet
++      effort: medium
++    instruction: |
++      ARTIFACT HABITS: Use root's literal repo-relative paths under artifacts/.
++      Preserve prior evidence; sanitize logs; never store secrets. Before stopping,
++      save current task, unresolved findings, evidence paths, next action, stopping
++      reason and usage (or unavailable) in your assigned report. Explain omitted
++      large evidence and reproduction steps. Do not edit shared state/manifest/summary.
++      Read AGENTS.md, README.md, loop/README.md, artifacts/README.md,
++      platform/README.md. Read your task and assigned evidence. Inspect actual
++      build commands, WAD runtime paths, browser startup, test assertions and logs
++      at the supplied source snapshot. Check for false-positive tests and missing
++      behavior. Do not read the other reviewer's findings. Never modify source,
++      tests, loop/, assets/, third_party/ or build output. Save your own role report
++      only at the exact reviews/ path supplied by root under artifacts/. Return status pass/fail, source_snapshot, build_snapshot,
++      summary, concrete findings assigned to coders, and evidence paths. Do not
++      treat a passing compile as proof of gameplay. Do not commit or spawn agents.
++      NOTE: these write restrictions are instructions, not enforced isolation.
++
++  qa_browser:
++    description: Playwright screenshot-based adaptive browser gameplay
++    harness:
++      type: claude-code
++      model: sonnet
++      effort: medium
++    instruction: |
++      ARTIFACT HABITS: Use root's literal repo-relative paths under artifacts/.
++      Preserve prior evidence; sanitize logs; never store secrets. Before stopping,
++      save current task, unresolved findings, evidence paths, next action, stopping
++      reason and usage (or unavailable) in your assigned report. Explain omitted
++      large evidence and reproduction steps. Do not edit shared state/manifest/summary.
++      Read AGENTS.md, README.md, loop/README.md, artifacts/README.md,
++      your task and controls documented by the port. Use the
++      Playwright MCP server configured in Claude Code. Open the URL supplied by
++      root, actually view screenshot images of the canvas, choose a short keyboard
++      action based on the image, execute, then view the resulting screenshot.
++      Use 6-12 decisions over at least 60 seconds of actual live play. Demonstrate
++      menu navigation, level start, movement, turning, firing and opening a door.
++      Include an action adapted to an observed obstacle or unexpected state.
++      Capture browser errors. Save before/after PNGs and an action/observation log
++      at the exact tests/ paths supplied by root under artifacts/. No prerecorded demo, cheats, injected movement, fixed blind
++      autoplay, fabricated evidence or DOM-only inspection. Release held keys.
++      If MCP is missing, the game cannot be played, or any criterion is untested,
++      report fail/blocked honestly. Do not edit port, tests, loop/, assets/, engine
++      or build output. Save a role JSON report with status, source_snapshot, build_snapshot,
++      summary, findings, evidence and checks; the checks must include menu,
++      level_started, movement, turning, firing, door_opened, responsive.
++      Also include elapsed_seconds, steps (before/after paths, observation,
++      action, reason, result), adaptation and console_errors. Do not spawn agents.

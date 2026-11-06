@@ -1,0 +1,1 @@
+QA fail: gameplay boot/level/move/fire seen, about 35fps, no Asyncify errors. Space use and real focus-loss not verified. Start click timeout and apparent auto start flagged; favicon 404. Full QA report/actions/screenshots retained. Server PID 21019 closed by root.

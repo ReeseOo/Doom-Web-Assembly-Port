@@ -1,0 +1,22 @@
+{
+  "baseFire": {
+    "ctxs": 0,
+    "states": [],
+    "peak": 0
+  },
+  "fire": {
+    "ctxs": 0,
+    "states": [],
+    "peak": 0
+  },
+  "baseMenu": {
+    "ctxs": 0,
+    "states": [],
+    "peak": 0
+  },
+  "menu": {
+    "ctxs": 0,
+    "states": [],
+    "peak": 0
+  }
+}

@@ -1,0 +1,1 @@
+[{"id":"B3","status":"fail","detail":"page loaded but no wasm 200 with application/wasm"},{"id":"R1","status":"fail","detail":"canvas stayed blank"},{"id":"R2","status":"fail","detail":"1 distinct frames in 4 samples over ~3 s"},{"id":"T1","status":"pass","detail":"avg 60.1 fps, max gap 17 ms"}]

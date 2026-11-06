@@ -1,0 +1,48 @@
+{
+  "time_utc": "2026-11-03T04:35:26.576621Z",
+  "source_revision": "9339d0c857eb227fcbf1d6db61bacb12b9ac4b00",
+  "uncommitted_files": 10,
+  "source_digest": "118d844a54de373961db755c12c0c8aa65310558658c6ec20dbd7b547f99d076",
+  "baseline_tag": "acceptance-v1",
+  "verdict": "FAIL",
+  "complete": false,
+  "not_implemented": [
+    "R3",
+    "I1",
+    "I2",
+    "G1",
+    "A1"
+  ],
+  "checks": [
+    {
+      "id": "B1",
+      "status": "pass",
+      "detail": "build.sh exit 0; dist/index.html and .wasm present"
+    },
+    {
+      "id": "B2",
+      "status": "pass",
+      "detail": "loop, assets, third_party, tests/accept match acceptance-v1"
+    },
+    {
+      "id": "B3",
+      "status": "pass",
+      "detail": "loaded from /doom/ with application/wasm"
+    },
+    {
+      "id": "R1",
+      "status": "fail",
+      "detail": "canvas stayed blank"
+    },
+    {
+      "id": "R2",
+      "status": "fail",
+      "detail": "1 distinct frames in 4 samples over ~3 s"
+    },
+    {
+      "id": "T1",
+      "status": "pass",
+      "detail": "avg 60.1 fps, max gap 17 ms"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "status": "blocked",
+  "tool": "transfer_task",
+  "agent": "qa_browser",
+  "error": "harness claude-code failed: wait: exit status 1",
+  "browser": "not opened; screenshot not captured or inspected"
+}

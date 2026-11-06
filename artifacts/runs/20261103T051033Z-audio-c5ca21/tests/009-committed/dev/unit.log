@@ -1,0 +1,9 @@
+== music_test
+D_INTRO: 6.86s, 497 events, peak 0.429, RMS 0.131, audible 100.0%, render 559ms
+D_VICTOR: 192.00s, 4531 events, peak 0.280, RMS 0.062, audible 100.0%, render 9245ms
+D_INTROA: 6.86s, 213 events, peak 0.320, RMS 0.103, audible 100.0%, render 413ms
+PASS: 13 supplied MUS scores, graph, first-gesture queue, volume, pause/resume, replacement, end, unregister; first render 5205ms
+rc=0
+== audio_test
+PASS: 55 real WAD DS lumps decoded; gesture resume, destination connection, channel replacement, expiry and stop
+rc=0

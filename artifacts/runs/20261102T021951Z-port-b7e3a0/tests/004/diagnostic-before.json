@@ -1,0 +1,194 @@
+{
+  "browser": "141.0.7390.37",
+  "events": [
+    [
+      "request",
+      "/doom/index.html"
+    ],
+    [
+      "request",
+      "/doom/doom.js"
+    ],
+    [
+      "request",
+      "/doom/doom.data"
+    ],
+    [
+      "request",
+      "/doom/doom.wasm"
+    ],
+    [
+      "before",
+      "Doom — shareware Episode 1\n\nReady. Press Start Doom, then use the keyboard.\n\nStart Doom Fullscreen\n\nClick the game to focus. Arrows: move/turn · Ctrl: fire · Space: use · Shift: run · Enter/Escape: menus.\n\nKeyboard play. Sound and persistent saves are not enabled in this build."
+    ],
+    [
+      "console",
+      "log",
+      "                           Doom Generic 0.1"
+    ],
+    [
+      "console",
+      "log",
+      "Z_Init: Init zone memory allocation daemon. "
+    ],
+    [
+      "console",
+      "log",
+      "zone memory: 0x25bc80, 600000 allocated for zone"
+    ],
+    [
+      "console",
+      "log",
+      "Using . for configuration and saves"
+    ],
+    [
+      "console",
+      "log",
+      "V_Init: allocate screens."
+    ],
+    [
+      "console",
+      "log",
+      "M_LoadDefaults: Load system defaults."
+    ],
+    [
+      "console",
+      "log",
+      "saving config in .default.cfg"
+    ],
+    [
+      "console",
+      "log",
+      "W_Init: Init WADfiles."
+    ],
+    [
+      "console",
+      "log",
+      " adding /doom1.wad"
+    ],
+    [
+      "console",
+      "log",
+      "Using ./.savegame/ for savegames"
+    ],
+    [
+      "console",
+      "log",
+      "==========================================================================="
+    ],
+    [
+      "console",
+      "log",
+      "                            DOOM Shareware"
+    ],
+    [
+      "console",
+      "log",
+      "==========================================================================="
+    ],
+    [
+      "console",
+      "log",
+      " Doom Generic is free software, covered by the GNU General Public"
+    ],
+    [
+      "console",
+      "log",
+      " License.  There is NO warranty; not even for MERCHANTABILITY or FITNESS"
+    ],
+    [
+      "console",
+      "log",
+      " FOR A PARTICULAR PURPOSE. You are welcome to change and distribute"
+    ],
+    [
+      "console",
+      "log",
+      " copies under certain conditions. See the source for more information."
+    ],
+    [
+      "console",
+      "log",
+      "==========================================================================="
+    ],
+    [
+      "console",
+      "log",
+      "I_Init: Setting up machine state."
+    ],
+    [
+      "console",
+      "log",
+      "M_Init: Init miscellaneous info."
+    ],
+    [
+      "console",
+      "log",
+      "R_Init: Init DOOM refresh daemon - ..................."
+    ],
+    [
+      "console",
+      "log",
+      "P_Init: Init Playloop state."
+    ],
+    [
+      "console",
+      "log",
+      "S_Init: Setting up sound."
+    ],
+    [
+      "console",
+      "log",
+      "D_CheckNetGame: Checking network game status."
+    ],
+    [
+      "console",
+      "log",
+      "startskill 2  deathmatch: 0  startmap: 1  startepisode: 1"
+    ],
+    [
+      "console",
+      "log",
+      "player 1 of 1 (1 nodes)"
+    ],
+    [
+      "console",
+      "log",
+      "Emulating the behavior of the 'Doom 1.9' executable."
+    ],
+    [
+      "console",
+      "log",
+      "HU_Init: Setting up heads up display."
+    ],
+    [
+      "console",
+      "log",
+      "ST_Init: Init status bar."
+    ],
+    [
+      "console",
+      "log",
+      "I_InitGraphics: framebuffer: x_res: 640, y_res: 400, x_virtual: 640, y_virtual: 400, bpp: 32"
+    ],
+    [
+      "console",
+      "log",
+      "I_InitGraphics: framebuffer: RGBA: 8888, red_off: 16, green_off: 8, blue_off: 0, transp_off: 24"
+    ],
+    [
+      "console",
+      "log",
+      "I_InitGraphics: DOOM screen size: w x h: 320 x 200"
+    ],
+    [
+      "console",
+      "log",
+      "I_InitGraphics: Auto-scaling factor: 2"
+    ],
+    [
+      "after",
+      "Doom — shareware Episode 1\n\nRunning Doom. Title/demo is normal; press Escape for the menu, then choose New Game.\n\nStart Doom Fullscreen\n\nClick the game to focus. Arrows: move/turn · Ctrl: fire · Space: use · Shift: run · Enter/Escape: menus.\n\nKeyboard play. Sound and persistent saves are not enabled in this build."
+    ]
+  ]
+}

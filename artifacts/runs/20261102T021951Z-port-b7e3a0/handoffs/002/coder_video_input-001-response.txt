@@ -1,0 +1,1 @@
+Completed correctness-001 repair. Ctrl/Space use supplied KEY_FIRE/KEY_USE. Twenty engine action checkpoints pass; old-code negative controls fail. Full details in assigned coder JSON.

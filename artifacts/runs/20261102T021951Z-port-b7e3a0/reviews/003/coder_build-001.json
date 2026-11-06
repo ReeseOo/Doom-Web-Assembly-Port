@@ -1,0 +1,59 @@
+{
+  "status": "pass",
+  "role": "coder_build",
+  "task": "coder_build-001",
+  "owning_coder": "coder_build",
+  "current_task": "Bounded QA-F1/F2 startup investigation and page-only clarification; complete, not final gameplay acceptance.",
+  "summary": "No reproducible autostart or infinite Asyncify click wait. Original page stays Ready without input; a real Playwright click resolves in 58ms and calls main exactly once. Attract title/demo is normal. Added deterministic page states and inline favicon; rebuilt successfully.",
+  "findings": [
+    {
+      "id": "QA-F1",
+      "status": "not reproduced as engine defect",
+      "evidence": [
+        "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/003/coder_build-001-before-static-title.json",
+        "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/002/qa_browser-001-actions.json"
+      ],
+      "detail": "noInitialRun=true; 3s idle has zero clicks/callMain calls and unchanged canvas. Original-page click resolves; callMain returns a number at the Asyncify unwind, not a lifetime promise. QA Running Doom text is set only by its click handler, strongly supporting a dispatched click despite its tool timeout. Exact historical timeout cause remains unavailable; cannot attribute it to infinite Asyncify based on reproduction. Initial disabled button is intentional until Wasm/WAD initialization. Title screen may remain static; attract mode is expected."
+    },
+    {
+      "id": "QA-F2",
+      "status": "fixed",
+      "detail": "web/index.html inline data favicon eliminates favicon request. After run has no error responses, page exceptions, or console errors."
+    }
+  ],
+  "changes": [
+    "web/index.html: inline favicon; #status[data-state] loading/ready/running/error; explicit normal-title/demo/menu guidance; one-shot state guard; copy Module.arguments to avoid callMain mutating caller array. No build flags or platform C changes.",
+    "tests/dev/startup_test.cjs: temporary local server/browser diagnostic, with cleanup in finally."
+  ],
+  "interfaces": {
+    "path": "web/index.html",
+    "symbol": "#status[data-state]",
+    "values": [
+      "loading",
+      "ready",
+      "running",
+      "error"
+    ],
+    "semantics": "ready means runtime and preloaded WAD ready; running means accepted Start request, NOT rendered frames or gameplay proof; error means failure. Module.noInitialRun=true and Module.callMain remain unchanged interfaces."
+  },
+  "tests": "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/003/coder_build-001.json",
+  "source_snapshot": "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/003/coder_build-001-source-snapshot.json",
+  "build_snapshot": "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/003/coder_build-001-build-snapshot.json",
+  "evidence": [
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/logs/003/coder_build-001.log",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/003/coder_build-001-before.json",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/003/coder_build-001-before-static-title.json",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/003/coder_build-001-after.json",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/003/coder_build-001-after-ready.png",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/003/coder_build-001-after-started.png"
+  ],
+  "unresolved_findings": [
+    "Historical Playwright MCP timeout cause not reproduced; independent QA should repeat Start using data-state=ready and locator.click.",
+    "QA still must exercise a real door/switch, actual focus change/stuck-key release and muzzle-flash capture. No gameplay checks weakened."
+  ],
+  "next_action": "Independent QA on rebuilt dist; verify served hashes using supplied snapshot, then finish door and real focus-loss testing.",
+  "reproduction": "From repo root with Emscripten 4.0.18: ./build.sh; PLAYWRIGHT_MODULE=/absolute/path/to/playwright node tests/dev/startup_test.cjs artifacts/<new-prefix>. Existing local Playwright and installed Chrome used; no downloads. Temporary server binds ephemeral loopback port and is closed with Chromium in finally.",
+  "omitted_large_evidence": "No binary copies of WAD/Wasm/glue stored in artifacts; hashes and sizes in build snapshot; recreate via build.sh. Generated doom.js changes on rebuild (Emscripten data-package metadata); Wasm and data hashes match QA 002. Earlier evidence preserved. Initial diagnostic fail was an invalid assumption that title screen must animate, not a port failure; revised dev diagnostic checks first canvas presentation. Protected checks unchanged.",
+  "stopping_reason": "Bounded investigation complete; browser and temporary server stopped. User requested no continued running program.",
+  "usage": "Token/time accounting unavailable; three bounded Chromium runs and one Emscripten build. No commits, agents, deployments or permanent server."
+}

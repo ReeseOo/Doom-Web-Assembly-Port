@@ -1,0 +1,16 @@
+{
+  "status": "blocked",
+  "engine_present": true,
+  "wad_present": true,
+  "required_emscripten": "4.0.18",
+  "compiler_available": false,
+  "build_script_present": false,
+  "notes": [
+    "Missing build.sh is expected before implementation.",
+    "No optional acceptance document or test runner is required for preflight.",
+    "No build, tests, reviews, or browser QA performed."
+  ],
+  "evidence_paths": [
+    "artifacts/runs/20261102T015027Z-start-8de5e4/logs/001/prerequisites.json"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "role": "coder_build",
+  "status": "pass",
+  "report": "artifacts/runs/20261102T021951Z-port-b7e3a0/reviews/003/coder_build-001.json",
+  "interface_decisions": {
+    "path": "web/index.html",
+    "symbol": "#status[data-state]",
+    "values": [
+      "loading",
+      "ready",
+      "running",
+      "error"
+    ],
+    "semantics": "ready means runtime and preloaded WAD ready; running means accepted Start request, NOT rendered frames or gameplay proof; error means failure. Module.noInitialRun=true and Module.callMain remain unchanged interfaces."
+  },
+  "unresolved_dependencies": [
+    "Historical Playwright MCP timeout cause not reproduced; independent QA should repeat Start using data-state=ready and locator.click.",
+    "QA still must exercise a real door/switch, actual focus change/stuck-key release and muzzle-flash capture. No gameplay checks weakened."
+  ],
+  "next_action": "Independent QA on rebuilt dist; verify served hashes using supplied snapshot, then finish door and real focus-loss testing."
+}

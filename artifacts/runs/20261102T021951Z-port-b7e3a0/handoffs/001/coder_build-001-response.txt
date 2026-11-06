@@ -1,0 +1,1 @@
+Returned: bounded build/page work implemented in build.sh, web/index.html, platform/README.md. Blocked pending main and video/input. Report and interface inspected by root. Full details in reviews/001/coder_build-001.json.

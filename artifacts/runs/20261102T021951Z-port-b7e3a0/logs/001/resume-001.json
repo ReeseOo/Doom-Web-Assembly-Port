@@ -1,0 +1,6 @@
+{
+  "time": "2026-11-02T02:23:41.369789+00:00",
+  "sdk": "Emscripten 4.0.18 verified by emcc --version after sourcing /Users/reeseoo/emsdk/emsdk_env.sh",
+  "inspection": "No coder response or port changes found; prepared handoff can be invoked.",
+  "source_changes": "Only existing loop/agents.yaml modification and untracked evals/artifacts observed."
+}

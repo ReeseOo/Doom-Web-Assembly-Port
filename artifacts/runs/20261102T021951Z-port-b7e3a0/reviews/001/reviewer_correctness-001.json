@@ -1,0 +1,88 @@
+{
+  "status": "fail",
+  "source_snapshot": {
+    "revision": "e500c440656622db5ab3f8fb7df73d8b5998eeb3",
+    "inputs_sha256": "eae7ca6c1ecc61903f7a784aa3ea613de4af71ecf0b2fe16cac768f1ea8b9baa",
+    "procedure": "git ls-files cached and untracked nonignored; exclude artifacts/, build/, dist/, .git/; sorted unique file paths with SHA256; SHA256 of JSON sorted keys inventory"
+  },
+  "build_snapshot": {
+    "inventory": [
+      {
+        "path": "dist/doom.data",
+        "sha256": "1d7d43be501e67d927e415e0b8f3e29c3bf33075e859721816f652a526cac771",
+        "bytes": 4196020
+      },
+      {
+        "path": "dist/doom.js",
+        "sha256": "dbefb63903eba922830f27c240fc745efe69be1d70e436268c14b7e80fb28610",
+        "bytes": 167416
+      },
+      {
+        "path": "dist/doom.wasm",
+        "sha256": "b1e361544189a4a57dbcec56d8c8cc2cea652650ef3f69231cb9fb5a325b79cf",
+        "bytes": 574753
+      },
+      {
+        "path": "dist/index.html",
+        "sha256": "4e832d1fd66e664e95839e293265be507e70ca1580cdc375775c6fa7b9325b34",
+        "bytes": 3381
+      }
+    ],
+    "sha256": "b919b958c50edabba96985025f8c1ba15db1e951516ab1ce40e2466264556898"
+  },
+  "summary": "Independent read-only review found one blocking input integration defect: the advertised fire and use controls emit codes different from this supplied engine's default bindings. The three recorded root checks passed, but their input test validates the incorrect codes rather than their gameplay effects. Static examination otherwise found compatible C callback signatures, heap-retained startup arguments, correct RGB channel extraction and opaque alpha, refreshed WASM memory views, paired key transitions and modifier alias handling, monotonic millisecond timing, and sequential Asyncify yields covering both tic synchronization and screen-wipe waits. The saved diff shows no supplied engine or asset modifications, and the packaged data digest and size match the supplied shareware WAD. Browser execution, actual simulation pacing, and Asyncify behavior remain unverified by this review; the development harnesses are not browser acceptance evidence. No files were edited and no commands were executed with the read-only tools.",
+  "findings": [
+    {
+      "id": "correctness-001",
+      "severity": "blocking",
+      "owning_coder": "coder_video_input",
+      "file": "platform/video_input.c",
+      "function": "video_init / keys / translate",
+      "location": "ControlLeft and ControlRight mappings at line 32; Space mapping at line 34",
+      "summary": "Ctrl cannot fire and Space cannot use doors or switches with the supplied engine's default bindings.",
+      "failure_mechanism": "The browser backend emits 0x9d (KEY_RCTRL) for both Ctrl keys and 32 for Space. In the supplied third_party/doomgeneric/m_controls.c, key_fire defaults to KEY_FIRE (0xa3) and key_use defaults to KEY_USE (0xa2). M_ApplyPlatformDefaults is a no-op. The active TranslateKey implementation in i_input.c returns its input unchanged, so it does not convert these browser codes to action codes. Consequently G_BuildTiccmd in g_game.c checks gamekeydown[0xa3] and gamekeydown[0xa2], while browser events set different entries. No browser key maps to either required action code. This prevents essential gameplay despite the page advertising Ctrl as fire and Space as use.",
+      "required_change": "Make browser fire/use transitions agree with the supplied engine bindings without modifying third_party/. Preserve modifier alias and release behavior. Update the development checks to validate the supplied engine contract and demonstrate that pressing and releasing the advertised controls sets and clears BT_ATTACK and BT_USE through the engine input path.",
+      "test_gap": "tests/dev/video_input_test.cjs explicitly expects Ctrl code 157 and Space code 32, so its passing result confirms the faulty translation rather than detecting it.",
+      "evidence_paths": [
+        "platform/video_input.c",
+        "third_party/doomgeneric/doomkeys.h",
+        "third_party/doomgeneric/m_controls.c",
+        "third_party/doomgeneric/i_input.c",
+        "third_party/doomgeneric/g_game.c",
+        "tests/dev/video_input_test.cjs",
+        "web/index.html",
+        "artifacts/runs/20261102T021951Z-port-b7e3a0/logs/001/root-video-input.json"
+      ]
+    }
+  ],
+  "evidence_paths": [
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/handoffs/001/reviewer_correctness-001-task.txt",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/001/source-snapshot-final.json",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/001/source-inventory-final.json",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/001/source-final.diff",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/001/build-snapshot.json",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/001/checks.json",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/logs/001/root-build.json",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/logs/001/root-runtime.json",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/logs/001/root-video-input.json",
+    "build.sh",
+    "platform/doomgeneric_runtime.c",
+    "platform/doomgeneric_wasm.c",
+    "platform/video_input.c",
+    "platform/video_input.h",
+    "web/index.html",
+    "tests/dev/runtime_test.py",
+    "tests/dev/video_input_test.cjs",
+    "third_party/doomgeneric/doomgeneric.h",
+    "third_party/doomgeneric/doomgeneric.c",
+    "third_party/doomgeneric/doomkeys.h",
+    "third_party/doomgeneric/m_controls.c",
+    "third_party/doomgeneric/i_input.c",
+    "third_party/doomgeneric/g_game.c",
+    "third_party/doomgeneric/i_video.c",
+    "third_party/doomgeneric/i_timer.c",
+    "third_party/doomgeneric/d_loop.c",
+    "third_party/doomgeneric/d_main.c",
+    "assets/README.md"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "errors": [],
+  "requests": [
+    "/doom/",
+    "/doom/persistence.js",
+    "/doom/doom.js",
+    "/doom/doom.data",
+    "/doom/doom.wasm",
+    "/doom/",
+    "/doom/persistence.js",
+    "/doom/doom.js",
+    "/doom/doom.data",
+    "/doom/doom.wasm"
+  ],
+  "checks": [
+    "subpath startup and restore before Start",
+    "renamed save survived reload, latest write preserved, temp removed",
+    "engine starts after restore"
+  ],
+  "status": "pass"
+}

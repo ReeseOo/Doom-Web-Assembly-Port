@@ -1,0 +1,57 @@
+{
+  "status": "repair",
+  "source_snapshot": {
+    "revision": "e500c440656622db5ab3f8fb7df73d8b5998eeb3",
+    "inputs_sha256": "636601a2b9bf66d3cb930c7c7c068b76eca0873803408b1820ea5276b8102730",
+    "procedure": "git ls-files cached and untracked nonignored; exclude artifacts/, build/, dist/, .git/; sorted unique file paths with SHA256; SHA256 of JSON sorted keys inventory"
+  },
+  "build_snapshot": {
+    "inventory": [
+      {
+        "path": "dist/doom.data",
+        "sha256": "1d7d43be501e67d927e415e0b8f3e29c3bf33075e859721816f652a526cac771",
+        "bytes": 4196020
+      },
+      {
+        "path": "dist/doom.js",
+        "sha256": "ab0e6692f23f850c6ec3c393574f51c6a44657f01ddc5e3b6438f8f2777cf86b",
+        "bytes": 167450
+      },
+      {
+        "path": "dist/doom.wasm",
+        "sha256": "df5d984bf95b68b04c7e713be72a7d604142135f3bd24c696232eb9a6056a8b9",
+        "bytes": 574759
+      },
+      {
+        "path": "dist/index.html",
+        "sha256": "4e832d1fd66e664e95839e293265be507e70ca1580cdc375775c6fa7b9325b34",
+        "bytes": 3381
+      }
+    ],
+    "sha256": "b782ccccb0adec8e91776fde261cbed3e13b5912e35de925688fd1a488633d65"
+  },
+  "summary": "Static checks/reviews pass; QA incomplete and Start flow finding requires investigation.",
+  "findings": [
+    {
+      "id": "QA-F1",
+      "owning_coder": "coder_build",
+      "summary": "Investigate reported Start timeout/apparent autostart; differentiate Playwright auto-wait from true boot defect. Attract mode itself is normal Doom, not failure."
+    },
+    {
+      "id": "QA-F2",
+      "owning_coder": "coder_build",
+      "summary": "favicon 404 low-priority browser console noise"
+    },
+    {
+      "id": "QA-coverage",
+      "owning_coder": "qa_browser",
+      "summary": "Space door/switch and real focus-loss/stuck key release still require actual browser verification"
+    }
+  ],
+  "next_action": "Attempt 003 build owner investigates boot flow, then checks/reviews and QA with missing interactions.",
+  "manual_interventions": [
+    "User requested resume after installing SDK; SDK environment explicitly sourced for compiler commands. Prior run was preflight-only with no implementation budget.",
+    "User requested resume; Claude Code 2.1.316 now resolves on inherited PATH."
+  ],
+  "usage_notes": "Tokens/cost unavailable; two attempts used."
+}

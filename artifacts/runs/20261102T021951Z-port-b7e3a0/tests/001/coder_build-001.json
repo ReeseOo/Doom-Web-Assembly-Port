@@ -1,0 +1,42 @@
+{
+  "role": "coder_build",
+  "status": "blocked",
+  "source_revision": "e500c440656622db5ab3f8fb7df73d8b5998eeb3",
+  "changed_file_sha256": {
+    "build.sh": "9f8c492c348e7e5465508f811c98eced08a9acfb8db92c3881a0177d99a6f54c",
+    "web/index.html": "4e832d1fd66e664e95839e293265be507e70ca1580cdc375775c6fa7b9325b34",
+    "platform/README.md": "d82a5e44f133df0d7b9a7da5e7e80350b6be59854e43895b5812087fc4f816ce"
+  },
+  "checks": [
+    {
+      "name": "initial compiler/source list probe",
+      "exit_code": 0,
+      "interpretation": "Compiled supplied engine and packaged WAD, but linker discarded engine because main absent. Not a playable build; retained log."
+    },
+    {
+      "name": "final strict build",
+      "exit_code": 1,
+      "expected_dependency_failure": "undefined exported symbol: _main",
+      "command": "source /Users/reeseoo/emsdk/emsdk_env.sh && ./build.sh"
+    },
+    {
+      "name": "bash -n build.sh",
+      "exit_code": 0
+    },
+    {
+      "name": "node --check build/page-inline.js",
+      "exit_code": 0
+    },
+    {
+      "name": "cmp assets/doom1.wad dist/doom.data",
+      "exit_code": 0,
+      "interpretation": "Single-file preload package byte-matches supplied WAD; no browser C-file access verified yet."
+    },
+    {
+      "name": "git diff --check -- build.sh web/index.html",
+      "exit_code": 0
+    }
+  ],
+  "log": "artifacts/runs/20261102T021951Z-port-b7e3a0/logs/001/coder_build-001.log",
+  "browser_validation": "Not performed: entrypoint and rendering/input callbacks remain unimplemented."
+}

@@ -1,0 +1,1 @@
+No autostart reproduced; original click resolves in 58ms. Added deterministic page states, guidance and favicon. Startup dev test added. Full assigned report retained.

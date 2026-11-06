@@ -1,0 +1,12 @@
+{
+  "name": "video-input",
+  "command": "node tests/dev/video_input_test.cjs",
+  "cwd": "/Users/reeseoo/code/ucla/loop_engineering/fellowship-loop-capstone",
+  "start_time": "2026-11-02T03:01:18.668270+00:00",
+  "end_time": "2026-11-02T03:01:19.015584+00:00",
+  "exit_code": 0,
+  "expected": 0,
+  "passed": true,
+  "stdout": "+ clang -std=gnu11 -w -ffunction-sections -fdata-sections -I/Users/reeseoo/code/ucla/loop_engineering/fellowship-loop-capstone/third_party/doomgeneric /Users/reeseoo/code/ucla/loop_engineering/fellowship-loop-capstone/tests/dev/input_engine_test.c /Users/reeseoo/code/ucla/loop_engineering/fellowship-loop-capstone/third_party/doomgeneric/i_input.c /Users/reeseoo/code/ucla/loop_engineering/fellowship-loop-capstone/third_party/doomgeneric/d_event.c /Users/reeseoo/code/ucla/loop_engineering/fellowship-loop-capstone/third_party/doomgeneric/g_game.c /Users/reeseoo/code/ucla/loop_engineering/fellowship-loop-capstone/third_party/doomgeneric/m_controls.c /Users/reeseoo/code/ucla/loop_engineering/fellowship-loop-capstone/third_party/doomgeneric/doomstat.c -Wl,-dead_strip -lm -o /var/folders/1y/b2sp3rcd0jjdf91_h7dfw3q40000gn/T/doom-input-cii071yc/input-engine\nPASS: RGB/opaque alpha, memory growth, down/up, repeats, modifier aliases, blur/visibility, focus/defaults, overflow recovery, title, idempotence\nPASS: 20 real engine input/action checkpoints\n",
+  "stderr": ""
+}

@@ -1,0 +1,1 @@
+Runtime implemented in platform/doomgeneric_runtime.c; original stubs removed. Integrated compiler and native sanitizer checks reported passing. Browser behavior remains unverified. See assigned full JSON report.

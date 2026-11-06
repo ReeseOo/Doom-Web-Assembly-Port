@@ -1,0 +1,35 @@
+{
+  "status": "blocked",
+  "scope": "preflight only",
+  "source_snapshot": {
+    "revision": "e500c440656622db5ab3f8fb7df73d8b5998eeb3",
+    "inputs_sha256": "a6068874db66d76041ae23e6cf5e6b9afa15895841025ca7f380dabf4df1ea83",
+    "procedure": "git ls-files cached and untracked nonignored; exclude artifacts/, build/, dist/, .git/; sorted unique file paths with SHA256; SHA256 of JSON sorted keys inventory"
+  },
+  "build_snapshot": "unavailable: no build requested",
+  "summary": "All requested checks attempted; required compiler unavailable and both delegated harness invocations failed before returning. No authentication or browser success claimed.",
+  "findings": [
+    {
+      "id": "emcc-unavailable",
+      "owner": "environment",
+      "summary": "emcc not on PATH or checked common locations; Emscripten 4.0.18 not verified"
+    },
+    {
+      "id": "claude-harness-failed",
+      "owner": "environment",
+      "summary": "reviewer_integration invocation failed: harness claude-code failed: wait: exit status 1; authentication not verified"
+    },
+    {
+      "id": "browser-harness-failed",
+      "owner": "environment",
+      "summary": "qa_browser invocation failed: harness claude-code failed: wait: exit status 1; Playwright MCP navigation/screenshot inspection not performed"
+    }
+  ],
+  "evidence_paths": [
+    "artifacts/runs/20261102T021327Z-preflight-a8c354/logs/001/preflight-commands.json",
+    "artifacts/runs/20261102T021327Z-preflight-a8c354/handoffs/001/reviewer_integration-001-response.json",
+    "artifacts/runs/20261102T021327Z-preflight-a8c354/handoffs/001/qa_browser-001-response.json",
+    "artifacts/runs/20261102T021327Z-preflight-a8c354/tests/001/source-snapshot.json"
+  ],
+  "completed_at": "2026-11-02T02:14:41.822713+00:00"
+}

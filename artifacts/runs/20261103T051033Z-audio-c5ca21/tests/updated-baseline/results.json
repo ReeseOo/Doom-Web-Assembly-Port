@@ -1,0 +1,77 @@
+{
+  "time_utc": "2026-11-04T05:12:17.314633Z",
+  "source_revision": "b62d60778a48d95ec5a77fe109e69b5b254b6e9b",
+  "uncommitted_files": 2,
+  "source_digest": "61426e5ed8d23a8352820c430dcbb40dc70024dcb3cac19d1a008d1b0187d168",
+  "baseline_tag": "acceptance-v1",
+  "verdict": "FAIL",
+  "complete": false,
+  "not_implemented": [],
+  "checks": [
+    {
+      "id": "B1",
+      "status": "pass",
+      "detail": "build.sh exit 0; dist/index.html and .wasm present"
+    },
+    {
+      "id": "B2",
+      "status": "pass",
+      "detail": "loop, assets, third_party, tests/accept match acceptance-v1"
+    },
+    {
+      "id": "R1",
+      "status": "pass",
+      "detail": "canvas drawn after start (clicked control \"Start Doom\"), no errors"
+    },
+    {
+      "id": "B3",
+      "status": "pass",
+      "detail": "loaded from /doom/ with application/wasm (doom.wasm)"
+    },
+    {
+      "id": "R2",
+      "status": "pass",
+      "detail": "8 distinct frames in 12 samples over ~12 s"
+    },
+    {
+      "id": "R3",
+      "status": "pass",
+      "detail": "best of 13 frames: error 6.0/255 (needs < 30), error if red/blue were swapped 65.6 (must be higher)"
+    },
+    {
+      "id": "T1",
+      "status": "pass",
+      "detail": "avg 60.1 fps, max gap 17 ms"
+    },
+    {
+      "id": "I1",
+      "status": "pass",
+      "detail": "distinct view frames: idle 4, while turning 8, after release 1; blur-release (informational, not gating): ok"
+    },
+    {
+      "id": "I2",
+      "status": "pass",
+      "detail": "no scroll on arrows/Space; PageDown (informational) scrollY 612"
+    },
+    {
+      "id": "A1",
+      "status": "pass",
+      "detail": "contexts 1, running true; fire: base 0.0000 -> 0.0799 (rise); menu: base 0.0000 -> 0.0791 (rise)"
+    },
+    {
+      "id": "G1",
+      "status": "fail",
+      "detail": "harness error: page.screenshot: Clipped area is either empty or outside the resulting image\nCall log:\n  - taking page screenshot\n  - waiting for fonts to load...\n  - fonts loaded\n"
+    },
+    {
+      "id": "M1",
+      "status": "fail",
+      "detail": "contexts 1, running true; 0% of samples audible (needs >= 50%), peak 0.0000 (needs >= 0.002) while idle"
+    },
+    {
+      "id": "S1",
+      "status": "fail",
+      "detail": "view difference fresh vs saved 18.5 (needs > 8); saved vs loaded-after-reload 22.0 (needs < 8 and below fresh vs loaded 23.1)"
+    }
+  ]
+}

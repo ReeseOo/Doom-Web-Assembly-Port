@@ -1,0 +1,4 @@
+emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 4.0.18 (fae107463db4d20a276a27ede393048deaeebf76)
+PASS strict compile
+PASS: 55 real WAD DS lumps decoded; gesture resume, destination connection, channel replacement, expiry and stop
+PASS diff check

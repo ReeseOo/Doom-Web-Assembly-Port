@@ -1,0 +1,113 @@
+{
+  "errors": [],
+  "requests": [
+    "/doom/",
+    "/doom/persistence.js",
+    "/doom/doom.js",
+    "/doom/doom.data",
+    "/doom/doom.wasm"
+  ],
+  "checks": [
+    {
+      "label": "ready",
+      "top": 126.796875,
+      "bottom": 546.796875,
+      "width": 672,
+      "height": 420,
+      "viewport": 700,
+      "scrollY": 0,
+      "pageHeight": 700,
+      "focused": ""
+    },
+    {
+      "label": "running",
+      "top": 126.796875,
+      "bottom": 546.796875,
+      "width": 672,
+      "height": 420,
+      "viewport": 700,
+      "scrollY": 0,
+      "pageHeight": 700,
+      "focused": "canvas"
+    },
+    {
+      "label": "focused ArrowDown",
+      "top": 126.796875,
+      "bottom": 546.796875,
+      "width": 672,
+      "height": 420,
+      "viewport": 700,
+      "scrollY": 0,
+      "pageHeight": 700,
+      "focused": "canvas"
+    },
+    {
+      "label": "focused  ",
+      "top": 126.796875,
+      "bottom": 546.796875,
+      "width": 672,
+      "height": 420,
+      "viewport": 700,
+      "scrollY": 0,
+      "pageHeight": 700,
+      "focused": "canvas"
+    },
+    {
+      "label": "focused PageDown",
+      "top": 126.796875,
+      "bottom": 546.796875,
+      "width": 672,
+      "height": 420,
+      "viewport": 700,
+      "scrollY": 0,
+      "pageHeight": 700,
+      "focused": "canvas"
+    },
+    {
+      "label": "1280x720",
+      "top": 126.796875,
+      "bottom": 566.796875,
+      "width": 704,
+      "height": 440,
+      "viewport": 720,
+      "scrollY": 0,
+      "pageHeight": 720,
+      "focused": "canvas"
+    },
+    {
+      "label": "800x600",
+      "top": 126.796875,
+      "bottom": 446.796875,
+      "width": 512,
+      "height": 320,
+      "viewport": 600,
+      "scrollY": 0,
+      "pageHeight": 600,
+      "focused": "canvas"
+    },
+    {
+      "label": "640x480",
+      "top": 144.984375,
+      "bottom": 344.984375,
+      "width": 320,
+      "height": 200,
+      "viewport": 480,
+      "scrollY": 0,
+      "pageHeight": 509,
+      "focused": "canvas"
+    },
+    {
+      "label": "1000x700",
+      "top": 126.796875,
+      "bottom": 546.796875,
+      "width": 672,
+      "height": 420,
+      "viewport": 700,
+      "scrollY": 0,
+      "pageHeight": 700,
+      "focused": "canvas"
+    },
+    "PageDown outside game scrolls a short page normally"
+  ],
+  "status": "pass"
+}

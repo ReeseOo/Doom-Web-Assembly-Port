@@ -1,0 +1,60 @@
+{
+  "time_utc": "2026-11-03T05:01:45.906469Z",
+  "source_revision": "5160d882c333dda42f96d55060290a268ef5df9a",
+  "uncommitted_files": 10,
+  "source_digest": "269c8a25bfc36e06a6b1f49ff293d70dd177d1464a77a9d562e2e2f61c9eacb8",
+  "baseline_tag": "acceptance-v1",
+  "verdict": "FAIL",
+  "complete": false,
+  "not_implemented": [
+    "R3",
+    "G1"
+  ],
+  "checks": [
+    {
+      "id": "B1",
+      "status": "pass",
+      "detail": "build.sh exit 0; dist/index.html and .wasm present"
+    },
+    {
+      "id": "B2",
+      "status": "pass",
+      "detail": "loop, assets, third_party, tests/accept match acceptance-v1"
+    },
+    {
+      "id": "R1",
+      "status": "pass",
+      "detail": "canvas drawn after start (clicked control \"Start Doom\"), no errors"
+    },
+    {
+      "id": "B3",
+      "status": "pass",
+      "detail": "loaded from /doom/ with application/wasm (doom.wasm)"
+    },
+    {
+      "id": "R2",
+      "status": "pass",
+      "detail": "8 distinct frames in 12 samples over ~12 s"
+    },
+    {
+      "id": "T1",
+      "status": "pass",
+      "detail": "avg 60.1 fps, max gap 17 ms"
+    },
+    {
+      "id": "I1",
+      "status": "pass",
+      "detail": "distinct view frames: idle 5, while turning 8, after release 2; blur-release (informational, not gating): ok"
+    },
+    {
+      "id": "I2",
+      "status": "pass",
+      "detail": "no scroll on arrows/Space; PageDown (informational) scrollY 612"
+    },
+    {
+      "id": "A1",
+      "status": "fail",
+      "detail": "no AudioContext connected to a destination"
+    }
+  ]
+}

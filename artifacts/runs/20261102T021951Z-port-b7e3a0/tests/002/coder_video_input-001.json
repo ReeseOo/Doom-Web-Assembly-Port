@@ -1,0 +1,80 @@
+{
+  "status": "pass",
+  "checks": [
+    {
+      "name": "regression",
+      "command": [
+        "python3",
+        "tests/dev/input_engine_test.py"
+      ],
+      "environment_overrides": {},
+      "exit_code": 0,
+      "expected_exit": 0,
+      "passed": true
+    },
+    {
+      "name": "negative-fire",
+      "command": [
+        "python3",
+        "tests/dev/input_engine_test.py"
+      ],
+      "environment_overrides": {
+        "DOOM_INPUT_NEGATIVE_CONTROL": "fire"
+      },
+      "exit_code": 1,
+      "expected_exit": "nonzero",
+      "passed": true
+    },
+    {
+      "name": "negative-use",
+      "command": [
+        "python3",
+        "tests/dev/input_engine_test.py"
+      ],
+      "environment_overrides": {
+        "DOOM_INPUT_NEGATIVE_CONTROL": "use"
+      },
+      "exit_code": 1,
+      "expected_exit": "nonzero",
+      "passed": true
+    },
+    {
+      "name": "wasm-compile",
+      "command": [
+        "zsh",
+        "-c",
+        "source /Users/reeseoo/emsdk/emsdk_env.sh >/dev/null 2>&1; emcc --version; emcc -std=gnu11 -Werror=implicit-function-declaration -Ithird_party/doomgeneric -c platform/video_input.c -o build/video_input-repair.o"
+      ],
+      "environment_overrides": {},
+      "exit_code": 0,
+      "expected_exit": 0,
+      "passed": true
+    },
+    {
+      "name": "direct-node-invocation",
+      "command": [
+        "node",
+        "tests/dev/video_input_test.cjs"
+      ],
+      "exit_code": 0,
+      "passed": true
+    }
+  ],
+  "changed_scope_sha256": {
+    "platform/video_input.c": "38c79e388ccb9cf1880bbd3e6a6ffe529ee4e0944d9968bdc97d9602ab42f4e5",
+    "platform/video_input.h": "5ccb06d59526f366de99a50e9db5ca6bdcd9baf8769e7153eb8cd845525add50",
+    "tests/dev/video_input_test.cjs": "1d4ac91f518befcec10681b3e6c30e60f09d84251a461946c4a37e5c75c6cc56",
+    "tests/dev/input_engine_test.c": "a770651cfcf064a948cf217006936544244058f06571a37cbc7053f4ef2ae69f",
+    "tests/dev/input_engine_test.py": "0ae494034367a128938564d2d6a4c27a607c096698a07849148f725a0d9c77a1"
+  },
+  "log": "artifacts/runs/20261102T021951Z-port-b7e3a0/logs/002/coder_video_input-001.log",
+  "limitations": [
+    "Host engine-unit harness with DOM/canvas shim; not real browser acceptance or full gameplay.",
+    "UI/chat responders are neutral stubs; actual I_GetEvent, event queue, G_Responder, m_controls defaults and G_BuildTiccmd are linked unmodified.",
+    "Only video input translation unit compiled with Emscripten; root must rebuild full deliverable."
+  ],
+  "changed_existing_files_since_assigned_snapshot": [
+    "platform/video_input.c",
+    "tests/dev/video_input_test.cjs"
+  ]
+}

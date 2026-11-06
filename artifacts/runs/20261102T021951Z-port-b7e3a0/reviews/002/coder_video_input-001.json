@@ -1,0 +1,70 @@
+{
+  "role": "coder_video_input",
+  "status": "pass",
+  "current_task": "Bounded repair of correctness-001: advertised Ctrl/fire and Space/use must match supplied engine defaults and prove down/up effects through actual engine input action path.",
+  "source_snapshot": {
+    "before": {
+      "revision": "e500c440656622db5ab3f8fb7df73d8b5998eeb3",
+      "inputs_sha256": "eae7ca6c1ecc61903f7a784aa3ea613de4af71ecf0b2fe16cac768f1ea8b9baa",
+      "inventory": "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/002/source-before-repair.json",
+      "diff": "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/002/source-before-repair.diff"
+    },
+    "after_scope_sha256": {
+      "platform/video_input.c": "38c79e388ccb9cf1880bbd3e6a6ffe529ee4e0944d9968bdc97d9602ab42f4e5",
+      "platform/video_input.h": "5ccb06d59526f366de99a50e9db5ca6bdcd9baf8769e7153eb8cd845525add50",
+      "tests/dev/video_input_test.cjs": "1d4ac91f518befcec10681b3e6c30e60f09d84251a461946c4a37e5c75c6cc56",
+      "tests/dev/input_engine_test.c": "a770651cfcf064a948cf217006936544244058f06571a37cbc7053f4ef2ae69f",
+      "tests/dev/input_engine_test.py": "0ae494034367a128938564d2d6a4c27a607c096698a07849148f725a0d9c77a1"
+    },
+    "changed_existing_files": [
+      "platform/video_input.c",
+      "tests/dev/video_input_test.cjs"
+    ],
+    "new_files": [
+      "tests/dev/input_engine_test.c",
+      "tests/dev/input_engine_test.py"
+    ],
+    "full_after_inventory": "unavailable; root should snapshot after repair"
+  },
+  "build_snapshot": "unavailable: prior tests/001/build-snapshot.json invalidated by source repair; Emscripten 4.0.18 translation-unit compile passed, not a full deliverable rebuild.",
+  "summary": "Ctrl aliases now receive KEY_FIRE and Space receives KEY_USE passed from doomkeys.h via the internal EM_JS initializer. Queue, release, overflow, focus behavior and public callback API remain unchanged. Development tests derive keys and button constants by compiling supplied headers and link unmodified i_input.c, d_event.c, g_game.c, m_controls.c, doomstat.c. Twenty checkpoints verify BT_ATTACK/BT_USE press, release, held/repeat, modifier alias, simultaneous controls, blur and visibility behavior. Existing pixel/input checks remain. Both deliberate old-code substitutions fail in the actual engine action-path assertion.",
+  "findings": [
+    {
+      "id": "correctness-001",
+      "owning_coder": "coder_video_input",
+      "status": "resolved",
+      "evidence": "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/002/coder_video_input-001.json"
+    }
+  ],
+  "unresolved_findings": [],
+  "interface_dependencies": [
+    "No web changes required: existing documented Ctrl/fire and Space/use controls now match engine defaults.",
+    "DG_Init/DG_DrawFrame/DG_GetKey/DG_SetWindowTitle signatures unchanged; video_init is internal and now accepts fire/use constants from C.",
+    "Root should rebuild and independently verify browser gameplay; no changes made to runtime, page, build script, supplied engine, assets, protected tests or shared state.",
+    "Direct node tests/dev/video_input_test.cjs invocation remains supported and invokes host harness build; requires clang, Python 3 and Node."
+  ],
+  "evidence_paths": [
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/logs/002/coder_video_input-001.log",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/002/coder_video_input-001.json",
+    "tests/dev/input_engine_test.c",
+    "tests/dev/input_engine_test.py",
+    "tests/dev/video_input_test.cjs",
+    "platform/video_input.c"
+  ],
+  "reproduction": [
+    "python3 tests/dev/input_engine_test.py",
+    "node tests/dev/video_input_test.cjs",
+    "DOOM_INPUT_NEGATIVE_CONTROL=fire python3 tests/dev/input_engine_test.py (expected nonzero)",
+    "DOOM_INPUT_NEGATIVE_CONTROL=use python3 tests/dev/input_engine_test.py (expected nonzero)",
+    "source /Users/reeseoo/emsdk/emsdk_env.sh; emcc -std=gnu11 -Werror=implicit-function-declaration -Ithird_party/doomgeneric -c platform/video_input.c -o build/video_input-repair.o"
+  ],
+  "limitations": [
+    "Host engine-unit harness with DOM/canvas shim; not real browser acceptance or full gameplay.",
+    "UI/chat responders are neutral stubs; actual I_GetEvent, event queue, G_Responder, m_controls defaults and G_BuildTiccmd are linked unmodified.",
+    "Only video input translation unit compiled with Emscripten; root must rebuild full deliverable."
+  ],
+  "omitted_large_evidence": "No large evidence generated. Temporary host binary removed automatically; build/video_input-repair.o is disposable compiler output. Recreate using recorded commands. No WAD copied into artifacts.",
+  "next_action": "Root capture repaired source snapshot, rebuild full WASM deliverable, independently review correctness-001 and execute acceptance checks.",
+  "stopping_reason": "Bounded repair and meaningful positive/negative development verification complete; handing back for independent verification.",
+  "usage": "unavailable (tool/token accounting not exposed)"
+}

@@ -1,0 +1,28 @@
+{
+  "status": "blocked",
+  "source_snapshot": {
+    "git_revision": "e500c440656622db5ab3f8fb7df73d8b5998eeb3",
+    "input_digest": "unavailable; implementation/verification not started"
+  },
+  "build_snapshot": "unavailable",
+  "summary": "Required compiler missing; stop before coder handoffs.",
+  "findings": [
+    {
+      "id": "missing-emscripten",
+      "owner": "environment",
+      "summary": "emcc is not on PATH; required Emscripten 4.0.18 cannot be verified.",
+      "next_action": "Install/activate Emscripten 4.0.18, then request resume."
+    }
+  ],
+  "next_action": "Install/activate Emscripten 4.0.18, then request resume.",
+  "manual_interventions": [
+    "User requested project start; new implementation run authorized after prior preflight-only run.",
+    "Earlier preflight classified missing optional acceptance files and Claude CLI as blockers; those are not prerequisites for this invocation."
+  ],
+  "usage_notes": {
+    "shell_calls_this_invocation": 3,
+    "tokens": "unavailable",
+    "cost": "unavailable",
+    "implementation_attempts_used": 0
+  }
+}

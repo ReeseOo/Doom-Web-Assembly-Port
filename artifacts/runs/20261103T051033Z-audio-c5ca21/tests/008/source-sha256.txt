@@ -1,0 +1,4 @@
+b5b4f3486ac088287d0c43aaec2ed9a660583a281318e1a1516e502a216b404f  platform/audio.c
+1711b8b7e9a96183b7592ef4deb0767cbcb82216856f1d62c5e236ace5f28b5b  platform/audio.h
+f4e21c2121f20b3e39842cbc00d3e4e4481fda1445eba6a97fd7c0d90c4a4a16  tests/dev/music_worker_browser.cjs
+9ab1625c1ac9d89aa5248188210f813b603a3801fc227dd29e9d7f8f46cc2f52  tests/dev/music_test.cjs

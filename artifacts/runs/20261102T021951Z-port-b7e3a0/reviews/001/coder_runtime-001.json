@@ -1,0 +1,64 @@
+{
+  "role": "coder_runtime",
+  "status": "pass",
+  "current_task": "Implement bounded browser main/clock/sleep/lifecycle and remove original duplicate callback stubs.",
+  "source_snapshot": {
+    "revision": "e500c440656622db5ab3f8fb7df73d8b5998eeb3",
+    "input_snapshot_before_runtime": "ef4b74a8e1e683ed474cc6d08e1825bdad77695c95a704f15165f999a377e07e",
+    "file_sha256": {
+      "platform/doomgeneric_runtime.c": "d99a9226f4ae16a058ef4dcbe233f8a18a1c62fe68b61d160b75e6d7e5422192",
+      "platform/doomgeneric_wasm.c": "b6df097089340346b0c6dac0ae2de2d7f270db81f2b70ef4f8a6a1b1ceac1faa",
+      "platform/video_input.c": "01e9f1e096b67cc51390090b59778982cbf0ab3f3f282f572365fabc2f231b15",
+      "platform/video_input.h": "5ccb06d59526f366de99a50e9db5ca6bdcd9baf8769e7153eb8cd845525add50",
+      "tests/dev/runtime_test.py": "01c4789318656451d3fb4955c924e92e0ae71da1369d1a0b4adc38fec2a9f072",
+      "build.sh": "9f8c492c348e7e5465508f811c98eced08a9acfb8db92c3881a0177d99a6f54c",
+      "web/index.html": "4e832d1fd66e664e95839e293265be507e70ca1580cdc375775c6fa7b9325b34"
+    }
+  },
+  "build_snapshot": {
+    "compiler": "Emscripten 4.0.18",
+    "artifact_sha256": {
+      "dist/index.html": "4e832d1fd66e664e95839e293265be507e70ca1580cdc375775c6fa7b9325b34",
+      "dist/doom.js": "a88d725698c51c093f00dfed637d7ff5da9ff135d9b5dbd6156e0a7bc0af8364",
+      "dist/doom.wasm": "b1e361544189a4a57dbcec56d8c8cc2cea652650ef3f69231cb9fb5a325b79cf",
+      "dist/doom.data": "1d7d43be501e67d927e415e0b8f3e29c3bf33075e859721816f652a526cac771"
+    }
+  },
+  "summary": [
+    "Added platform/doomgeneric_runtime.c integrating supplied doomgeneric_Create and doomgeneric_Tick without engine edits.",
+    "DG_GetTicksMs uses monotonic emscripten_get_now and milliseconds (initial offset 1 avoids engine zero sentinel). DG_SleepMs directly yields via Asyncify even in engine tic synchronization and screen wipes.",
+    "Single sequential infinite main continuation prevents scheduled tick reentrancy; an extra 1 ms outer yield covers fast-returning ticks. Engine retains authority over 35 Hz simulation via its unmodified TICRATE conversion.",
+    "Startup argument pointer array and strings are copied to lifetime heap storage before Create; duplicate main entry is a no-op.",
+    "All original doomgeneric_wasm.c callback stubs removed; video/input/title remain solely in video_input.c.",
+    "Emscripten 4.0.18 integrated build and native development test pass."
+  ],
+  "findings": [
+    {
+      "severity": "verification_pending",
+      "owner": "root/tester",
+      "description": "Must verify actual browser Start, sustained 35 Hz gameplay timing, input/display responsiveness during tic waits and wipes, no Asyncify abort/reentrancy errors, and WAD load. Native mocks and compilation cannot establish these."
+    },
+    {
+      "severity": "limitation",
+      "owner": "root",
+      "description": "Silent MVP: FEATURE_SOUND remains disabled. No audio implementation supplied."
+    },
+    {
+      "severity": "informational",
+      "owner": "root",
+      "description": "Global git diff --check reports preexisting protected loop/agents.yaml trailing whitespace; not modified. Supplied engine r_segs.c absolute-value warning remains unchanged."
+    }
+  ],
+  "unresolved_findings": [
+    "Independent real-browser runtime/gameplay acceptance pending."
+  ],
+  "evidence_paths": [
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/logs/001/coder_runtime-001.log",
+    "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/001/coder_runtime-001.json"
+  ],
+  "next_action": "Root reruns build and independent reviews/tests using the recorded source hashes; tester exercises Start, menu/new-game wipes, movement/fire/use, focus loss and sustained timing. If runtime faults occur, hand back console trace and reproduction to coder_runtime.",
+  "stopping_reason": "Bounded runtime implementation and permitted development validation complete; handing off for independent integrated browser verification, not claiming final acceptance.",
+  "usage": "Unavailable: API token/cost accounting not exposed.",
+  "omitted_large_evidence": "Generated dist JS/Wasm/data not copied into artifacts to avoid large duplicate binaries and game data. Build output hashes recorded; reproduce with Emscripten 4.0.18 and ./build.sh. No screenshots produced because browser testing remains independent.",
+  "permissions": "Only platform/doomgeneric_runtime.c, platform/doomgeneric_wasm.c, tests/dev/runtime_test.py and assigned artifact paths written. Build generated build/dist files. No protected/shared state/manifest/summary edits, commits, pushes, or agents."
+}

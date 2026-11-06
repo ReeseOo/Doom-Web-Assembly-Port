@@ -1,0 +1,7 @@
+{
+  "status": "blocked",
+  "tool": "transfer_task",
+  "agent": "reviewer_integration",
+  "error": "harness claude-code failed: wait: exit status 1",
+  "authentication": "not verified; harness failed before report returned"
+}

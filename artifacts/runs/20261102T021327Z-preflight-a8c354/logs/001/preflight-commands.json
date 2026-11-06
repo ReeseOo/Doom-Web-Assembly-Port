@@ -1,0 +1,48 @@
+{
+  "emscripten": {
+    "command": "command -v emcc && emcc --version",
+    "cwd": "/Users/reeseoo/code/ucla/loop_engineering/fellowship-loop-capstone",
+    "start": "2026-11-02T02:13:27.075027+00:00",
+    "end": "2026-11-02T02:13:27.075395+00:00",
+    "exit_code": 127,
+    "stdout": "",
+    "stderr": ""
+  },
+  "prerequisites": {
+    "command": "command -v node; command -v npm; command -v make; command -v git; command -v python3; test -d third_party/doomgeneric && test -s assets/doom1.wad",
+    "cwd": "/Users/reeseoo/code/ucla/loop_engineering/fellowship-loop-capstone",
+    "start": "2026-11-02T02:13:27.075398+00:00",
+    "end": "2026-11-02T02:13:27.075769+00:00",
+    "exit_code": 0,
+    "stdout": "/usr/bin/node\n/usr/bin/npm\n/usr/bin/make\n/usr/bin/git\n/usr/bin/python3\n",
+    "stderr": ""
+  },
+  "revision": {
+    "command": "git rev-parse HEAD",
+    "cwd": "/Users/reeseoo/code/ucla/loop_engineering/fellowship-loop-capstone",
+    "start": "2026-11-02T02:13:27.075771+00:00",
+    "end": "2026-11-02T02:13:27.076918+00:00",
+    "exit_code": 0,
+    "stdout": "e500c440656622db5ab3f8fb7df73d8b5998eeb3\n",
+    "stderr": ""
+  },
+  "dirty": {
+    "command": "git status --short",
+    "cwd": "/Users/reeseoo/code/ucla/loop_engineering/fellowship-loop-capstone",
+    "start": "2026-11-02T02:13:27.076922+00:00",
+    "end": "2026-11-02T02:13:27.080195+00:00",
+    "exit_code": 0,
+    "stdout": " M loop/agents.yaml\n?? artifacts/runs/\n?? artifacts/state.json\n?? evals/\n",
+    "stderr": ""
+  },
+  "alternate_compiler_locations": {
+    "command": "for p in /opt/emsdk/upstream/emscripten/emcc /emsdk/upstream/emscripten/emcc /usr/local/bin/emcc /usr/bin/emcc; do if [ -x \"$p\" ]; then \"$p\" --version; fi; done",
+    "cwd": "/Users/reeseoo/code/ucla/loop_engineering/fellowship-loop-capstone",
+    "start": "2026-11-02T02:14:41.823264+00:00",
+    "end": "2026-11-02T02:14:41.823756+00:00",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "",
+    "note": "Limited known-location check; absence does not establish no installation anywhere."
+  }
+}

@@ -1,0 +1,6 @@
+B1	pass	build.sh exit 0; dist/index.html and .wasm present
+B2	fail	baseline tag acceptance-v1 not found; commit and tag the checks first
+B3	fail	docker image doom-capstone-toolchain not available (docker build -t doom-capstone-toolchain .)
+R1	fail	docker image doom-capstone-toolchain not available (docker build -t doom-capstone-toolchain .)
+R2	fail	docker image doom-capstone-toolchain not available (docker build -t doom-capstone-toolchain .)
+T1	fail	docker image doom-capstone-toolchain not available (docker build -t doom-capstone-toolchain .)

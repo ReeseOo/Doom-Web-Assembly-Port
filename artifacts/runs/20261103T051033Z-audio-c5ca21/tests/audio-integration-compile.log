@@ -1,0 +1,2 @@
+PASS engine FEATURE_SOUND registration compiles with empty SDL include
+PASS relocatable backend/registration link

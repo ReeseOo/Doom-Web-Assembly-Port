@@ -1,0 +1,57 @@
+[
+ {
+  "n": "01",
+  "action": "navigate http://127.0.0.1:51345/",
+  "observation": "page loaded, status 'Ready', Start button initially disabled; only console error is favicon.ico 404"
+ },
+ {
+  "n": "02",
+  "action": "click #start via ref while disabled",
+  "observation": "Playwright click timed out (button disabled); ~3s later title became 'DOOM Shareware' and status 'Running Doom.' with the engine running. Start was never successfully clicked by me; cause of boot unknown (late-enabled click retry or autostart)"
+ },
+ {
+  "n": "02-12",
+  "action": "first scripted pass of arrows/Ctrl/Space/blur",
+  "observation": "INVALID as gameplay proof: screen was the attract-mode demo (HUD changed with no input, menu overlay). Frame-hash 'changed' results are meaningless. Screenshots 03-12 kept as failure evidence"
+ },
+ {
+  "n": "13-16",
+  "action": "Enter x3 from menu",
+  "observation": "landed on attract screens (order screen), no new game"
+ },
+ {
+  "n": "17-21",
+  "action": "Escape, Enter x3",
+  "observation": "opened Read This help screen (cursor was on Read This)"
+ },
+ {
+  "n": "22-26",
+  "action": "Escape x2, ArrowUp x4, Enter x3 (New Game/episode/skill)",
+  "observation": "real new level started: ammo 50, health 100%, armor 0% (qa_browser-001-26-level-start.png)"
+ },
+ {
+  "n": "27-28",
+  "action": "hold ArrowLeft 3s while sampling canvas",
+  "observation": "view turned; ~35.3 distinct canvas frames/s (106 in 3.0s, JPEG-compare sampling every 5ms in page; approximate)"
+ },
+ {
+  "n": "29",
+  "action": "hold ArrowUp 2s",
+  "observation": "view/position changed (screenshot 29)"
+ },
+ {
+  "n": "30-31",
+  "action": "hold Control 150ms then release",
+  "observation": "ammo 50->49, bull 50->49 in screenshot 35; muzzle flash/shot frame not individually confirmed"
+ },
+ {
+  "n": "32-33",
+  "action": "hold ArrowUp, dispatch synthetic window blur event, release, idle 1.5s",
+  "observation": "frames still differed during idle (not identical); inconclusive, cannot distinguish stuck movement from ambient animation/monsters. Real focus loss not exercised"
+ },
+ {
+  "n": "34-35",
+  "action": "click canvas, ArrowRight 0.8s, ArrowUp 1.5s",
+  "observation": "game responsive after blur; turn and forward movement visible"
+ }
+]

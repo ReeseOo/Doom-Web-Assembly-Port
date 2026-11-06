@@ -1,0 +1,9 @@
+- main [ref=e2]:
+  - heading "Doom — shareware Episode 1" [level=1] [ref=e3]
+  - status [ref=e4]: Loading engine and game data…
+  - button "Start Doom" [disabled] [ref=e5]
+  - button "Fullscreen" [ref=e6]
+  - generic "Doom game screen" [ref=e7]
+  - paragraph [ref=e8]: "Click the game to focus. Arrows: move/turn · Ctrl: fire · Space: use · Shift: run · Enter/Escape: menus."
+  - paragraph [ref=e9]: Keyboard play. Sound and persistent saves are not enabled in this build.
+  - alert

@@ -1,0 +1,2 @@
+playwright MCP: navigate, click(failed: disabled), screenshot, snapshot, evaluate, run_code_unsafe (scripted key down/up, screenshots), console_messages(all)->logs/002/qa_browser-001-console.log
+No source, build, or shared-state edits; server PID 21019 not touched.

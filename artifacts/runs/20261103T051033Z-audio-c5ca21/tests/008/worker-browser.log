@@ -1,0 +1,51 @@
+{
+  "errors": [],
+  "phases": [
+    {
+      "name": "first activation",
+      "elapsed": 2025.7000000000116,
+      "rafMax": 16.80000000000001,
+      "eventLoopMax": 29.70000000001164,
+      "inputEvents": 52,
+      "source": true,
+      "job": false,
+      "duration": 6.857142857142857,
+      "bufferSeconds": 6.857142857142857,
+      "context": "running",
+      "inputRoundtripMax": 3,
+      "inputsSent": 52
+    },
+    {
+      "name": "New Game cold E1M1",
+      "elapsed": 3076.7000000000116,
+      "rafMax": 16.800000000000182,
+      "eventLoopMax": 26.5,
+      "inputEvents": 52,
+      "source": true,
+      "job": false,
+      "duration": 96,
+      "bufferSeconds": 96,
+      "context": "running",
+      "inputRoundtripMax": 4,
+      "inputsSent": 52
+    },
+    {
+      "name": "cold long E1M3 transition",
+      "elapsed": 2687.5,
+      "rafMax": 16.800000000000182,
+      "eventLoopMax": 27.70000000001164,
+      "inputEvents": 53,
+      "source": true,
+      "job": false,
+      "duration": 272,
+      "bufferSeconds": 272,
+      "context": "running",
+      "inputRoundtripMax": 4,
+      "inputsSent": 53
+    }
+  ],
+  "lifecycle": [
+    "replace cancels job; stale completion ignored; pause cancels; resume restarts; stop releases worker"
+  ],
+  "pass": true
+}

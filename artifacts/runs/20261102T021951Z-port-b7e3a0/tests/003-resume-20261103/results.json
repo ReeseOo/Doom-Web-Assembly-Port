@@ -1,0 +1,48 @@
+{
+  "time_utc": "2026-11-03T04:13:03.381867Z",
+  "source_revision": "e500c440656622db5ab3f8fb7df73d8b5998eeb3",
+  "uncommitted_files": 14,
+  "source_digest": "412d81c68d255fa2da6e3c3e83fbd0b1e198cd603313016cb96e39f099372266",
+  "baseline_tag": "acceptance-v1",
+  "verdict": "FAIL",
+  "complete": false,
+  "not_implemented": [
+    "R3",
+    "I1",
+    "I2",
+    "G1",
+    "A1"
+  ],
+  "checks": [
+    {
+      "id": "B1",
+      "status": "pass",
+      "detail": "build.sh exit 0; dist/index.html and .wasm present"
+    },
+    {
+      "id": "B2",
+      "status": "fail",
+      "detail": "baseline tag acceptance-v1 not found; commit and tag the checks first"
+    },
+    {
+      "id": "B3",
+      "status": "fail",
+      "detail": "docker image doom-capstone-toolchain not available (docker build -t doom-capstone-toolchain .)"
+    },
+    {
+      "id": "R1",
+      "status": "fail",
+      "detail": "docker image doom-capstone-toolchain not available (docker build -t doom-capstone-toolchain .)"
+    },
+    {
+      "id": "R2",
+      "status": "fail",
+      "detail": "docker image doom-capstone-toolchain not available (docker build -t doom-capstone-toolchain .)"
+    },
+    {
+      "id": "T1",
+      "status": "fail",
+      "detail": "docker image doom-capstone-toolchain not available (docker build -t doom-capstone-toolchain .)"
+    }
+  ]
+}

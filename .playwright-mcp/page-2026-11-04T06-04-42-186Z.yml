@@ -1,0 +1,9 @@
+- main [ref=e2]:
+  - heading "Doom — shareware Episode 1" [level=1] [ref=e3]
+  - status [ref=e4]: Ready. Press Start Doom, then use the keyboard.
+  - button "Start Doom" [ref=e5]
+  - button "Fullscreen" [ref=e6]
+  - generic "Doom game screen" [ref=e7]
+  - paragraph [ref=e8]: "Click the game to focus. Arrows: move/turn · Ctrl: fire · Space: use · Shift: run · Enter/Escape: menus."
+  - paragraph [ref=e9]: Keyboard play. WAD sound effects are enabled and unlock after a keypress or click. Use Doom’s Save Game / Load Game menus; saves persist in this browser on this site. Clearing site data removes them.
+  - status [ref=e10]: Saves stored in this browser.

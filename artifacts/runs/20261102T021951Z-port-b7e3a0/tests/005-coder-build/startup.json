@@ -1,0 +1,38 @@
+{
+  "before": {
+    "state": "ready",
+    "disabled": false,
+    "focus": "",
+    "error": ""
+  },
+  "after": {
+    "state": "running",
+    "disabled": true,
+    "focus": "canvas",
+    "error": ""
+  },
+  "nonblackPixels": 256000,
+  "errors": [],
+  "responses": [
+    {
+      "url": "/doom/",
+      "status": 200,
+      "type": "text/html"
+    },
+    {
+      "url": "/doom/doom.js",
+      "status": 200,
+      "type": "text/javascript"
+    },
+    {
+      "url": "/doom/doom.data",
+      "status": 200,
+      "type": "application/octet-stream"
+    },
+    {
+      "url": "/doom/doom.wasm",
+      "status": 200,
+      "type": "application/wasm"
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "role": "coder_build",
+  "status": "blocked",
+  "entrypoint": {
+    "path": "platform/doomgeneric_runtime.c",
+    "symbol": "int main(int argc, char **argv)",
+    "owner": "runtime coder",
+    "requirements": [
+      "Call doomgeneric_Create(argc, argv) once; then schedule doomgeneric_Tick() cooperatively.",
+      "Use emscripten_sleep in DG_SleepMs (ASYNCIFY is enabled) so engine waits yield; do not spin or block the browser.",
+      "Keep runtime alive after main returns (EXIT_RUNTIME=0); avoid re-entering a tick while an Asyncify suspension is active."
+    ]
+  },
+  "callbacks": {
+    "path": "platform/doomgeneric_wasm.c",
+    "owner": "video/input coder for DG_Init, DG_DrawFrame, DG_GetKey, DG_SetWindowTitle; coordinate DG_SleepMs and DG_GetTicksMs with runtime coder",
+    "symbols": [
+      "void DG_Init(void)",
+      "void DG_DrawFrame(void)",
+      "void DG_SleepMs(uint32_t ms)",
+      "uint32_t DG_GetTicksMs(void)",
+      "int DG_GetKey(int *pressed, unsigned char *key)",
+      "void DG_SetWindowTitle(const char *title)"
+    ]
+  },
+  "browser": {
+    "path": "web/index.html",
+    "module": "global Module (non-modularized Emscripten)",
+    "canvas": "Module.canvas / document.getElementById(\"canvas\")",
+    "startup": "Module.noInitialRun=true; Start button invokes Module.callMain(Module.arguments) only after onRuntimeInitialized",
+    "arguments": [
+      "-iwad",
+      "/doom1.wad"
+    ],
+    "renderer": "Canvas 2D owned by C/EM_JS callbacks; page creates no context. Convert B,G,R,0 to opaque R,G,B,A.",
+    "input": "Register browser input in C/EM_JS platform; canvas tabindex=0 and Start/click focus it. Page does not translate keys."
+  },
+  "build": {
+    "path": "build.sh",
+    "compiler": "Emscripten 4.0.18",
+    "platform_sources": "platform/*.c, each exactly once",
+    "engine_sources": "explicit array in build.sh; all supplied .c except icon.c (include data)",
+    "settings": [
+      "ASYNCIFY=1",
+      "ASYNCIFY_STACK_SIZE=131072",
+      "ALLOW_MEMORY_GROWTH=1",
+      "STACK_SIZE=1048576",
+      "EXIT_RUNTIME=0",
+      "FORCE_FILESYSTEM=1",
+      "ENVIRONMENT=web",
+      "EXPORTED_FUNCTIONS=[_main]",
+      "EXPORTED_RUNTIME_METHODS=[callMain,FS]"
+    ],
+    "wad": "assets/doom1.wad@/doom1.wad",
+    "sound": "FEATURE_SOUND not defined"
+  },
+  "unresolved_dependencies": [
+    "Platform main missing; final build fails deliberately with undefined exported _main.",
+    "Platform callbacks are still supplied empty stubs. Runtime and video/input coders must implement them before gameplay verification."
+  ]
+}

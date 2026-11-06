@@ -1,0 +1,19 @@
+{
+  "status": "pass",
+  "scope": "Startup only, not final acceptance",
+  "build": "Emscripten 4.0.18 ./build.sh succeeded",
+  "before": "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/003/coder_build-001-before-static-title.json",
+  "after": "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/003/coder_build-001-after.json",
+  "initial_diagnostic_failure": "before.json required animation during normal static title; retained, corrected development diagnostic only",
+  "source_snapshot": "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/003/coder_build-001-source-snapshot.json",
+  "build_snapshot": "artifacts/runs/20261102T021951Z-port-b7e3a0/tests/003/coder_build-001-build-snapshot.json",
+  "results": [
+    "No autostart after 3s ready idle",
+    "Playwright click resolved before and after",
+    "Exactly one click and callMain; callMain returned number",
+    "WAD /doom1.wad has 4196020 bytes",
+    "Canvas differs from prestart blank",
+    "After: no HTTP error, console error or pageerror",
+    "Browser and server stopped"
+  ]
+}
