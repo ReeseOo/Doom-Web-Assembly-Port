@@ -78,5 +78,14 @@
     "next_action": "Local archive commit only; no push permitted",
     "push_status": "Not performed: prohibited by developer instructions",
     "validation": "No tracked port-code changes. Staged whitespace check flags historical logs/diffs; preserved evidence unchanged."
+  },
+  "readme_update": {
+    "task": "Replace assignment brief with public-facing project README",
+    "files": [
+      "README.md"
+    ],
+    "completed_at": "2026-11-06T18:19:28.744368+00:00",
+    "verification": "Documentation checked against build.sh, Dockerfile, web/index.html, tests/accept/run.sh, and saved completion evidence; no code changed or tests rerun.",
+    "next_action": "User may review and commit documentation; no push performed."
   }
 }
