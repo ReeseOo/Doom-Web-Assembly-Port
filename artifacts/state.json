@@ -1,17 +1,14 @@
 {
   "run_id": "20261103T051033Z-audio-c5ca21",
-  "attempt": 11,
-  "task": "Verification and controls repairs complete",
+  "attempt": 12,
+  "task": "Prominent focus and Enter menu instructions complete",
   "last_result": {
     "build_exit": 0,
     "gate_exit": 0,
-    "evidence": "artifacts/runs/20261103T051033Z-audio-c5ca21/tests/011-committed/results.json",
-    "verdict": "PASS",
-    "complete": true,
-    "source_revision": "86480282d37abb3c93bb8a39ef64845102298a05",
-    "source_digest": "314056fee6e2dbb24f7ecc2b5346150aeec3211065302520215e4a632d1c137e"
+    "evidence": "artifacts/runs/20261103T051033Z-audio-c5ca21/tests/012/results.json",
+    "verdict": "PASS"
   },
-  "next_action": "None; success",
+  "next_action": "Complete; local milestone commit created, push intentionally not performed",
   "status": "success",
   "needs_student": [],
   "manifest": "artifacts/runs/20261103T051033Z-audio-c5ca21/manifest.json",
@@ -22,19 +19,18 @@
   "reviews": {
     "correctness": {
       "status": "pass",
-      "report": "artifacts/runs/20261103T051033Z-audio-c5ca21/reviews/011-correctness.md"
+      "report": "artifacts/runs/20261103T051033Z-audio-c5ca21/reviews/012-correctness.md"
     },
     "integration": {
       "status": "pass",
-      "report": "artifacts/runs/20261103T051033Z-audio-c5ca21/reviews/011-integration.md"
+      "report": "artifacts/runs/20261103T051033Z-audio-c5ca21/reviews/012-integration.md"
     }
   },
   "qa": {
     "status": "pass",
-    "report": "artifacts/runs/20261103T051033Z-audio-c5ca21/qa/011/report.md",
+    "report": "artifacts/runs/20261103T051033Z-audio-c5ca21/qa/012/report.md",
     "limits": [
-      "Door operation and enemy combat not verified in this session",
-      "Zero-duration synthetic Space tap did not fire; 80ms taps work"
+      "Chromium synthetic keyboard input only; no console audit in manual QA."
     ]
   },
   "milestone_003_commit": "b75fd6d8578ad3c9a5a9765d088057464f4acd90",
@@ -51,9 +47,9 @@
     "Exact sustained simulation tic rate and very long sessions not independently measured.",
     "Nonblocking platform documentation contains stale sound/save descriptions."
   ],
-  "resume_evidence": "artifacts/runs/20261103T051033Z-audio-c5ca21/resumes/20261104T065026Z",
+  "resume_evidence": "artifacts/runs/20261103T051033Z-audio-c5ca21/resumes/20261108T203006Z",
   "stop_reason": "SUCCESS",
-  "stopping_condition": "Committed-source acceptance exits 0, both independent reviewers PASS, browser QA PASS.",
+  "stopping_condition": "Attempt 12 build and acceptance actual exit 0; both independent reviews PASS; browser QA PASS.",
   "gameplay_investigation": {
     "report": "artifacts/runs/20261103T051033Z-audio-c5ca21/qa/user-gameplay-investigation/report.md",
     "result": "Door opened with Space when facing within use range; two zombiemen visible; attacks reduced health 100 to 79; firing reduced ammo. No defect reproduced.",
@@ -63,7 +59,7 @@
       "Navigation-only map reveal and noclip toggled off before moving"
     ]
   },
-  "attempts_used": 11,
+  "attempts_used": 12,
   "commit": "86480282d37abb3c93bb8a39ef64845102298a05",
   "completed_at": "2026-11-04T07:11:29.911896+00:00",
   "milestone_commits": [
@@ -87,5 +83,8 @@
     "completed_at": "2026-11-06T18:19:28.744368+00:00",
     "verification": "Documentation checked against build.sh, Dockerfile, web/index.html, tests/accept/run.sh, and saved completion evidence; no code changed or tests rerun.",
     "next_action": "User may review and commit documentation; no push performed."
-  }
+  },
+  "push_status": "Not performed: prohibited by developer instructions",
+  "handoff": "artifacts/runs/20261103T051033Z-audio-c5ca21/handoffs/012-menu-prompt.md",
+  "milestone_commit_subject": "ui: prominently explain focusing Doom and pressing Enter for menu"
 }

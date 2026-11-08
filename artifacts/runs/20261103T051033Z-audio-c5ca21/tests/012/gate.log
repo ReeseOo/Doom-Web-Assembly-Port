@@ -1,0 +1,15 @@
+PASS  B1  build.sh exit 0; dist/index.html and .wasm present
+PASS  B2  loop, assets, third_party, tests/accept match acceptance-v1
+PASS  R1  canvas drawn after start (clicked control "Start Doom"), no errors
+PASS  B3  loaded from /doom/ with application/wasm (doom.wasm)
+PASS  R2  8 distinct frames in 12 samples over ~12 s
+PASS  R3  best of 13 frames: error 6.9/255 (needs < 30), error if red/blue were swapped 66.4 (must be higher)
+PASS  T1  avg 60.1 fps, max gap 17 ms
+PASS  I1  distinct view frames: idle 5, while turning 8, after release 1; blur-release (informational, not gating): ok
+PASS  I2  no scroll on arrows/Space; PageDown (informational) scrollY 607
+PASS  A1  contexts 1, running true; fire: base 0.0404 -> 0.0884 (rise); menu: base 0.0399 -> 0.0752 (rise)
+PASS  G1  ammo region stable while idle: true; view changed while moving with W/S: true (idle 3, forward 6, back 6); while strafing with D: true (6); ammo number changed after 3 shots: true; 61 s of play, 0 new errors; door attempt screenshots saved (informational)
+PASS  M1  contexts 1, running true; 100% of samples audible (needs >= 50%), peak 0.0360 (needs >= 0.002) while idle
+PASS  S1  view difference fresh vs saved 18.6 (needs > 8); saved vs loaded-after-reload 0.0 (needs < 8 and below fresh vs loaded 18.6)
+NOT IMPLEMENTED (not counted as passed): none
+VERDICT: PASS | complete: True | rev f2b1306d40 | digest db71f5aee8a4
