@@ -23,6 +23,7 @@
     canvas:focus { outline: 2px solid #e5b85c; }
     button { font: inherit; padding: .5rem 1rem; }
     #status { min-height: 1.5em; }
+    #status:empty { display: none; }
     .menu-prompt { margin: 8px 0 10px; color: #eee; }
     .menu-prompt p { margin: 0; font-size: .875rem; line-height: 1.4; }
     .menu-prompt .menu-next { margin-top: 4px; }
@@ -79,7 +80,7 @@
         Module.persistence = DoomPersistence(Module, document.getElementById('save-status'));
         Module.persistence.restore().then(function () {
           if (statusLine.dataset.state === 'error') return;
-          statusLine.textContent = 'Ready. Click Start Doom, then follow the instructions above the game.';
+          statusLine.textContent = '';
           statusLine.dataset.state = 'ready';
           startButton.disabled = false;
         }).catch(function (error) {
@@ -92,7 +93,7 @@
       if (statusLine.dataset.state !== 'ready') return;
       startButton.disabled = true;
       statusLine.dataset.state = 'running';
-      statusLine.textContent = 'Running Doom. Click the game to focus, then press any key for the title/demo menu. Use Up/Down to navigate and Enter to select New Game.';
+      statusLine.textContent = '';
       // Finalize the status layout before focusing, so the browser reveals the
       // complete game rather than scrolling to its old pre-start position.
       gameCanvas.focus({ preventScroll: true });
