@@ -1,0 +1,2 @@
+B1	pass	build.sh exit 0; dist/index.html and .wasm present
+B2	fail	protected paths differ from acceptance-v1 (see B2_protected.diff)

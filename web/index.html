@@ -23,13 +23,11 @@
     canvas:focus { outline: 2px solid #e5b85c; }
     button { font: inherit; padding: .5rem 1rem; }
     #status { min-height: 1.5em; }
-    .menu-prompt { margin: 12px 0 10px; padding: 12px; border: 3px solid #ffd54f; border-radius: 6px; background: #ffd54f; color: #101010; }
-    .menu-prompt p { margin: 0; font-size: clamp(1.25rem, 3vw, 1.75rem); font-weight: 800; line-height: 1.3; }
-    .menu-prompt .menu-next { margin-top: 6px; font-size: 1rem; font-weight: 600; }
-    .menu-prompt kbd { font: inherit; padding: 0 .25em; border: 2px solid currentColor; border-radius: 4px; background: #fff; }
+    .menu-prompt { margin: 8px 0 10px; color: #eee; }
+    .menu-prompt p { margin: 0; font-size: .875rem; line-height: 1.4; }
+    .menu-prompt .menu-next { margin-top: 4px; }
+    .menu-prompt kbd { font: inherit; color: #ffd54f; }
     @media (max-width: 480px) {
-      .menu-prompt { padding: 8px; }
-      .menu-prompt .menu-next { font-size: .875rem; }
       canvas { width: min(100%, calc(max(96px, 100vh - 460px) * 1.6)); }
       @supports (height: 100svh) {
         canvas { width: min(100%, calc(max(96px, 100svh - 460px) * 1.6)); }
@@ -43,14 +41,14 @@
   <main>
     <h1>Doom — shareware Episode 1</h1>
     <p id="status" data-state="loading" role="status" aria-live="polite">Loading engine and game data…</p>
+    <aside class="menu-prompt" aria-label="How to start playing">
+      <p id="menu-prompt">Click <strong>Start Doom</strong>, then click the game to focus. The title/demo is normal: press <strong>any key</strong> to open the menu.</p>
+      <p id="menu-next" class="menu-next">Use <kbd>Up/Down</kbd> to navigate and <kbd>Enter</kbd> to select: <strong>New Game → Knee-Deep in the Dead → skill</strong>. Only the first episode is available in shareware.</p>
+    </aside>
     <button id="start" type="button" disabled>Start Doom</button>
     <button id="fullscreen" type="button">Fullscreen</button>
-    <aside class="menu-prompt" aria-label="How to start playing">
-      <p id="menu-prompt">Click the game to focus, then press <kbd>Enter</kbd> to open the menu.</p>
-      <p id="menu-next" class="menu-next">After Start Doom: the title/demo is normal. Select <strong>New Game</strong> with <kbd>Enter</kbd>, then choose your episode and skill. Use ↑/↓ to navigate.</p>
-    </aside>
     <canvas id="canvas" width="640" height="400" tabindex="0" aria-label="Doom game screen" aria-describedby="menu-prompt menu-next"></canvas>
-    <p>Click the game to focus. W/S: move forward/back · A/D: strafe · Left/Right arrows: turn · Space: fire · E: use · Shift: run · 1–7: weapons · Escape: menu · Enter: select · Up/Down arrows: menu navigation.</p>
+    <p>Click the game to focus. W/S: move forward/back · A/D: strafe · Left/Right arrows: turn · Space: fire · E: use · Shift: run · 1–7: weapons · Escape: menu/back during gameplay · Enter: select · Up/Down arrows: menu navigation.</p>
     <p>Keyboard play. WAD sound effects are enabled and unlock after a keypress or click. Use Doom’s Save Game / Load Game menus; saves persist in this browser on this site. Clearing site data removes them.</p>
     <p id="save-status" role="status" aria-live="polite">Preparing browser save storage…</p>
     <p id="error" role="alert"></p>
@@ -94,7 +92,7 @@
       if (statusLine.dataset.state !== 'ready') return;
       startButton.disabled = true;
       statusLine.dataset.state = 'running';
-      statusLine.textContent = 'Running Doom. Focus the game, press Enter for the title/demo menu, then select New Game.';
+      statusLine.textContent = 'Running Doom. Click the game to focus, then press any key for the title/demo menu. Use Up/Down to navigate and Enter to select New Game.';
       // Finalize the status layout before focusing, so the browser reveals the
       // complete game rather than scrolling to its old pre-start position.
       gameCanvas.focus({ preventScroll: true });

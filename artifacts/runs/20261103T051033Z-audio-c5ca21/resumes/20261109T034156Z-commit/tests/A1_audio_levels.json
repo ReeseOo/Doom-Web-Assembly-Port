@@ -1,0 +1,30 @@
+{
+  "baseFire": {
+    "ctxs": 1,
+    "states": [
+      "running"
+    ],
+    "peak": 0.04037778680367823
+  },
+  "fire": {
+    "ctxs": 1,
+    "states": [
+      "running"
+    ],
+    "peak": 0.08806190568125934
+  },
+  "baseMenu": {
+    "ctxs": 1,
+    "states": [
+      "running"
+    ],
+    "peak": 0.03875647085075177
+  },
+  "menu": {
+    "ctxs": 1,
+    "states": [
+      "running"
+    ],
+    "peak": 0.0806502725716995
+  }
+}

@@ -1,0 +1,20 @@
+- main [ref=e2]:
+  - heading "Doom — shareware Episode 1" [level=1] [ref=e3]
+  - status [ref=e4]: Loading engine and game data…
+  - complementary "How to start playing" [ref=e5]:
+    - paragraph [ref=e6]:
+      - text: Click
+      - strong [ref=e7]: Start Doom
+      - text: ", then click the game to focus. The title/demo is normal: press"
+      - strong [ref=e8]: any key
+      - text: to open the menu.
+    - paragraph [ref=e9]:
+      - text: "Use Up/Down to navigate and Enter to select:"
+      - strong [ref=e10]: New Game → Knee-Deep in the Dead → skill
+      - text: . Only the first episode is available in shareware.
+  - button "Start Doom" [disabled] [ref=e11]
+  - button "Fullscreen" [ref=e12]
+  - generic "Doom game screen" [ref=e13]
+  - paragraph [ref=e14]: "Click the game to focus. W/S: move forward/back · A/D: strafe · Left/Right arrows: turn · Space: fire · E: use · Shift: run · 1–7: weapons · Escape: menu/back during gameplay · Enter: select · Up/Down arrows: menu navigation."
+  - paragraph [ref=e15]: Keyboard play. WAD sound effects are enabled and unlock after a keypress or click. Use Doom’s Save Game / Load Game menus; saves persist in this browser on this site. Clearing site data removes them.
+  - status [ref=e16]: Restoring browser saves…

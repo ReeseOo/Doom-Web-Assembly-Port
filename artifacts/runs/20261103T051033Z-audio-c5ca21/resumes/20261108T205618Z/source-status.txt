@@ -1,0 +1,5 @@
+ M artifacts/state.json
+ M loop/agents.yaml
+?? artifacts/runs/20261103T051033Z-audio-c5ca21/resumes/20261108T204801Z/
+?? artifacts/runs/20261103T051033Z-audio-c5ca21/resumes/20261108T205048Z/
+?? artifacts/runs/20261103T051033Z-audio-c5ca21/resumes/20261108T205618Z/
