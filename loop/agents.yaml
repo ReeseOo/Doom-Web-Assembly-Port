@@ -70,7 +70,7 @@ agents:
 
       STOP only when one of these is true, and record which one in state.json:
       1. SUCCESS: run.sh exits 0, both reviewers pass, and qa_browser passes.
-      2. BUDGET: 12 attempts in total, or the same check has failed 4 attempts in a row with no
+      2. BUDGET: 20 attempts in total, or the same check has failed 4 attempts in a row with no
         change in the evidence (stalled).
       3. UNFIXABLE: every remaining failure is a protected-check disagreement or a missing
         prerequisite (Docker not running, baseline tag missing).
