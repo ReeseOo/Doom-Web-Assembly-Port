@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Doom (WASM)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <style>
+    html, body { margin: 0; min-height: 100%; background: #101010; color: #eee; font-family: system-ui, sans-serif; }
+    * { box-sizing: border-box; }
+    main { max-width: 992px; margin: auto; padding: 12px 16px; text-align: center; }
+    h1 { font-size: 1.5rem; line-height: 1.2; margin: 0 0 8px; }
+    p { font-size: .875rem; line-height: 1.4; margin: 8px 0; }
+    /* Budget for the heading, controls and help as well as the *whole* 8:5
+       framebuffer, including Doom's HUD. Width-only scaling hides the HUD on
+       ordinary laptop viewports. The minimum keeps short screens usable;
+       their help remains reachable by normal document scrolling. */
+    canvas { display: block; margin: 10px auto; width: min(100%, 960px, calc(max(160px, 100vh - 400px) * 1.6)); height: auto; aspect-ratio: 8 / 5; background: #000; image-rendering: pixelated; }
+    @supports (height: 100svh) {
+      canvas { width: min(100%, 960px, calc(max(160px, 100svh - 400px) * 1.6)); }
+    }
+    canvas:fullscreen { width: 100%; height: 100%; object-fit: contain; }
+    canvas:focus { outline: 2px solid #e5b85c; }
+    button { font: inherit; padding: .5rem 1rem; }
+    #status { min-height: 1.5em; }
+    #status:empty { display: none; }
+    .menu-prompt { margin: 8px 0 10px; color: #eee; }
+    .menu-prompt p { margin: 0; font-size: .875rem; line-height: 1.4; }
+    .menu-prompt .menu-next { margin-top: 4px; }
+    .menu-prompt kbd { font: inherit; color: #ffd54f; }
+    @media (max-width: 480px) {
+      canvas { width: min(100%, calc(max(96px, 100vh - 460px) * 1.6)); }
+      @supports (height: 100svh) {
+        canvas { width: min(100%, calc(max(96px, 100svh - 460px) * 1.6)); }
+      }
+    }
+    #error { color: #ff9c9c; white-space: pre-wrap; }
+    #error:empty { display: none; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Doom — shareware Episode 1</h1>
+    <p id="status" data-state="loading" role="status" aria-live="polite">Loading engine and game data…</p>
+    <aside class="menu-prompt" aria-label="How to start playing">
+      <p id="menu-prompt">Click <strong>Start Doom</strong>, then click the game to focus. The title/demo is normal: press <strong>any key</strong> to open the menu.</p>
+      <p id="menu-next" class="menu-next">Use <kbd>Up/Down</kbd> to navigate and <kbd>Enter</kbd> to select: <strong>New Game → Knee-Deep in the Dead → skill</strong>. Only the first episode is available in shareware.</p>
+    </aside>
+    <button id="start" type="button" disabled>Start Doom</button>
+    <button id="fullscreen" type="button">Fullscreen</button>
+    <canvas id="canvas" width="640" height="400" tabindex="0" aria-label="Doom game screen" aria-describedby="menu-prompt menu-next"></canvas>
+    <p>Click the game to focus. W/S: move forward/back · A/D: strafe · Left/Right arrows: turn · Space: fire · E: use · Shift: run · 1–7: weapons · Escape: menu/back during gameplay · Enter: select · Up/Down arrows: menu navigation.</p>
+    <p>Keyboard play. WAD sound effects are enabled and unlock after a keypress or click. Use Doom’s Save Game / Load Game menus; saves persist in this browser on this site. Clearing site data removes them.</p>
+    <p id="save-status" role="status" aria-live="polite">Preparing browser save storage…</p>
+    <p id="error" role="alert"></p>
+    <noscript>JavaScript and WebAssembly are required to play.</noscript>
+  </main>
+  <script src="persistence.js"></script>
+  <script>
+    'use strict';
+    const gameCanvas = document.getElementById('canvas');
+    const startButton = document.getElementById('start');
+    const statusLine = document.getElementById('status');
+    function showFailure(message) {
+      statusLine.dataset.state = 'error';
+      statusLine.textContent = 'Unable to run Doom.';
+      document.getElementById('error').textContent = String(message);
+      startButton.disabled = true;
+    }
+    // Global non-modularized Emscripten Module, defined before doom.js loads.
+    var Module = {
+      canvas: gameCanvas,
+      noInitialRun: true,
+      arguments: ['-iwad', '/doom1.wad'],
+      print: function (text) { console.log(text); },
+      printErr: function (text) { console.error(text); },
+      onAbort: showFailure,
+      onRuntimeInitialized: function () {
+        if (statusLine.dataset.state === 'error') return;
+        Module.persistence = DoomPersistence(Module, document.getElementById('save-status'));
+        Module.persistence.restore().then(function () {
+          if (statusLine.dataset.state === 'error') return;
+          statusLine.textContent = '';
+          statusLine.dataset.state = 'ready';
+          startButton.disabled = false;
+        }).catch(function (error) {
+          showFailure('Could not restore browser saves: ' + error);
+        });
+      }
+    };
+    startButton.addEventListener('click', function () {
+      // A disabled button also has a state guard for synthetic/repeated clicks.
+      if (statusLine.dataset.state !== 'ready') return;
+      startButton.disabled = true;
+      statusLine.dataset.state = 'running';
+      statusLine.textContent = '';
+      // Finalize the status layout before focusing, so the browser reveals the
+      // complete game rather than scrolling to its old pre-start position.
+      gameCanvas.focus({ preventScroll: true });
+      gameCanvas.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      // Do not await the lifetime of the engine's Asyncify continuation.
+      // "running" means startup was requested, not proof of rendered gameplay.
+      try { Module.callMain(Module.arguments.slice()); }
+      catch (error) { showFailure(error); }
+    });
+    gameCanvas.addEventListener('click', function () { gameCanvas.focus(); });
+    document.getElementById('fullscreen').addEventListener('click', function () {
+      if (gameCanvas.requestFullscreen) {
+        gameCanvas.requestFullscreen().catch(function (error) {
+          document.getElementById('error').textContent = 'Fullscreen: ' + error.message;
+        });
+      }
+      gameCanvas.focus();
+    });
+    window.addEventListener('error', function (event) { showFailure(event.message || 'Script load failed.'); });
+    window.addEventListener('unhandledrejection', function (event) { showFailure(event.reason); });
+  </script>
+  <script src="doom.js" onerror="showFailure('Could not load doom.js. Serve the complete dist directory over HTTP.')"></script>
+</body>
+</html>
